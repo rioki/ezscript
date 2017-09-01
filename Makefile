@@ -2,7 +2,7 @@
 PACKAGE = ezscript
 VERSION = 0.0.0
 
-CFLAGS   += -Iinclude -DVERSION=\"$(VERSION)\"
+CFLAGS   += -Iinclude -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$(PACKAGE)\"
 LDFLAGS  += 
 prefix   ?= /usr/local
 
@@ -11,7 +11,7 @@ libezscript_src = $(wildcard libezscript/*.c)
 ezscript_src    = $(wildcard ezscript/*.c)
 test_src        = $(wildcard test/*.c)
 
-ifeq ($(MSYSTEM), MINGW32)
+ifeq ($(OS),Windows_NT)
   EXEEXT = .exe  
   LIBEXT = .dll
 else
@@ -19,14 +19,23 @@ else
   LIBEXT = .so  
 endif
 
-check: test-$(PACKAGE)$(EXEEXT)	
-	./test-$(PACKAGE)$(EXEEXT)
+.PHONY: all check clean install uninstall dist
+
+all: lib$(PACKAGE)$(LIBEXT)
+
+libezscript.a: libezscript.dll
+
+libezscript$(LIBEXT): $(patsubst %.cpp, %.o, $(libezscript_src))
+	$(CC) -shared -fPIC $(CFLAGS) $(LDFLAGS) $^ -Wl,--out-implib=libezscript.a -o $@
+
+check: ezscript-test$(EXEEXT)	
+	./ezscript-test$(EXEEXT)
   
-test-$(PACKAGE)$(EXEEXT): $(patsubst %.c, %.o, $(test_src))
-	$(CC) $(CXXFLAGS) $(LDFLAGS) $^ $(test_libs) -o $@
+ezscript-test$(EXEEXT): $(patsubst %.c, %.o, $(test_src)) libezscript.a 
+	$(CC) $(CXXFLAGS) $(LDFLAGS) $^ -o $@
 
 clean: 
-	rm -f */*.o */*.d test-$(PACKAGE)$(EXEEXT)	
+	rm -f */*.o */*.d libezscript.a libezscript.dll ezscript-test$(EXEEXT)	
   
 %.o : %.c
 	$(CC) $(CFLAGS) -MD -c $< -o $(patsubst %.c, %.o, $<)
