@@ -1,0 +1,2 @@
+# ezscript
+ez script
