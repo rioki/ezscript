@@ -4,13 +4,26 @@
 
 int test_empty() 
 {  
-    int r = ez_compile("");
-    return r >= 0;
+    char* code = "";
+    
+    int r = ez_compile(code);
+    
+    return r == EZ_OK;
+}
+
+int test_variable() 
+{
+    char* code = "var a = 1;";
+    
+    int r = ez_compile(code);
+    
+    return r == EZ_OK;
 }
 
 int register_parse_tests()
 {
-    int r = 0;
-
-    tst_register("empty", test_empty);
+    TST_REGISTER(test_empty);
+    TST_REGISTER(test_variable);
+    
+    return 0;
 }
