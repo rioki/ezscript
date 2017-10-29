@@ -33,9 +33,9 @@ int test_context_init_null()
     return 1;
 }
 
-int test_context_cleanup_null()
+int test_context_clear_null()
 {
-    int r = ez_context_cleanup(NULL);
+    int r = ez_context_clear(NULL);
 
     TST_ASSERT(r == EZ_INVALID_ARGUMENT);
     
@@ -49,7 +49,7 @@ int test_context_simple_life()
     r = ez_context_init(&context);
     TST_ASSERT(r == EZ_OK);
 
-    r = ez_context_cleanup(&context);
+    r = ez_context_clear(&context);
     TST_ASSERT(r == EZ_OK);
     
     return 1;
@@ -58,7 +58,7 @@ int test_context_simple_life()
 int register_context_tests()
 {
     TST_REGISTER(test_context_init_null);
-    TST_REGISTER(test_context_cleanup_null);
+    TST_REGISTER(test_context_clear_null);
     TST_REGISTER(test_context_simple_life);
     
     return 0;

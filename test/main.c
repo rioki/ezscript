@@ -3,6 +3,7 @@
 #include "test.h"
 
 int register_context_tests();
+int register_value_tests();
 int register_parse_tests();
 int register_exec_tests();
 
@@ -14,6 +15,13 @@ int main(int argc, char*argv[])
     if (r < 0) 
     {
         printf("Registering context tests failed.\n");
+        return -1;
+    }
+
+    r = register_value_tests();
+    if (r < 0) 
+    {
+        printf("Registering value tests failed.\n");
         return -1;
     }
 

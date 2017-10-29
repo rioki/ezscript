@@ -30,24 +30,56 @@ enum
     EZ_NOT_IMPLEMENTED  = -1,
     EZ_OUT_OF_MEMORY    = -2,
     EZ_INVALID_ARGUMENT = -3,
-    EZ_PARSE_ERROR      = -40,
+    EZ_PARSE_ERROR      = -4,
+    ES_UNDEFINED        = -5
 };
 
-struct ez_code_s {
-    const char* error_string;
+struct ez_code_s 
+{
+    char* error_string;
 };
 typedef struct ez_code_s ez_code_t;
 
-struct ez_context_s {
-    const char* error_string;
+struct ez_context_s 
+{
+    char* error_string;
 };
 typedef struct ez_context_s ez_context_t;
 
+enum ez_value_type_e 
+{
+    EZ_TYPE_NULL,
+    EZ_TYPE_BOOLEAN,
+    EZ_TYPE_INTEGER,
+    EZ_TYPE_REAL,
+    EZ_TYPE_STRING,
+    EZ_TYPE_ARRAY,
+    EZ_TYPE_OBJECT
+};
+typedef enum ez_value_type_e ez_value_type_t;
+
+struct ez_value_s {
+    ez_value_type_t type;
+    union 
+    {
+        int       boolean_value;
+        long long integer_value;
+        double    real_value;
+        char*     string_value;
+    };
+};
+typedef struct ez_value_s ez_value_t;
+
 int ez_code_init(ez_code_t* code);
-int ez_code_cleanup(ez_code_t* code);
+int ez_code_clear(ez_code_t* code);
+
+int ez_value_init(ez_value_t* value);
+int ez_value_get(ez_context_t* context, const char* id, ez_value_t* value);
+int ez_value_set(ez_context_t* context, const char* id, ez_value_t* value);
+int ez_value_clear(ez_value_t* value);
 
 int ez_context_init(ez_context_t* context);
-int ez_context_cleanup(ez_context_t* context);
+int ez_context_clear(ez_context_t* context);
 
 int ez_compile(ez_code_t* code, const char* scode);
 

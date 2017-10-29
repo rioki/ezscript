@@ -21,59 +21,47 @@
     SOFTWARE.
 */
 
+#include "test.h"
 #include "ezscript.h"
 
-#include <string.h>
-#include <stdlib.h>
-
-int ez_context_init(ez_context_t* context)
+int test_value_init_null()
 {
-    if (context == NULL)
-    {
-        return EZ_INVALID_ARGUMENT;
-    }
+    int r = ez_value_init(NULL);
 
-    memset(context, 0, sizeof(ez_context_t));
-    return EZ_OK;
+    TST_ASSERT(r == EZ_INVALID_ARGUMENT);
+    
+    return 1;
 }
 
-int ez_context_clear(ez_context_t* context)
+int test_value_clear_null()
 {
-    if (context == NULL)
-    {
-        return EZ_INVALID_ARGUMENT;
-    }
+    int r = ez_value_clear(NULL);
 
-    if (context->error_string != NULL)
-    {
-        free(context->error_string);
-    }
-
-    memset(context, 0, sizeof(ez_context_t));
-
-    return EZ_OK;
+    TST_ASSERT(r == EZ_INVALID_ARGUMENT);
+    
+    return 1;
 }
 
-int ez_execute(ez_context_t* context, const char* scode)
+int test_value_simple_life()
 {
-    int ezres;
-    ez_code_t code;
+    int r;
+    ez_value_t value;
+    r = ez_value_init(&value);
+    TST_ASSERT(r == EZ_OK);
 
-    ezres = ez_code_init(&code);
-    if (ezres != EZ_OK)
-    {
-        return ezres;
-    }
-
-    return EZ_OK;
+    r = ez_value_clear(&value);
+    TST_ASSERT(r == EZ_OK);
+    
+    return 1;
 }
 
-int ez_value_get(ez_context_t* context, const char* id, ez_value_t* value)
-{
-    return ES_UNDEFINED;
-}
 
-int ez_value_set(ez_context_t* context, const char* id, ez_value_t* value)
+
+int register_value_tests()
 {
-    return ES_UNDEFINED;
+    TST_REGISTER(test_value_init_null);
+    TST_REGISTER(test_value_clear_null);
+    TST_REGISTER(test_value_simple_life);
+    
+    return 0;
 }

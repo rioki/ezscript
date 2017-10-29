@@ -33,9 +33,9 @@ int test_code_init_null()
     return 1;
 }
 
-int test_code_cleanup_null()
+int test_code_clear_null()
 {
-    int r = ez_code_cleanup(NULL);
+    int r = ez_code_clear(NULL);
 
     TST_ASSERT(r == EZ_INVALID_ARGUMENT);
     
@@ -49,7 +49,7 @@ int test_code_simple_life()
     r = ez_code_init(&code);
     TST_ASSERT(r == EZ_OK);
 
-    r = ez_code_cleanup(&code);
+    r = ez_code_clear(&code);
     TST_ASSERT(r == EZ_OK);
     
     return 1;
@@ -65,7 +65,7 @@ int test_parse_null()
     r = ez_compile(&code, NULL);
     TST_ASSERT(r == EZ_INVALID_ARGUMENT);
 
-    r = ez_code_cleanup(&code);
+    r = ez_code_clear(&code);
     TST_ASSERT(r == EZ_OK);
     
     return 1;
@@ -81,7 +81,7 @@ int test_parse_empty()
     r = ez_compile(&code, "");
     TST_ASSERT(r == EZ_OK);
 
-    r = ez_code_cleanup(&code);
+    r = ez_code_clear(&code);
     TST_ASSERT(r == EZ_OK);
     
     return 1;
@@ -97,7 +97,7 @@ int test_parse_variable()
     r = ez_compile(&code, "var i = 1;");
     TST_ASSERT(r == EZ_OK);
 
-    r = ez_code_cleanup(&code);
+    r = ez_code_clear(&code);
     TST_ASSERT(r == EZ_OK);
     
     return 1;
@@ -106,7 +106,7 @@ int test_parse_variable()
 int register_parse_tests()
 {
     TST_REGISTER(test_code_init_null);
-    TST_REGISTER(test_code_cleanup_null);
+    TST_REGISTER(test_code_clear_null);
     TST_REGISTER(test_code_simple_life);
     TST_REGISTER(test_parse_empty);
     TST_REGISTER(test_parse_variable);

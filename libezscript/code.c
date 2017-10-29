@@ -39,7 +39,7 @@ int ez_code_init(ez_code_t* code)
     return EZ_OK;
 }
 
-int ez_code_cleanup(ez_code_t* code)
+int ez_code_clear(ez_code_t* code)
 {
     if (code == NULL)
     {

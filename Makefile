@@ -63,3 +63,8 @@ devclean: clean
 %.c %.h: %.y
 	$(BISON) -o $@  $^
 
+ifneq "$(MAKECMDGOALS)" "clean"
+-include $(patsubst %.c, .obj/%.d, $(libezscript_src))
+-include $(patsubst %.c, .obj/%.d, $(ezscript_src))
+-include $(patsubst %.c, .obj/%.d, $(test_src))
+endif

@@ -23,57 +23,24 @@
 
 #include "ezscript.h"
 
-#include <string.h>
 #include <stdlib.h>
 
-int ez_context_init(ez_context_t* context)
+int ez_value_init(ez_value_t* value)
 {
-    if (context == NULL)
+    if (value == NULL)
     {
         return EZ_INVALID_ARGUMENT;
     }
 
-    memset(context, 0, sizeof(ez_context_t));
     return EZ_OK;
 }
 
-int ez_context_clear(ez_context_t* context)
+int ez_value_clear(ez_value_t* value)
 {
-    if (context == NULL)
+    if (value == NULL)
     {
         return EZ_INVALID_ARGUMENT;
     }
 
-    if (context->error_string != NULL)
-    {
-        free(context->error_string);
-    }
-
-    memset(context, 0, sizeof(ez_context_t));
-
     return EZ_OK;
-}
-
-int ez_execute(ez_context_t* context, const char* scode)
-{
-    int ezres;
-    ez_code_t code;
-
-    ezres = ez_code_init(&code);
-    if (ezres != EZ_OK)
-    {
-        return ezres;
-    }
-
-    return EZ_OK;
-}
-
-int ez_value_get(ez_context_t* context, const char* id, ez_value_t* value)
-{
-    return ES_UNDEFINED;
-}
-
-int ez_value_set(ez_context_t* context, const char* id, ez_value_t* value)
-{
-    return ES_UNDEFINED;
 }

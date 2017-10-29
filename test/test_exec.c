@@ -34,7 +34,31 @@ int test_execute_empty()
     r = ez_execute(&context, "");
     TST_ASSERT(r == EZ_OK);
 
-    r = ez_context_cleanup(&context);
+    r = ez_context_clear(&context);
+    TST_ASSERT(r == EZ_OK);
+    
+    return 1;
+}
+
+int test_assign_variable()
+{
+    int r;
+    ez_context_t context;
+    r = ez_context_init(&context);
+    TST_ASSERT(r == EZ_OK);
+
+    r = ez_execute(&context, "var i = 12;");
+    TST_ASSERT(r == EZ_OK);
+
+    ez_value_t value;
+    r = ez_value_get(&context, "i", &value);
+    TST_ASSERT(r == EZ_OK);
+
+    TST_ASSERT(value.type == EZ_TYPE_INTEGER);
+    TST_ASSERT(value.integer_value == 12);
+    ez_value_clear(&value);
+
+    r = ez_context_clear(&context);
     TST_ASSERT(r == EZ_OK);
     
     return 1;
@@ -43,6 +67,7 @@ int test_execute_empty()
 int register_exec_tests()
 {
     TST_REGISTER(test_execute_empty);
+    TST_REGISTER(test_assign_variable);
     
     return 0;
 }

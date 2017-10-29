@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
         }
     }
 
-    ezres = ez_context_cleanup(&context);
+    ezres = ez_context_clear(&context);
     if (ezres != EZ_OK)
     {
         printf("Failed to cleanup context: %s\n", ez_error_string(ezres));
