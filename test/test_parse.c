@@ -21,48 +21,79 @@
     SOFTWARE.
 */
 
+#include "test.h"
 #include "ezscript.h"
 
-#include <string.h>
-
-int ez_context_init(ez_context_t* context)
+int test_code_init_null()
 {
-    if (context == NULL)
-    {
-        return EZ_INVALID_ARGUMENT;
-    }
+    int r = ez_code_init(NULL);
 
-    memset(context, 0, sizeof(ez_context_t));
-    return EZ_OK;
+    TST_ASSERT(r == EZ_INVALID_ARGUMENT);
+    
+    return 1;
 }
 
-int ez_context_cleanup(ez_context_t* context)
+int test_code_cleanup_null()
 {
-    if (context == NULL)
-    {
-        return EZ_INVALID_ARGUMENT;
-    }
+    int r = ez_code_cleanup(NULL);
 
-    if (context->error_string != NULL)
-    {
-        free(context->error_string);
-    }
-
-    memset(context, 0, sizeof(ez_context_t));
-
-    return EZ_OK;
+    TST_ASSERT(r == EZ_INVALID_ARGUMENT);
+    
+    return 1;
 }
 
-int ez_execute(ez_context_t* context, const char* scode)
+int test_code_simple_life()
 {
-    int ezres;
+    int r;
     ez_code_t code;
+    r = ez_code_init(&code);
+    TST_ASSERT(r == EZ_OK);
 
-    ezres = ez_code_init(&code);
-    if (ezres != EZ_OK)
-    {
-        return ezres;
-    }
+    r = ez_code_cleanup(&code);
+    TST_ASSERT(r == EZ_OK);
+    
+    return 1;
+}
 
-    return EZ_OK;
+int test_parse_empty()
+{
+    int r;
+    ez_code_t code;
+    r = ez_code_init(&code);
+    TST_ASSERT(r == EZ_OK);
+
+    r = ez_compile(&code, "");
+    TST_ASSERT(r == EZ_OK);
+
+    r = ez_code_cleanup(&code);
+    TST_ASSERT(r == EZ_OK);
+    
+    return 1;
+}
+
+int test_parse_variable()
+{
+    int r;
+    ez_code_t code;
+    r = ez_code_init(&code);
+    TST_ASSERT(r == EZ_OK);
+
+    r = ez_compile(&code, " - - - -  ");
+    TST_ASSERT(r == EZ_OK);
+
+    r = ez_code_cleanup(&code);
+    TST_ASSERT(r == EZ_OK);
+    
+    return 1;
+}
+
+int register_parse_tests()
+{
+    TST_REGISTER(test_code_init_null);
+    TST_REGISTER(test_code_cleanup_null);
+    TST_REGISTER(test_code_simple_life);
+    TST_REGISTER(test_parse_empty);
+    TST_REGISTER(test_parse_variable);
+    
+    return 0;
 }

@@ -27,14 +27,14 @@
 
 int main(int argc, char* argv[])
 {
-    int        ezres;
-    size_t     buffer_size = 0;
-    char*      buffer      = NULL;
-    ez_context context;
+    int          ezres;
+    size_t       buffer_size = 0;
+    char*        buffer      = NULL;
+    ez_context_t context;
 
     printf("ezscript - Version: %s\n", VERSION);
 
-    ezres = ez_init_context(&context);
+    ezres = ez_context_init(&context);
     if (ezres != EZ_OK)
     {
         printf("Failed to initialize context: %s\n", ez_error_string(ezres));
@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
         }
     }
 
-    ezres = ez_cleanup_context(&context);
+    ezres = ez_context_cleanup(&context);
     if (ezres != EZ_OK)
     {
         printf("Failed to cleanup context: %s\n", ez_error_string(ezres));

@@ -33,17 +33,25 @@ enum
     EZ_PARSE_ERROR      = -40,
 };
 
-struct ez_context {
+struct ez_code_s {
     const char* error_string;
 };
-typedef struct ez_context ez_context;
+typedef struct ez_code_s ez_code_t;
 
-int ez_init_context(ez_context* context);
-int ez_cleanup_context(ez_context* context);
+struct ez_context_s {
+    const char* error_string;
+};
+typedef struct ez_context_s ez_context_t;
 
-int ez_compile(const char* code);
+int ez_code_init(ez_code_t* code);
+int ez_code_cleanup(ez_code_t* code);
 
-int ez_execute(ez_context* context, const char* code);
+int ez_context_init(ez_context_t* context);
+int ez_context_cleanup(ez_context_t* context);
+
+int ez_compile(ez_code_t* code, const char* scode);
+
+int ez_execute(ez_context_t* context, const char* scode);
 
 const char* ez_error_string(int errorid);
 

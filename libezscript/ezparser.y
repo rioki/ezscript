@@ -24,8 +24,7 @@ void ezerror(const char* msg);
 
 %%
 
-ezscript : statements 
-         | /* nothing */;
+ezscript : statements;
 
 statements : statements statement
            | statement;

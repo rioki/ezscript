@@ -23,46 +23,51 @@
 
 #include "ezscript.h"
 
-#include <string.h>
+#include <stdlib.h>
 
-int ez_context_init(ez_context_t* context)
+#include "ezlexer.h"
+#include "ezparser.h"
+
+int ez_code_init(ez_code_t* code)
 {
-    if (context == NULL)
+    if (code == NULL)
     {
         return EZ_INVALID_ARGUMENT;
     }
 
-    memset(context, 0, sizeof(ez_context_t));
+    memset(code, 0, sizeof(ez_code_t));
     return EZ_OK;
 }
 
-int ez_context_cleanup(ez_context_t* context)
+int ez_code_cleanup(ez_code_t* code)
 {
-    if (context == NULL)
+    if (code == NULL)
     {
         return EZ_INVALID_ARGUMENT;
     }
 
-    if (context->error_string != NULL)
-    {
-        free(context->error_string);
-    }
-
-    memset(context, 0, sizeof(ez_context_t));
-
     return EZ_OK;
 }
 
-int ez_execute(ez_context_t* context, const char* scode)
+int ez_compile(ez_code_t* code, const char* scode)
 {
-    int ezres;
-    ez_code_t code;
-
-    ezres = ez_code_init(&code);
-    if (ezres != EZ_OK)
+    YY_BUFFER_STATE buffer;
+    int             result;
+    
+    buffer = ez_scan_string(code);
+    
+    result = ezparse();
+    
+    ez_delete_buffer(buffer);
+    
+    switch (result)
     {
-        return ezres;
+        case 0:
+            return EZ_OK;
+        case 2:
+            return EZ_OUT_OF_MEMORY;
+        case 1:
+        default:
+            return EZ_PARSE_ERROR;
     }
-
-    return EZ_OK;
 }

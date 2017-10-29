@@ -21,48 +21,28 @@
     SOFTWARE.
 */
 
+#include "test.h"
 #include "ezscript.h"
 
-#include <string.h>
-
-int ez_context_init(ez_context_t* context)
+int test_execute_empty()
 {
-    if (context == NULL)
-    {
-        return EZ_INVALID_ARGUMENT;
-    }
+    int r;
+    ez_context_t context;
+    r = ez_context_init(&context);
+    TST_ASSERT(r == EZ_OK);
 
-    memset(context, 0, sizeof(ez_context_t));
-    return EZ_OK;
+    r = ez_execute(&context, "");
+    TST_ASSERT(r == EZ_OK);
+
+    r = ez_context_cleanup(&context);
+    TST_ASSERT(r == EZ_OK);
+    
+    return 1;
 }
 
-int ez_context_cleanup(ez_context_t* context)
+int register_exec_tests()
 {
-    if (context == NULL)
-    {
-        return EZ_INVALID_ARGUMENT;
-    }
-
-    if (context->error_string != NULL)
-    {
-        free(context->error_string);
-    }
-
-    memset(context, 0, sizeof(ez_context_t));
-
-    return EZ_OK;
-}
-
-int ez_execute(ez_context_t* context, const char* scode)
-{
-    int ezres;
-    ez_code_t code;
-
-    ezres = ez_code_init(&code);
-    if (ezres != EZ_OK)
-    {
-        return ezres;
-    }
-
-    return EZ_OK;
+    TST_REGISTER(test_execute_empty);
+    
+    return 0;
 }
