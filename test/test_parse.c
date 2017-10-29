@@ -55,6 +55,22 @@ int test_code_simple_life()
     return 1;
 }
 
+int test_parse_null()
+{
+    int r;
+    ez_code_t code;
+    r = ez_code_init(&code);
+    TST_ASSERT(r == EZ_OK);
+
+    r = ez_compile(&code, NULL);
+    TST_ASSERT(r == EZ_INVALID_ARGUMENT);
+
+    r = ez_code_cleanup(&code);
+    TST_ASSERT(r == EZ_OK);
+    
+    return 1;
+}
+
 int test_parse_empty()
 {
     int r;
@@ -78,7 +94,7 @@ int test_parse_variable()
     r = ez_code_init(&code);
     TST_ASSERT(r == EZ_OK);
 
-    r = ez_compile(&code, " - - - -  ");
+    r = ez_compile(&code, "var i = 1;");
     TST_ASSERT(r == EZ_OK);
 
     r = ez_code_cleanup(&code);

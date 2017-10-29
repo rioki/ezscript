@@ -53,8 +53,19 @@ int ez_compile(ez_code_t* code, const char* scode)
 {
     YY_BUFFER_STATE buffer;
     int             result;
+
+    if (code == NULL)
+    {
+        return EZ_INVALID_ARGUMENT;
+    }
+
+    if (strcmp(scode, "") == 0)
+    {
+        // explicitly handling empty sting make the parser simpler
+        return EZ_OK;
+    }
     
-    buffer = ez_scan_string(code);
+    buffer = ez_scan_string(scode);
     
     result = ezparse();
     
