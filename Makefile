@@ -9,7 +9,7 @@ BISON    ?= bison
 prefix   ?= /usr/local
 
 headers         = $(wildcard include/*.h)
-libezscript_src = $(wildcard libezscript/*.c) libezscript/ezlexer.c libezscript/ezparser.c
+libezscript_src = libezscript/ezparser.c libezscript/ezlexer.c $(wildcard libezscript/*.c) 
 ezscript_src    = $(wildcard ezscript/*.c) 
 test_src        = $(wildcard test/*.c)
 
@@ -22,31 +22,44 @@ else
   CFLAGS += -fPIC 
 endif
 
-.PHONY: all check clean install uninstall dist
+.PHONY: all check clean devclean install uninstall dist
 
-all: lib$(PACKAGE)$(LIBEXT)
+all: bin/libezscript$(LIBEXT) bin/ezscript$(EXEEXT)
 
-libezscript.a: libezscript.dll
+lib/libezscript.a: bin/libezscript$(LIBEXT)
 
-libezscript$(LIBEXT): $(patsubst %.c, %.o, $(libezscript_src))
-	$(CC) -shared $(CFLAGS) $(LDFLAGS) $^ -Wl,--out-implib=libezscript.a -o $@
+bin/libezscript$(LIBEXT): $(patsubst %.c, .obj/%.o, $(libezscript_src))
+	mkdir -p bin 
+	mkdir -p lib
+	$(CC) -shared $(CFLAGS) $(LDFLAGS) $^ -Wl,--out-implib=lib/libezscript.a -o $@
 
-check: ezscript-test$(EXEEXT)	
-	./ezscript-test$(EXEEXT)
+bin/ezscript$(EXEEXT): $(patsubst %.c, .obj/%.o, $(ezscript_src)) lib/libezscript.a 
+	mkdir -p bin 
+	$(CC) $(CXXFLAGS) $(LDFLAGS) $^ -o $@
+
+repl: bin/ezscript$(EXEEXT)
+	./bin/ezscript$(EXEEXT)
+
+check: bin/ezscript-test$(EXEEXT)	
+	./bin/ezscript-test$(EXEEXT)
   
-ezscript-test$(EXEEXT): $(patsubst %.c, %.o, $(test_src)) libezscript.a 
+bin/ezscript-test$(EXEEXT): $(patsubst %.c, .obj/%.o, $(test_src)) lib/libezscript.a 
+	mkdir -p bin 
 	$(CC) $(CXXFLAGS) $(LDFLAGS) $^ -o $@
 
 clean: 
-	rm -f */*.o */*.d libezscript.a libezscript.dll ezscript-test$(EXEEXT)	
+	rm -rf .obj bin lib	
+
+devclean: clean
+	rm -f libezscript/ezparser.c libezscript/ezparser.h libezscript/ezlexer.c libezscript/ezlexer.h
+
+.obj/%.o : %.c
+	mkdir -p $(shell dirname $@)
+	$(CC) $(CFLAGS) -MD -c $< -o $@	
   
-%.o : %.c
-	$(CC) $(CFLAGS) -MD -c $< -o $(patsubst %.c, %.o, $<)
-  
-  
-%.c: %.l
+%.c %.h: %.l
 	$(FLEX) -o $@ --header-file=$(patsubst %.l,%.h,$^) $^  
     
-%.c: %.y
+%.c %.h: %.y
 	$(BISON) -o $@  $^
 

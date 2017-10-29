@@ -18,7 +18,6 @@ int tst_register(const char* name, test_fun fun)
   if (test == NULL)
   {
     printf("Failed to alocate structures for %s.\n", name);
-    // this will probably do nothing sensible, because this code is executed premain
     return -1; 
   }
   

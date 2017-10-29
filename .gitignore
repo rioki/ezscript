@@ -1,14 +1,5 @@
-
-*.d
-*.o
-*.a
-*.dll
-*.so
-*.exe
-
-# lexer & parser output
-libezscript/ezlexer.h
-libezscript/ezlexer.c
-libezscript/ezparser.h
-libezscript/ezparser.c
+.vscode
+.obj
+lib
+bin
 

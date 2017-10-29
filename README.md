@@ -4,8 +4,6 @@ A easy scripting language, for fun and profit.
 
 ## License
 
-MIT License
-
 Copyright (c) 2017 Sean Farrell <sean.farrell@rioki.org>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

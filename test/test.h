@@ -10,6 +10,13 @@ int tst_run();
     int result ## NAME = tst_register(#NAME, NAME); \
     if (result ## NAME < 0) \
     { \
-        printf("Failed to register %s test.", #NAME); \
+        printf("Failed to register %s test.\n", #NAME); \
         return result ## NAME; \
+    }
+
+#define TST_ASSERT(COND) \
+    if (!(COND)) \
+    { \
+        printf("%s(%d): Assertion %s failed.\n", __FILE__, __LINE__, #COND); \
+        return 0; \
     }
