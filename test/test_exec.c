@@ -31,7 +31,7 @@ int test_execute_empty()
     r = ez_context_init(&context);
     TST_ASSERT(r == EZ_OK);
 
-    r = ez_execute(&context, "");
+    r = ez_evaluate(&context, "");
     TST_ASSERT(r == EZ_OK);
 
     r = ez_context_clear(&context);
@@ -47,7 +47,7 @@ int test_assign_variable()
     r = ez_context_init(&context);
     TST_ASSERT(r == EZ_OK);
 
-    r = ez_execute(&context, "var i = 12;");
+    r = ez_evaluate(&context, "var i = 12;");
     TST_ASSERT(r == EZ_OK);
 
     ez_value_t value;

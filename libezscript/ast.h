@@ -21,45 +21,46 @@
     SOFTWARE.
 */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <ezscript.h>
+#ifndef _EZ_AST_H_
+#define _EZ_AST_H_
 
-int main(int argc, char* argv[])
+// NOTE:
+// The AST API does not follow the public result driven style. This is done
+// to simplify the parser's code. The AST generation is directly tied
+// into the parser's implementation and should not be seen as a sepeate
+// or stable API.
+
+#include "ezscript.h"
+
+enum ez_ast_node_type_e 
 {
-    int          ezres;
-    size_t       buffer_size = 0;
-    char*        buffer      = NULL;
-    ez_context_t context;
+    EZ_AST_ROOT,
+    EZ_AST_NUMBER,
+    EZ_AST_IDENTIFIER,
+    EZ_AST_STRING,
+    EZ_VARIABLE_DECLARATION,
+    EZ_STATEMENT
 
-    printf("ezscript - Version: %s\n", VERSION);
+};
+typedef enum ez_ast_node_type_e ez_ast_node_type_t;
 
-    ezres = ez_context_init(&context);
-    if (ezres != EZ_OK)
-    {
-        printf("Failed to initialize context: %s\n", ez_error_string(ezres));
-    }
+struct ez_ast_s 
+{
+    ez_ast_node_type_t type;
+    char*              file;
+    int                line;
+    char*              svalue;
+    struct ez_ast_s*   next;
+    struct ez_ast_s*   child;
+};
+typedef struct ez_ast_s ez_ast_t;
 
-    while (1)
-    {
-        int chars_read = getline(&buffer, &buffer_size, stdin);
-        if (chars_read < 1)
-        {
-            break;
-        }
-        
-        ezres = ez_evaluate(&context, buffer);
-        if (ezres != EZ_OK)
-        {
-            printf("Failed to execute line: %s\n", ez_error_string(ezres));
-        }
-    }
+ez_ast_t* ez_ast_create(const char* file, int line, ez_ast_node_type_t type, const char* svalue);
 
-    ezres = ez_context_clear(&context);
-    if (ezres != EZ_OK)
-    {
-        printf("Failed to cleanup context: %s\n", ez_error_string(ezres));
-    }
+ez_ast_t* ez_ast_append_sibling(ez_ast_t* fist, ez_ast_t* next);
 
-    return 0;
-}
+ez_ast_t* ez_ast_append_child(ez_ast_t* parent, ez_ast_t* child);
+
+void ez_ast_free(ez_ast_t* node);
+
+#endif

@@ -24,6 +24,8 @@
 #ifndef _EZSCRIPT_H_
 #define _EZSCRIPT_H_
 
+#include <stdlib.h>
+
 enum 
 {
     EZ_OK               = 0,
@@ -36,7 +38,8 @@ enum
 
 struct ez_code_s 
 {
-    char* error_string;
+    size_t         length;
+    unsigned char* code;
 };
 typedef struct ez_code_s ez_code_t;
 
@@ -82,8 +85,9 @@ int ez_context_init(ez_context_t* context);
 int ez_context_clear(ez_context_t* context);
 
 int ez_compile(ez_code_t* code, const char* scode);
+int ez_execute(ez_context_t* context, ez_code_t* code);
 
-int ez_execute(ez_context_t* context, const char* scode);
+int ez_evaluate(ez_context_t* context, const char* scode);
 
 const char* ez_error_string(int errorid);
 

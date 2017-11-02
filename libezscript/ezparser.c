@@ -71,14 +71,8 @@
 #define yylloc          ezlloc
 
 /* Copy the first part of user declarations.  */
-#line 7 "libezscript/ezparser.y" /* yacc.c:339  */
 
-
-int ezlex();
-void ezerror(const char* msg);
-
-
-#line 82 "libezscript/ezparser.c" /* yacc.c:339  */
+#line 76 "libezscript/ezparser.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -107,6 +101,18 @@ void ezerror(const char* msg);
 #if YYDEBUG
 extern int ezdebug;
 #endif
+/* "%code requires" blocks.  */
+#line 8 "libezscript/ezparser.y" /* yacc.c:355  */
+
+
+#include <assert.h>
+#include "ast.h"
+
+int ezlex();
+void ezerror(const char* file, ez_ast_t* ast_root, const char* msg) ;
+
+
+#line 116 "libezscript/ezparser.c" /* yacc.c:355  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -119,13 +125,25 @@ extern int ezdebug;
     EQUAL = 260,
     SEMI = 261,
     IDENTIFIER = 262,
-    NUMBER = 263
+    NUMBER = 263,
+    STRING = 264
   };
 #endif
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+
+union YYSTYPE
+{
+#line 22 "libezscript/ezparser.y" /* yacc.c:355  */
+    
+    char*     string;
+    ez_ast_t* node;
+
+#line 144 "libezscript/ezparser.c" /* yacc.c:355  */
+};
+
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
@@ -147,13 +165,13 @@ struct YYLTYPE
 
 extern YYSTYPE ezlval;
 extern YYLTYPE ezlloc;
-int ezparse (void);
+int ezparse (const char* file, ez_ast_t* ast_root);
 
 #endif /* !YY_EZ_LIBEZSCRIPT_EZPARSER_H_INCLUDED  */
 
 /* Copy the second part of user declarations.  */
 
-#line 157 "libezscript/ezparser.c" /* yacc.c:358  */
+#line 175 "libezscript/ezparser.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -395,23 +413,23 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  7
+#define YYFINAL  8
 /* YYLAST -- Last index in YYTABLE.  */
 #define YYLAST   8
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  9
+#define YYNTOKENS  10
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  7
+#define YYNNTS  9
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  9
+#define YYNRULES  12
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  15
+#define YYNSTATES  18
 
 /* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
    by yylex, with out-of-bounds checking.  */
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   263
+#define YYMAXUTOK   264
 
 #define YYTRANSLATE(YYX)                                                \
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
@@ -446,14 +464,15 @@ static const yytype_uint8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7,     8
+       5,     6,     7,     8,     9
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    27,    27,    29,    30,    32,    34,    35,    37,    39
+       0,    47,    47,    53,    57,    62,    68,    73,    79,    80,
+      82,    87,    92
 };
 #endif
 
@@ -463,8 +482,9 @@ static const yytype_uint8 yyrline[] =
 static const char *const yytname[] =
 {
   "\"end of file\"", "error", "$undefined", "\"lexing error\"", "\"var\"",
-  "\"=\"", "\";\"", "\"identifier\"", "\"number\"", "$accept", "ezscript",
-  "statements", "statement", "variable_declaration", "literal", "number", YY_NULLPTR
+  "\"=\"", "\";\"", "\"identifier\"", "\"number\"", "\"string\"",
+  "$accept", "ezscript", "statements", "statement", "variable_declaration",
+  "literal", "identifier", "number", "string", YY_NULLPTR
 };
 #endif
 
@@ -473,14 +493,14 @@ static const char *const yytname[] =
    (internal) symbol number NUM (which must be that of a token).  */
 static const yytype_uint16 yytoknum[] =
 {
-       0,   256,   257,   258,   259,   260,   261,   262,   263
+       0,   256,   257,   258,   259,   260,   261,   262,   263,   264
 };
 # endif
 
-#define YYPACT_NINF -6
+#define YYPACT_NINF -7
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-6)))
+  (!!((Yystate) == (-7)))
 
 #define YYTABLE_NINF -1
 
@@ -491,8 +511,8 @@ static const yytype_uint16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -2,    -4,     4,    -2,    -6,    -6,    -5,    -6,    -6,    -3,
-      -6,    -6,     0,    -6,    -6
+       0,    -2,     6,     0,    -7,    -7,    -7,    -5,    -7,    -7,
+      -6,    -7,    -7,    -7,     1,    -7,    -7,    -7
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -500,20 +520,20 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       0,     0,     0,     2,     4,     5,     0,     1,     3,     0,
-       6,     9,     0,     8,     7
+       0,     0,     0,     2,     4,     5,    10,     0,     1,     3,
+       0,     6,    11,    12,     0,     8,     9,     7
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -6,    -6,    -6,     5,    -6,    -6,    -6
+      -7,    -7,    -7,     5,    -7,    -7,    -7,    -7,    -7
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     2,     3,     4,     5,    12,    13
+      -1,     2,     3,     4,     5,    14,     7,    15,    16
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -521,32 +541,34 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
-       9,    10,     1,     6,     7,    11,    14,     0,     8
+      10,    11,    12,    13,     1,     6,     8,    17,     9
 };
 
-static const yytype_int8 yycheck[] =
+static const yytype_uint8 yycheck[] =
 {
-       5,     6,     4,     7,     0,     8,     6,    -1,     3
+       5,     6,     8,     9,     4,     7,     0,     6,     3
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,     4,    10,    11,    12,    13,     7,     0,    12,     5,
-       6,     8,    14,    15,     6
+       0,     4,    11,    12,    13,    14,     7,    16,     0,    13,
+       5,     6,     8,     9,    15,    17,    18,     6
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,     9,    10,    11,    11,    12,    13,    13,    14,    15
+       0,    10,    11,    12,    12,    13,    14,    14,    15,    15,
+      16,    17,    18
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
-       0,     2,     1,     2,     1,     1,     3,     5,     1,     1
+       0,     2,     1,     2,     1,     1,     3,     5,     1,     1,
+       1,     1,     1
 };
 
 
@@ -574,7 +596,7 @@ do                                                              \
     }                                                           \
   else                                                          \
     {                                                           \
-      yyerror (YY_("syntax error: cannot back up")); \
+      yyerror (file, ast_root, YY_("syntax error: cannot back up")); \
       YYERROR;                                                  \
     }                                                           \
 while (0)
@@ -676,7 +698,7 @@ do {                                                                      \
     {                                                                     \
       YYFPRINTF (stderr, "%s ", Title);                                   \
       yy_symbol_print (stderr,                                            \
-                  Type, Value, Location); \
+                  Type, Value, Location, file, ast_root); \
       YYFPRINTF (stderr, "\n");                                           \
     }                                                                     \
 } while (0)
@@ -687,11 +709,13 @@ do {                                                                      \
 `----------------------------------------*/
 
 static void
-yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, YYLTYPE const * const yylocationp)
+yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, YYLTYPE const * const yylocationp, const char* file, ez_ast_t* ast_root)
 {
   FILE *yyo = yyoutput;
   YYUSE (yyo);
   YYUSE (yylocationp);
+  YYUSE (file);
+  YYUSE (ast_root);
   if (!yyvaluep)
     return;
 # ifdef YYPRINT
@@ -707,14 +731,14 @@ yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvalue
 `--------------------------------*/
 
 static void
-yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, YYLTYPE const * const yylocationp)
+yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, YYLTYPE const * const yylocationp, const char* file, ez_ast_t* ast_root)
 {
   YYFPRINTF (yyoutput, "%s %s (",
              yytype < YYNTOKENS ? "token" : "nterm", yytname[yytype]);
 
   YY_LOCATION_PRINT (yyoutput, *yylocationp);
   YYFPRINTF (yyoutput, ": ");
-  yy_symbol_value_print (yyoutput, yytype, yyvaluep, yylocationp);
+  yy_symbol_value_print (yyoutput, yytype, yyvaluep, yylocationp, file, ast_root);
   YYFPRINTF (yyoutput, ")");
 }
 
@@ -747,7 +771,7 @@ do {                                                            \
 `------------------------------------------------*/
 
 static void
-yy_reduce_print (yytype_int16 *yyssp, YYSTYPE *yyvsp, YYLTYPE *yylsp, int yyrule)
+yy_reduce_print (yytype_int16 *yyssp, YYSTYPE *yyvsp, YYLTYPE *yylsp, int yyrule, const char* file, ez_ast_t* ast_root)
 {
   unsigned long int yylno = yyrline[yyrule];
   int yynrhs = yyr2[yyrule];
@@ -761,7 +785,7 @@ yy_reduce_print (yytype_int16 *yyssp, YYSTYPE *yyvsp, YYLTYPE *yylsp, int yyrule
       yy_symbol_print (stderr,
                        yystos[yyssp[yyi + 1 - yynrhs]],
                        &(yyvsp[(yyi + 1) - (yynrhs)])
-                       , &(yylsp[(yyi + 1) - (yynrhs)])                       );
+                       , &(yylsp[(yyi + 1) - (yynrhs)])                       , file, ast_root);
       YYFPRINTF (stderr, "\n");
     }
 }
@@ -769,7 +793,7 @@ yy_reduce_print (yytype_int16 *yyssp, YYSTYPE *yyvsp, YYLTYPE *yylsp, int yyrule
 # define YY_REDUCE_PRINT(Rule)          \
 do {                                    \
   if (yydebug)                          \
-    yy_reduce_print (yyssp, yyvsp, yylsp, Rule); \
+    yy_reduce_print (yyssp, yyvsp, yylsp, Rule, file, ast_root); \
 } while (0)
 
 /* Nonzero means print parse trace.  It is left uninitialized so that
@@ -1027,16 +1051,83 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
 `-----------------------------------------------*/
 
 static void
-yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, YYLTYPE *yylocationp)
+yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, YYLTYPE *yylocationp, const char* file, ez_ast_t* ast_root)
 {
   YYUSE (yyvaluep);
   YYUSE (yylocationp);
+  YYUSE (file);
+  YYUSE (ast_root);
   if (!yymsg)
     yymsg = "Deleting";
   YY_SYMBOL_PRINT (yymsg, yytype, yyvaluep, yylocationp);
 
   YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
-  YYUSE (yytype);
+  switch (yytype)
+    {
+          case 7: /* "identifier"  */
+#line 42 "libezscript/ezparser.y" /* yacc.c:1257  */
+      { free(((*yyvaluep).string)); }
+#line 1071 "libezscript/ezparser.c" /* yacc.c:1257  */
+        break;
+
+    case 8: /* "number"  */
+#line 42 "libezscript/ezparser.y" /* yacc.c:1257  */
+      { free(((*yyvaluep).string)); }
+#line 1077 "libezscript/ezparser.c" /* yacc.c:1257  */
+        break;
+
+    case 9: /* "string"  */
+#line 42 "libezscript/ezparser.y" /* yacc.c:1257  */
+      { free(((*yyvaluep).string)); }
+#line 1083 "libezscript/ezparser.c" /* yacc.c:1257  */
+        break;
+
+    case 12: /* statements  */
+#line 43 "libezscript/ezparser.y" /* yacc.c:1257  */
+      { free(((*yyvaluep).node)); }
+#line 1089 "libezscript/ezparser.c" /* yacc.c:1257  */
+        break;
+
+    case 13: /* statement  */
+#line 43 "libezscript/ezparser.y" /* yacc.c:1257  */
+      { free(((*yyvaluep).node)); }
+#line 1095 "libezscript/ezparser.c" /* yacc.c:1257  */
+        break;
+
+    case 14: /* variable_declaration  */
+#line 43 "libezscript/ezparser.y" /* yacc.c:1257  */
+      { free(((*yyvaluep).node)); }
+#line 1101 "libezscript/ezparser.c" /* yacc.c:1257  */
+        break;
+
+    case 15: /* literal  */
+#line 43 "libezscript/ezparser.y" /* yacc.c:1257  */
+      { free(((*yyvaluep).node)); }
+#line 1107 "libezscript/ezparser.c" /* yacc.c:1257  */
+        break;
+
+    case 16: /* identifier  */
+#line 43 "libezscript/ezparser.y" /* yacc.c:1257  */
+      { free(((*yyvaluep).node)); }
+#line 1113 "libezscript/ezparser.c" /* yacc.c:1257  */
+        break;
+
+    case 17: /* number  */
+#line 43 "libezscript/ezparser.y" /* yacc.c:1257  */
+      { free(((*yyvaluep).node)); }
+#line 1119 "libezscript/ezparser.c" /* yacc.c:1257  */
+        break;
+
+    case 18: /* string  */
+#line 43 "libezscript/ezparser.y" /* yacc.c:1257  */
+      { free(((*yyvaluep).node)); }
+#line 1125 "libezscript/ezparser.c" /* yacc.c:1257  */
+        break;
+
+
+      default:
+        break;
+    }
   YY_IGNORE_MAYBE_UNINITIALIZED_END
 }
 
@@ -1063,7 +1154,7 @@ int yynerrs;
 `----------*/
 
 int
-yyparse (void)
+yyparse (const char* file, ez_ast_t* ast_root)
 {
     int yystate;
     /* Number of tokens to shift before error messages enabled.  */
@@ -1315,8 +1406,85 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-      
-#line 1320 "libezscript/ezparser.c" /* yacc.c:1646  */
+        case 2:
+#line 48 "libezscript/ezparser.y" /* yacc.c:1646  */
+    {
+                            assert(ast_root != NULL);
+                            ez_ast_append_child(ast_root, (yyvsp[0].node));
+                        }
+#line 1416 "libezscript/ezparser.c" /* yacc.c:1646  */
+    break;
+
+  case 3:
+#line 54 "libezscript/ezparser.y" /* yacc.c:1646  */
+    {
+                            (yyval.node) = ez_ast_append_sibling((yyvsp[-1].node), (yyvsp[0].node));
+                        }
+#line 1424 "libezscript/ezparser.c" /* yacc.c:1646  */
+    break;
+
+  case 4:
+#line 58 "libezscript/ezparser.y" /* yacc.c:1646  */
+    {
+                            (yyval.node) = (yyvsp[0].node);
+                        }
+#line 1432 "libezscript/ezparser.c" /* yacc.c:1646  */
+    break;
+
+  case 5:
+#line 63 "libezscript/ezparser.y" /* yacc.c:1646  */
+    {
+                            (yyval.node) = ez_ast_create(file, (yylsp[0]).first_line, EZ_STATEMENT, NULL); 
+                            ez_ast_append_child((yyval.node), (yyvsp[0].node));
+                        }
+#line 1441 "libezscript/ezparser.c" /* yacc.c:1646  */
+    break;
+
+  case 6:
+#line 69 "libezscript/ezparser.y" /* yacc.c:1646  */
+    {
+                            (yyval.node) = ez_ast_create(file, (yylsp[-2]).first_line, EZ_VARIABLE_DECLARATION, NULL); 
+                            ez_ast_append_child((yyval.node), (yyvsp[-1].node));
+                        }
+#line 1450 "libezscript/ezparser.c" /* yacc.c:1646  */
+    break;
+
+  case 7:
+#line 73 "libezscript/ezparser.y" /* yacc.c:1646  */
+    {
+                            (yyval.node) = ez_ast_create(file, (yylsp[-4]).first_line, EZ_VARIABLE_DECLARATION, NULL); 
+                            ez_ast_append_child((yyval.node), (yyvsp[-3].node));
+                            ez_ast_append_child((yyval.node), (yyvsp[-1].node));
+                        }
+#line 1460 "libezscript/ezparser.c" /* yacc.c:1646  */
+    break;
+
+  case 10:
+#line 83 "libezscript/ezparser.y" /* yacc.c:1646  */
+    {
+                            (yyval.node) = ez_ast_create(file, (yylsp[0]).first_line, EZ_AST_IDENTIFIER, (yyvsp[0].string)); 
+                        }
+#line 1468 "libezscript/ezparser.c" /* yacc.c:1646  */
+    break;
+
+  case 11:
+#line 88 "libezscript/ezparser.y" /* yacc.c:1646  */
+    {
+                            (yyval.node) = ez_ast_create(file, (yylsp[0]).first_line, EZ_AST_NUMBER, (yyvsp[0].string));   
+                        }
+#line 1476 "libezscript/ezparser.c" /* yacc.c:1646  */
+    break;
+
+  case 12:
+#line 93 "libezscript/ezparser.y" /* yacc.c:1646  */
+    {
+                            (yyval.node) = ez_ast_create(file, (yylsp[0]).first_line, EZ_AST_STRING, (yyvsp[0].string));   
+                        }
+#line 1484 "libezscript/ezparser.c" /* yacc.c:1646  */
+    break;
+
+
+#line 1488 "libezscript/ezparser.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1367,7 +1535,7 @@ yyerrlab:
     {
       ++yynerrs;
 #if ! YYERROR_VERBOSE
-      yyerror (YY_("syntax error"));
+      yyerror (file, ast_root, YY_("syntax error"));
 #else
 # define YYSYNTAX_ERROR yysyntax_error (&yymsg_alloc, &yymsg, \
                                         yyssp, yytoken)
@@ -1394,7 +1562,7 @@ yyerrlab:
                 yymsgp = yymsg;
               }
           }
-        yyerror (yymsgp);
+        yyerror (file, ast_root, yymsgp);
         if (yysyntax_error_status == 2)
           goto yyexhaustedlab;
       }
@@ -1418,7 +1586,7 @@ yyerrlab:
       else
         {
           yydestruct ("Error: discarding",
-                      yytoken, &yylval, &yylloc);
+                      yytoken, &yylval, &yylloc, file, ast_root);
           yychar = YYEMPTY;
         }
     }
@@ -1475,7 +1643,7 @@ yyerrlab1:
 
       yyerror_range[1] = *yylsp;
       yydestruct ("Error: popping",
-                  yystos[yystate], yyvsp, yylsp);
+                  yystos[yystate], yyvsp, yylsp, file, ast_root);
       YYPOPSTACK (1);
       yystate = *yyssp;
       YY_STACK_PRINT (yyss, yyssp);
@@ -1517,7 +1685,7 @@ yyabortlab:
 | yyexhaustedlab -- memory exhaustion comes here.  |
 `-------------------------------------------------*/
 yyexhaustedlab:
-  yyerror (YY_("memory exhausted"));
+  yyerror (file, ast_root, YY_("memory exhausted"));
   yyresult = 2;
   /* Fall through.  */
 #endif
@@ -1529,7 +1697,7 @@ yyreturn:
          user semantic actions for why this is necessary.  */
       yytoken = YYTRANSLATE (yychar);
       yydestruct ("Cleanup: discarding lookahead",
-                  yytoken, &yylval, &yylloc);
+                  yytoken, &yylval, &yylloc, file, ast_root);
     }
   /* Do not reclaim the symbols of the rule whose action triggered
      this YYABORT or YYACCEPT.  */
@@ -1538,7 +1706,7 @@ yyreturn:
   while (yyssp != yyss)
     {
       yydestruct ("Cleanup: popping",
-                  yystos[*yyssp], yyvsp, yylsp);
+                  yystos[*yyssp], yyvsp, yylsp, file, ast_root);
       YYPOPSTACK (1);
     }
 #ifndef yyoverflow
@@ -1551,12 +1719,12 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 41 "libezscript/ezparser.y" /* yacc.c:1906  */
+#line 97 "libezscript/ezparser.y" /* yacc.c:1906  */
 
 
 #include <stdio.h>
 
-void ezerror(const char* msg) 
+void ezerror(const char* file, ez_ast_t* ast_root, const char* msg) 
 {
     printf("error: %s \n", msg);
 }

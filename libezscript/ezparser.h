@@ -39,6 +39,18 @@
 #if YYDEBUG
 extern int ezdebug;
 #endif
+/* "%code requires" blocks.  */
+#line 8 "libezscript/ezparser.y" /* yacc.c:1909  */
+
+
+#include <assert.h>
+#include "ast.h"
+
+int ezlex();
+void ezerror(const char* file, ez_ast_t* ast_root, const char* msg) ;
+
+
+#line 54 "libezscript/ezparser.h" /* yacc.c:1909  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -51,13 +63,25 @@ extern int ezdebug;
     EQUAL = 260,
     SEMI = 261,
     IDENTIFIER = 262,
-    NUMBER = 263
+    NUMBER = 263,
+    STRING = 264
   };
 #endif
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+
+union YYSTYPE
+{
+#line 22 "libezscript/ezparser.y" /* yacc.c:1909  */
+    
+    char*     string;
+    ez_ast_t* node;
+
+#line 82 "libezscript/ezparser.h" /* yacc.c:1909  */
+};
+
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
@@ -79,6 +103,6 @@ struct YYLTYPE
 
 extern YYSTYPE ezlval;
 extern YYLTYPE ezlloc;
-int ezparse (void);
+int ezparse (const char* file, ez_ast_t* ast_root);
 
 #endif /* !YY_EZ_LIBEZSCRIPT_EZPARSER_H_INCLUDED  */

@@ -2,7 +2,7 @@
 PACKAGE = ezscript
 VERSION = 0.0.0
 
-CFLAGS   += -Iinclude -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$(PACKAGE)\"
+CFLAGS   += -Iinclude -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$(PACKAGE)\" -Werror
 LDFLAGS  += 
 FLEX     ?= flex
 BISON    ?= bison

@@ -26,6 +26,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "interpreter.h"
+
 int ez_context_init(ez_context_t* context)
 {
     if (context == NULL)
@@ -54,12 +56,47 @@ int ez_context_clear(ez_context_t* context)
     return EZ_OK;
 }
 
-int ez_execute(ez_context_t* context, const char* scode)
+int ez_execute(ez_context_t* context, ez_code_t* code)
 {
+    return EZ_NOT_IMPLEMENTED;
+}
+
+int ez_evaluate(ez_context_t* context, const char* scode)
+{
+    // TODO remove memory leak of code
     int ezres;
     ez_code_t code;
 
+    if (context == NULL || scode == NULL)
+    {
+        return EZ_INVALID_ARGUMENT;
+    }
+
+    if (strcmp(scode, "") == 0)
+    {
+        // explicitly handling empty sting make the parser simpler
+        return EZ_OK;
+    }
+
     ezres = ez_code_init(&code);
+    if (ezres != EZ_OK)
+    {
+        return ezres;
+    }
+
+    ezres = ez_compile(&code, scode);
+    if (ezres != EZ_OK)
+    {
+        return ezres;
+    }
+
+    ezres = ez_execute(context, &code);
+    if (ezres != EZ_OK)
+    {
+        return ezres;
+    }
+
+    ezres = ez_code_clear(&code);
     if (ezres != EZ_OK)
     {
         return ezres;
