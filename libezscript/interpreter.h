@@ -28,19 +28,6 @@ SOFTWARE.
 #include "ezscript.h"
 #include "code.h"
 
-struct _ez_stack
-{
-    size_t      size;
-    size_t      top;
-    ez_value_t* stack;
-};
-typedef struct _ez_stack ez_stack_t;
-
-ez_result_t ez_allocate_stack(ez_stack_t* stack, size_t size);
-ez_result_t ez_free_stack(ez_stack_t* stack);
-ez_result_t ez_push_stack(ez_stack_t* stack, ez_value_t* value);
-ez_result_t ez_pop_stack(ez_stack_t* stack, ez_value_t* value);
-
 ez_result_t ez_wrap_code(ez_value_t* value, ez_code_t* code);
 ez_result_t ez_exec_code(ez_value_t* this, ez_code_t* code);
 

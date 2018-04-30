@@ -26,82 +26,10 @@ SOFTWARE.
 #include <string.h>
 #include <stdio.h>
 
-#include "ezscript.h"
 #include "interpreter.h"
 #include "dbg.h"
 #include "code.h"
-
-ez_result_t ez_allocate_stack(ez_stack_t* stack, size_t size)
-{
-    EZ_CHECK_ARGUMENT(stack != NULL);
-
-    stack->size  = size;
-    stack->top   = 0;
-    stack->stack = (ez_value_t*)malloc(size * sizeof(ez_value_t));
-
-    if (stack->stack == NULL)
-    {
-        EZ_TRACE("Failed to allocate stack.");
-        return EZ_OUT_OF_MEMORY;
-    }
-    
-    return EZ_SUCCESS;
-}
-
-ez_result_t ez_free_stack(ez_stack_t* stack)
-{
-    EZ_CHECK_ARGUMENT(stack != NULL);
-
-    free(stack->stack);
-
-    return EZ_SUCCESS;
-}
-
-ez_result_t ez_push_stack(ez_stack_t* stack, ez_value_t* value)
-{
-    ez_result_t r = EZ_SUCCESS;
-
-    EZ_CHECK_ARGUMENT(stack != NULL);
-
-    if (stack->top >= stack->size)
-    {
-        EZ_TRACEV("Stack read out of bounds: top = %d, size = %d", stack->top, stack->size);
-        return EZ_OVERFLOW;
-    }
-
-    r = ez_copy_value(&stack->stack[stack->top], value);
-    if (r < 0)
-    {
-        EZ_TRACEV("Failed to copy value to stack: %s", ez_result_to_string(r));
-        return r;
-    }
-    stack->top += 1;
-
-    return r;
-}
-
-ez_result_t ez_pop_stack(ez_stack_t* stack, ez_value_t* value)
-{
-    ez_result_t r = EZ_SUCCESS;
-
-    EZ_CHECK_ARGUMENT(stack != NULL);
-
-    if (stack->top == 0)
-    {
-        EZ_TRACEV("Stack read out of bounds: top = %d, size = %d", stack->top, stack->size);
-        return EZ_OVERFLOW;
-    }
-
-    r = ez_copy_value(value, &stack->stack[stack->top - 1]);
-    if (r < 0)
-    {
-        EZ_TRACEV("Failed to copy value to stack: %s", ez_result_to_string(r));
-        return r;
-    }
-    stack->top -= 1;
-
-    return EZ_SUCCESS;
-}
+#include "stack.h"
 
 ez_result_t exec_ltn(ez_code_t* code, ez_stack_t* stack, size_t* ip, ez_value_t* this)
 {
