@@ -33,7 +33,7 @@ SOFTWARE.
 
 ez_result_t exec_ltn(ez_code_t* code, ez_stack_t* stack, size_t* ip, ez_value_t* this)
 {
-    ez_result_t r       = EZ_SUCCESS;
+    ez_result_t r;
     ez_value_t  value;
 
     r = ez_create_null(&value);
@@ -50,13 +50,20 @@ ez_result_t exec_ltn(ez_code_t* code, ez_stack_t* stack, size_t* ip, ez_value_t*
         return r;
     }
 
-    return r;
+    r = ez_release_value(&value);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to release value: %s", ez_result_to_string(r));
+        return r;
+    }
+
+    return EZ_SUCCESS;
 }
 
 ez_result_t exec_lti(ez_code_t* code, ez_stack_t* stack, size_t* ip, ez_value_t* this)
 {
-    ez_result_t r       = EZ_SUCCESS;
-    int32_t     literal = 0;
+    ez_result_t r;
+    int32_t     literal;
     ez_value_t  value;
 
     r = ez_code_int32_read(code, ip, &literal);
@@ -80,13 +87,20 @@ ez_result_t exec_lti(ez_code_t* code, ez_stack_t* stack, size_t* ip, ez_value_t*
         return r;
     }
 
-    return r;
+    r = ez_release_value(&value);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to release value: %s", ez_result_to_string(r));
+        return r;
+    }
+
+    return EZ_SUCCESS;
 }
 
 ez_result_t exec_ltr(ez_code_t* code, ez_stack_t* stack, size_t* ip, ez_value_t* this)
 {
-    ez_result_t r       = EZ_SUCCESS;
-    double      literal = 0;
+    ez_result_t r;
+    double      literal;
     ez_value_t  value;
 
     r = ez_code_double_read(code, ip, &literal);
@@ -110,43 +124,26 @@ ez_result_t exec_ltr(ez_code_t* code, ez_stack_t* stack, size_t* ip, ez_value_t*
         return r;
     }
 
-    return r;
+    r = ez_release_value(&value);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to release value: %s", ez_result_to_string(r));
+        return r;
+    }
+
+    return EZ_SUCCESS;
 }
 
 ez_result_t exec_lts(ez_code_t* code, ez_stack_t* stack, size_t* ip, ez_value_t* this)
 {
-    ez_result_t r       = EZ_SUCCESS;
-    const char* literal = 0;
-    ez_value_t  value;
-
-    r = ez_code_string_read(code, ip, &literal);
-    if (r < 0)
-    {
-        EZ_TRACEV("Failed to read string: %s", ez_result_to_string(r));
-        return r;
-    }
-
-    /*r = ez_create_string(&value, literal);
-    if (r < 0)
-    {
-        EZ_TRACEV("Failed to create string value: %s", ez_result_to_string(r));
-        return r;
-    }*/
-
-    r = ez_push_stack(stack, &value);
-    if (r < 0)
-    {
-        EZ_TRACEV("Failed to push stack: %s", ez_result_to_string(r));
-        return r;
-    }
-
-    return r;
+    /* TODO implement string class */
+    return EZ_INVALID_OP;
 }
 
 ez_result_t exec_sto(ez_code_t* code, ez_stack_t* stack, size_t* ip, ez_value_t* this)
 {
-    ez_result_t r     = EZ_SUCCESS;
-    const char* id    = NULL;
+    ez_result_t r;
+    const char* id;
     ez_value_t  value;
 
     r = ez_code_string_read(code, ip, &id);
@@ -163,13 +160,27 @@ ez_result_t exec_sto(ez_code_t* code, ez_stack_t* stack, size_t* ip, ez_value_t*
         return r;
     }
 
-    return ez_set_member(this, id, &value);
+    r = ez_set_member(this, id, &value);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to set member: %s", ez_result_to_string(r));
+        return r;
+    }
+
+    r = ez_release_value(&value);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to release value: %s", ez_result_to_string(r));
+        return r;
+    }
+
+    return EZ_SUCCESS;
 }
 
 ez_result_t exec_lod(ez_code_t* code, ez_stack_t* stack, size_t* ip, ez_value_t* this)
 {
-    ez_result_t r     = EZ_SUCCESS;
-    const char* id    = NULL;
+    ez_result_t r;
+    const char* id;
     ez_value_t  value;
 
     r = ez_code_string_read(code, ip, &id);
@@ -193,12 +204,19 @@ ez_result_t exec_lod(ez_code_t* code, ez_stack_t* stack, size_t* ip, ez_value_t*
         return r;
     }
 
+    r = ez_release_value(&value);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to release value: %s", ez_result_to_string(r));
+        return r;
+    }
+
     return EZ_SUCCESS;
 }
 
 ez_result_t exec_binop(ez_op_t op, ez_stack_t* stack, ez_value_t* this)
 {
-    ez_result_t r     = EZ_SUCCESS;
+    ez_result_t r;
     ez_value_t  rhs;
     ez_value_t  lhs;
     ez_value_t  res;
@@ -401,6 +419,27 @@ ez_result_t exec_binop(ez_op_t op, ez_stack_t* stack, ez_value_t* this)
     if (r < 0)
     {
         EZ_TRACEV("Failed to push stack: %s", ez_result_to_string(r));
+        return r;
+    }
+
+    r = ez_release_value(&lhs);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to release lhs: %s", ez_result_to_string(r));
+        return r;
+    }
+
+    r = ez_release_value(&rhs);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to release rhs: %s", ez_result_to_string(r));
+        return r;
+    }
+
+    r = ez_release_value(&res);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to release res: %s", ez_result_to_string(r));
         return r;
     }
 

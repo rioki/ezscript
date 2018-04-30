@@ -47,6 +47,7 @@ ez_result_t ez_allocate_stack(ez_stack_t* stack, size_t size)
 ez_result_t ez_free_stack(ez_stack_t* stack)
 {
     EZ_CHECK_ARGUMENT(stack != NULL);
+    EZ_CHECK_ARGUMENT(stack->top == 0);
 
     free(stack->stack);
 
@@ -55,9 +56,10 @@ ez_result_t ez_free_stack(ez_stack_t* stack)
 
 ez_result_t ez_push_stack(ez_stack_t* stack, ez_value_t* value)
 {
-    ez_result_t r = EZ_SUCCESS;
+    ez_result_t r;
 
     EZ_CHECK_ARGUMENT(stack != NULL);
+    EZ_CHECK_ARGUMENT(value != NULL);
 
     if (stack->top >= stack->size)
     {
@@ -73,14 +75,15 @@ ez_result_t ez_push_stack(ez_stack_t* stack, ez_value_t* value)
     }
     stack->top += 1;
 
-    return r;
+    return EZ_SUCCESS;
 }
 
 ez_result_t ez_pop_stack(ez_stack_t* stack, ez_value_t* value)
 {
-    ez_result_t r = EZ_SUCCESS;
+    ez_result_t r;
 
     EZ_CHECK_ARGUMENT(stack != NULL);
+    EZ_CHECK_ARGUMENT(value != NULL);
 
     if (stack->top == 0)
     {
@@ -94,6 +97,14 @@ ez_result_t ez_pop_stack(ez_stack_t* stack, ez_value_t* value)
         EZ_TRACEV("Failed to copy value to stack: %s", ez_result_to_string(r));
         return r;
     }
+
+    r = ez_release_value(&stack->stack[stack->top - 1]);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to release stack value: %s", ez_result_to_string(r));
+        return r;
+    }
+
     stack->top -= 1;
 
     return EZ_SUCCESS;
