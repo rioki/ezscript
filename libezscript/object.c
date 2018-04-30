@@ -25,6 +25,7 @@ SOFTWARE.
 #include <string.h>
 
 #include "ezscript.h"
+#include "dbg.h"
 
 struct _ez_member
 {
@@ -69,6 +70,8 @@ ez_result_t _ez_reference_object(ez_object_t* object)
 
 ez_result_t _ez_release_object(ez_object_t* object)
 {
+    ez_result_t r;
+
     if (object == NULL)
     {
         return EZ_INVALID_ARGUMENT;
@@ -78,6 +81,18 @@ ez_result_t _ez_release_object(ez_object_t* object)
  
     if (object->count == 0) 
     {
+        ez_member_t* member = object->members;
+        while (member != NULL)
+        {
+            r = ez_release_value(&member->value);
+            if (r < 0)            
+            {
+                EZ_TRACEV("Failed to release member %s: %s", member->id, ez_result_to_string(r));
+                return r;
+            }
+            member = member->next;
+        }
+
         free(object);
     }
 
