@@ -1,104 +1,121 @@
+/*
+ezscript 
+Copyright 2018 Sean Farrell <sean.farrell@rioki.org>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of 
+this software and associated documentation files (the "Software"), to deal in 
+the Software without restriction, including without limitation the rights to 
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies 
+of the Software, and to permit persons to whom the Software is furnished to do 
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all 
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+SOFTWARE.
+*/
 
 %defines
 %locations
 %error-verbose
 %name-prefix "ez"
+%locations
+%parse-param {ast_node_t** root}
 
-%code requires 
-{
+%code requires {
 
-#include <assert.h>
+#include "ezscript.h"
 #include "ast.h"
-
-int ezlex();
-void ezerror(const char* file, ez_ast_t* ast_root, const char* msg) ;
 
 }
 
-%parse-param {const char* file}
-%parse-param {ez_ast_t* ast_root}
+%{
 
-%union
-{    
-    char*     string;
-    ez_ast_t* node;
+#include "stdlib.h"
+
+#include "ast.h"
+
+int ezlex();
+void ezerror(ast_node_t** root, const char* msg);
+
+%}
+
+%union {
+  char* string;
+  ast_node_t* node;  
 }
 
 %token              END 0           "end of file"
 %token              ERROR           "lexing error"
 
-%token              VAR             "var"
+%token              NILL            "null"
 
 %token              EQUAL           "="
+%token              PLUS            "+"
+%token              MINUS           "-"
 %token              SEMI            ";"
+%token              STAR            "*"
+%token              SLASH           "/"
+%token              PERCENT         "%"
+%token              OPEN_PAREN      "("
+%token              CLOSE_PAREN     ")"
 
 %token <string>     IDENTIFIER      "identifier"
-%token <string>     NUMBER          "number"
+%token <string>     REAL            "real"
+%token <string>     INTEGER         "integer"
 %token <string>     STRING          "string"
 
-%type <node>        number string identifier
-%type <node>        literal statement statements variable_declaration
-
-%destructor { free($$); } <string>
-%destructor { free($$); } <node>
+%type <node>        statements statement 
+%type <node>        literal reference assignment value
+%type <node>        expression addexp mulexp
 
 %%
 
-ezscript                : statements 
-                        {
-                            assert(ast_root != NULL);
-                            ez_ast_append_child(ast_root, $1);
-                        };
+ezscript                : statements                            {(*root) = $1;};   
+                        | /* nothing */                         {(*root) = NULL;}
+                        ;
 
-statements              : statements statement 
-                        {
-                            $$ = ez_ast_append_sibling($1, $2);
-                        }
-                        | statement 
-                        {
-                            $$ = $1;
-                        };
+statements              : statements statement                  {$$ = ast_append($1, $2);}
+                        | statement                             {$$ = $1;}
+                        ;
 
-statement               : variable_declaration 
-                        {
-                            $$ = ez_ast_create(file, @1.first_line, EZ_STATEMENT, NULL); 
-                            ez_ast_append_child($$, $1);
-                        };
+statement               : assignment                            {$$ = $1;}
+                        ;
 
-variable_declaration    : "var" identifier ";" 
-                        {
-                            $$ = ez_ast_create(file, @1.first_line, EZ_VARIABLE_DECLARATION, NULL); 
-                            ez_ast_append_child($$, $2);
-                        }
-                        | "var" identifier "=" literal ";" {
-                            $$ = ez_ast_create(file, @1.first_line, EZ_VARIABLE_DECLARATION, NULL); 
-                            ez_ast_append_child($$, $2);
-                            ez_ast_append_child($$, $4);
-                        };
-                     
-literal                 : number 
-                        | string;
+assignment              : reference "=" expression ";"          {$$ = ast_assignment($1, $3);}
 
-identifier              : IDENTIFIER 
-                        {
-                            $$ = ez_ast_create(file, @1.first_line, EZ_AST_IDENTIFIER, $1); 
-                        };
+expression              : addexp                                {$$ = $1;}
+                        ;
 
-number                  : NUMBER 
-                        {
-                            $$ = ez_ast_create(file, @1.first_line, EZ_AST_NUMBER, $1);   
-                        };
+addexp                  : mulexp                                {$$ = $1;}
+                        | addexp "+" mulexp                     {$$ = ast_expr(AST_ADDITION, $1, $3);}
+                        | addexp "-" mulexp                     {$$ = ast_expr(AST_SUBTRACTION, $1, $3);}
+                        ;
 
-string                  : STRING 
-                        {
-                            $$ = ez_ast_create(file, @1.first_line, EZ_AST_STRING, $1);   
-                        };
+mulexp                  : value                                 {$$ = $1;}
+                        | mulexp "*" value                      {$$ = ast_expr(AST_MULTIPLICATION, $1, $3);}     
+                        | mulexp "/" value                      {$$ = ast_expr(AST_DIVISION, $1, $3);}     
+                        | mulexp "%" value                      {$$ = ast_expr(AST_MODULO, $1, $3);}
+                        ;      
+                        
+
+value                   : reference                             {$$ = $1;}
+                        | literal                               {$$ = $1;}
+                        ;
+
+reference               : IDENTIFIER                            {$$ = ast_reference($1);};
+
+literal                 : REAL                                  {$$ = ast_literal(AST_LITERAL_REAL, $1);}
+                        | INTEGER                               {$$ = ast_literal(AST_LITERAL_INTEGER, $1);}
+                        | STRING                                {$$ = ast_literal(AST_LITERAL_STRING, $1);}
+                        | "null"                                {$$ = ast_literal(AST_LITERAL_NULL, "null");}
+                        ;
 
 %%
 
-#include <stdio.h>
-
-void ezerror(const char* file, ez_ast_t* ast_root, const char* msg) 
-{
-    printf("error: %s \n", msg);
-}

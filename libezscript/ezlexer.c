@@ -422,8 +422,27 @@ extern FILE *yyin, *yyout;
 #define EOB_ACT_END_OF_FILE 1
 #define EOB_ACT_LAST_MATCH 2
     
-    #define YY_LESS_LINENO(n)
-    #define YY_LINENO_REWIND_TO(ptr)
+    /* Note: We specifically omit the test for yy_rule_can_match_eol because it requires
+     *       access to the local variable yy_act. Since yyless() is a macro, it would break
+     *       existing scanners that call yyless() from OUTSIDE yylex.
+     *       One obvious solution it to make yy_act a global. I tried that, and saw
+     *       a 5% performance hit in a non-yylineno scanner, because yy_act is
+     *       normally declared as a register variable-- so it is not worth it.
+     */
+    #define  YY_LESS_LINENO(n) \
+            do { \
+                int yyl;\
+                for ( yyl = n; yyl < yyleng; ++yyl )\
+                    if ( yytext[yyl] == '\n' )\
+                        --yylineno;\
+            }while(0)
+    #define YY_LINENO_REWIND_TO(dst) \
+            do {\
+                const char *p;\
+                for ( p = yy_cp-1; p >= (dst); --p)\
+                    if ( *p == '\n' )\
+                        --yylineno;\
+            }while(0)
     
 /* Return all but the first "n" matched characters back to the input stream. */
 #define yyless(n) \
@@ -611,8 +630,8 @@ static void yynoreturn yy_fatal_error ( const char* msg  );
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
-#define YY_NUM_RULES 9
-#define YY_END_OF_BUFFER 10
+#define YY_NUM_RULES 18
+#define YY_END_OF_BUFFER 19
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -620,10 +639,12 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static const flex_int16_t yy_accept[19] =
+static const flex_int16_t yy_accept[34] =
     {   0,
-        0,    0,   10,    8,    1,    2,    2,    7,    5,    4,
-        6,    6,    2,    7,    6,    6,    3,    0
+        0,    0,   19,   17,    1,    2,    2,   17,    9,   10,
+       11,    7,    5,    6,    8,   14,   12,    4,   13,   13,
+        2,    0,   16,    0,    0,   14,   13,   13,   16,   15,
+       13,    3,    0
     } ;
 
 static const YY_CHAR yy_ec[256] =
@@ -631,17 +652,17 @@ static const YY_CHAR yy_ec[256] =
         1,    1,    1,    1,    1,    1,    1,    1,    2,    3,
         2,    1,    4,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    2,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,    5,    5,    5,
-        5,    5,    5,    5,    5,    5,    5,    1,    6,    1,
-        7,    1,    1,    1,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        1,    1,    1,    1,    8,    1,    9,    8,    8,    8,
+        1,    2,    1,    5,    1,    1,    6,    1,    1,    7,
+        8,    9,   10,    1,   11,   12,   13,   14,   14,   14,
+       14,   14,   14,   14,   14,   14,   14,    1,   15,    1,
+       16,    1,    1,    1,   17,   17,   17,   17,   17,   17,
+       17,   17,   17,   17,   17,   17,   17,   17,   17,   17,
+       17,   17,   17,   17,   17,   17,   17,   17,   17,   17,
+        1,   18,    1,    1,   17,    1,   17,   17,   17,   17,
 
-        8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
-        8,    8,    8,   10,    8,    8,    8,   11,    8,    8,
-        8,    8,    1,    1,    1,    1,    1,    1,    1,    1,
+       17,   17,   17,   17,   17,   17,   17,   19,   17,   20,
+       17,   17,   17,   17,   17,   17,   21,   17,   17,   17,
+       17,   17,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -658,37 +679,55 @@ static const YY_CHAR yy_ec[256] =
         1,    1,    1,    1,    1
     } ;
 
-static const YY_CHAR yy_meta[12] =
+static const YY_CHAR yy_meta[22] =
     {   0,
-        1,    1,    1,    1,    2,    1,    1,    2,    2,    2,
-        2
+        1,    1,    2,    2,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    3,    1,    1,    3,    1,    3,    3,
+        3
     } ;
 
-static const flex_int16_t yy_base[20] =
+static const flex_int16_t yy_base[36] =
     {   0,
-        0,    0,   18,   19,   19,   19,   14,   11,   19,   19,
-        0,    6,   19,    9,    0,    3,    0,   19,   10
+        0,    0,   40,   45,   45,   45,   35,   17,   45,   45,
+       45,   45,   45,   45,   45,   11,   45,   45,    0,   15,
+       45,   19,   45,   21,   20,   15,    0,   14,   23,   18,
+       12,    0,   45,   41,   27
     } ;
 
-static const flex_int16_t yy_def[20] =
+static const flex_int16_t yy_def[36] =
     {   0,
-       18,    1,   18,   18,   18,   18,   18,   18,   18,   18,
-       19,   19,   18,   18,   19,   19,   19,    0,   18
+       33,    1,   33,   33,   33,   33,   33,   34,   33,   33,
+       33,   33,   33,   33,   33,   33,   33,   33,   35,   35,
+       33,   34,   33,   34,   33,   33,   35,   35,   34,   33,
+       35,   35,    0,   33,   33
     } ;
 
-static const flex_int16_t yy_nxt[31] =
+static const flex_int16_t yy_nxt[67] =
     {   0,
-        4,    5,    6,    7,    8,    9,   10,   11,   11,   11,
-       12,   15,   17,   14,   16,   14,   13,   18,    3,   18,
-       18,   18,   18,   18,   18,   18,   18,   18,   18,   18
+        4,    5,    6,    7,    8,    9,   10,   11,   12,   13,
+       14,    4,   15,   16,   17,   18,   19,    4,   19,   20,
+       19,   23,   25,   23,   26,   29,   25,   23,   26,   27,
+       32,   30,   31,   30,   24,   28,   24,   21,   24,   33,
+       24,   22,   33,   22,    3,   33,   33,   33,   33,   33,
+       33,   33,   33,   33,   33,   33,   33,   33,   33,   33,
+       33,   33,   33,   33,   33,   33
     } ;
 
-static const flex_int16_t yy_chk[31] =
+static const flex_int16_t yy_chk[67] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,   19,   16,   14,   12,    8,    7,    3,   18,   18,
-       18,   18,   18,   18,   18,   18,   18,   18,   18,   18
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        1,    8,   16,   22,   16,   24,   26,   29,   26,   35,
+       31,   30,   28,   25,    8,   20,   22,    7,   24,    3,
+       29,   34,    0,   34,   33,   33,   33,   33,   33,   33,
+       33,   33,   33,   33,   33,   33,   33,   33,   33,   33,
+       33,   33,   33,   33,   33,   33
     } ;
+
+/* Table of booleans, true if rule could match eol. */
+static const flex_int32_t yy_rule_can_match_eol[19] =
+    {   0,
+0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,     };
 
 static yy_state_type yy_last_accepting_state;
 static char *yy_last_accepting_cpos;
@@ -705,10 +744,35 @@ int yy_flex_debug = 0;
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
 #line 1 "libezscript/ezlexer.l"
-#line 7 "libezscript/ezlexer.l"
+/*
+ezscript 
+Copyright 2018 Sean Farrell <sean.farrell@rioki.org>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of 
+this software and associated documentation files (the "Software"), to deal in 
+the Software without restriction, including without limitation the rights to 
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies 
+of the Software, and to permit persons to whom the Software is furnished to do 
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all 
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+SOFTWARE.
+*/
+#line 30 "libezscript/ezlexer.l"
+#include <string.h>
+
 #include "ezparser.h"
-#line 710 "libezscript/ezlexer.c"
-#line 711 "libezscript/ezlexer.c"
+#include "ast.h"
+#line 774 "libezscript/ezlexer.c"
+#line 775 "libezscript/ezlexer.c"
 
 #define INITIAL 0
 
@@ -925,10 +989,10 @@ YY_DECL
 		}
 
 	{
-#line 10 "libezscript/ezlexer.l"
+#line 36 "libezscript/ezlexer.l"
 
 
-#line 931 "libezscript/ezlexer.c"
+#line 995 "libezscript/ezlexer.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -955,13 +1019,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 19 )
+				if ( yy_current_state >= 34 )
 					yy_c = yy_meta[yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 19 );
+		while ( yy_base[yy_current_state] != 45 );
 
 yy_find_action:
 		yy_act = yy_accept[yy_current_state];
@@ -973,6 +1037,16 @@ yy_find_action:
 			}
 
 		YY_DO_BEFORE_ACTION;
+
+		if ( yy_act != YY_END_OF_BUFFER && yy_rule_can_match_eol[yy_act] )
+			{
+			int yyl;
+			for ( yyl = 0; yyl < yyleng; ++yyl )
+				if ( yytext[yyl] == '\n' )
+					
+    yylineno++;
+;
+			}
 
 do_action:	/* This label is used only to access EOF actions. */
 
@@ -987,51 +1061,108 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 12 "libezscript/ezlexer.l"
+#line 38 "libezscript/ezlexer.l"
 /* skip */
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 13 "libezscript/ezlexer.l"
+#line 39 "libezscript/ezlexer.l"
 /* tbd lines */
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 15 "libezscript/ezlexer.l"
-return VAR;         
+#line 41 "libezscript/ezlexer.l"
+return NILL;         
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 17 "libezscript/ezlexer.l"
+#line 43 "libezscript/ezlexer.l"
 return EQUAL;
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 18 "libezscript/ezlexer.l"
-return SEMI;
+#line 44 "libezscript/ezlexer.l"
+return PLUS;
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 20 "libezscript/ezlexer.l"
-return IDENTIFIER;
+#line 45 "libezscript/ezlexer.l"
+return MINUS;
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 22 "libezscript/ezlexer.l"
-return NUMBER; /* tbd floats */
+#line 46 "libezscript/ezlexer.l"
+return STAR;
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 24 "libezscript/ezlexer.l"
-return ERROR;
+#line 47 "libezscript/ezlexer.l"
+return SLASH;
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 26 "libezscript/ezlexer.l"
+#line 48 "libezscript/ezlexer.l"
+return PERCENT;
+	YY_BREAK
+case 10:
+YY_RULE_SETUP
+#line 49 "libezscript/ezlexer.l"
+return OPEN_PAREN;
+	YY_BREAK
+case 11:
+YY_RULE_SETUP
+#line 50 "libezscript/ezlexer.l"
+return CLOSE_PAREN;
+	YY_BREAK
+case 12:
+YY_RULE_SETUP
+#line 51 "libezscript/ezlexer.l"
+return SEMI;
+	YY_BREAK
+case 13:
+YY_RULE_SETUP
+#line 53 "libezscript/ezlexer.l"
+{
+                                ezlval.string = strdup(yytext);
+                                return IDENTIFIER;
+                            }
+	YY_BREAK
+case 14:
+YY_RULE_SETUP
+#line 58 "libezscript/ezlexer.l"
+{
+                                ezlval.string = strdup(yytext);
+                                return INTEGER;
+                            }
+	YY_BREAK
+case 15:
+YY_RULE_SETUP
+#line 63 "libezscript/ezlexer.l"
+{
+                                ezlval.string = strdup(yytext);
+                                return REAL;
+                            }
+	YY_BREAK
+case 16:
+YY_RULE_SETUP
+#line 68 "libezscript/ezlexer.l"
+{
+                                ezlval.string = strdup(yytext);
+                                return STRING;
+                            }
+	YY_BREAK
+case 17:
+YY_RULE_SETUP
+#line 73 "libezscript/ezlexer.l"
+return ERROR;
+	YY_BREAK
+case 18:
+YY_RULE_SETUP
+#line 75 "libezscript/ezlexer.l"
 ECHO;
 	YY_BREAK
-#line 1034 "libezscript/ezlexer.c"
+#line 1165 "libezscript/ezlexer.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1328,7 +1459,7 @@ static int yy_get_next_buffer (void)
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 19 )
+			if ( yy_current_state >= 34 )
 				yy_c = yy_meta[yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
@@ -1356,11 +1487,11 @@ static int yy_get_next_buffer (void)
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 19 )
+		if ( yy_current_state >= 34 )
 			yy_c = yy_meta[yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
-	yy_is_jam = (yy_current_state == 18);
+	yy_is_jam = (yy_current_state == 33);
 
 		return yy_is_jam ? 0 : yy_current_state;
 }
@@ -1398,6 +1529,10 @@ static int yy_get_next_buffer (void)
 		}
 
 	*--yy_cp = (char) c;
+
+    if ( c == '\n' ){
+        --yylineno;
+    }
 
 	(yytext_ptr) = yy_bp;
 	(yy_hold_char) = *yy_cp;
@@ -1475,6 +1610,11 @@ static int yy_get_next_buffer (void)
 	c = *(unsigned char *) (yy_c_buf_p);	/* cast for 8-bit char's */
 	*(yy_c_buf_p) = '\0';	/* preserve yytext */
 	(yy_hold_char) = *++(yy_c_buf_p);
+
+	if ( c == '\n' )
+		
+    yylineno++;
+;
 
 	return c;
 }
@@ -1942,6 +2082,9 @@ static int yy_init_globals (void)
      * This function is called from yylex_destroy(), so don't allocate here.
      */
 
+    /* We do not touch yylineno unless the option is enabled. */
+    yylineno =  1;
+    
     (yy_buffer_stack) = NULL;
     (yy_buffer_stack_top) = 0;
     (yy_buffer_stack_max) = 0;
@@ -2036,11 +2179,17 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 26 "libezscript/ezlexer.l"
+#line 75 "libezscript/ezlexer.l"
 
+
+#include <stdio.h>
 
 int yywrap()
 {
     return 1;
 }
 
+void ezerror(ast_node_t** root, const char* msg) 
+{
+    printf("string(%d): error: %s \n", ezlineno, msg);
+}

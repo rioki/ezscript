@@ -1,66 +1,76 @@
 /*
-    ezscript
-    Copyright (c) 2017 Sean Farrell <sean.farrell@rioki.org>
+ezscript 
+Copyright 2018 Sean Farrell <sean.farrell@rioki.org>
 
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of 
+this software and associated documentation files (the "Software"), to deal in 
+the Software without restriction, including without limitation the rights to 
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies 
+of the Software, and to permit persons to whom the Software is furnished to do 
+so, subject to the following conditions:
 
-    The above copyright notice and this permission notice shall be included in all
-    copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all 
+copies or substantial portions of the Software.
 
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+SOFTWARE.
 */
 
-#ifndef _EZ_AST_H_
-#define _EZ_AST_H_
+#ifndef _AST_H_
+#define _AST_H_
 
-// NOTE:
-// The AST API does not follow the public result driven style. This is done
-// to simplify the parser's code. The AST generation is directly tied
-// into the parser's implementation and should not be seen as a sepeate
-// or stable API.
-
-#include "ezscript.h"
-
-enum ez_ast_node_type_e 
+enum ast_type 
 {
-    EZ_AST_ROOT,
-    EZ_AST_NUMBER,
-    EZ_AST_IDENTIFIER,
-    EZ_AST_STRING,
-    EZ_VARIABLE_DECLARATION,
-    EZ_STATEMENT
-
+    AST_NULL,
+    AST_ASSIGNMENT,
+    AST_ADDITION,
+    AST_SUBTRACTION,
+    AST_MULTIPLICATION,
+    AST_DIVISION,
+    AST_MODULO,
+    AST_REFERENCE,
+    AST_LITERAL_REAL,
+    AST_LITERAL_INTEGER,
+    AST_LITERAL_STRING,
+    AST_LITERAL_NULL,
 };
-typedef enum ez_ast_node_type_e ez_ast_node_type_t;
+typedef enum ast_type ast_type_t;
 
-struct ez_ast_s 
+struct ast_node 
 {
-    ez_ast_node_type_t type;
-    char*              file;
-    int                line;
-    char*              svalue;
-    struct ez_ast_s*   next;
-    struct ez_ast_s*   child;
+    ast_type_t type;
+
+    struct ast_node* parent;
+    struct ast_node* child;
+    struct ast_node* next;
+
+    char* svalue;
 };
-typedef struct ez_ast_s ez_ast_t;
+typedef struct ast_node ast_node_t;
 
-ez_ast_t* ez_ast_create(const char* file, int line, ez_ast_node_type_t type, const char* svalue);
+void ast_init(ast_node_t* node);
 
-ez_ast_t* ez_ast_append_sibling(ez_ast_t* fist, ez_ast_t* next);
+void ast_root(ast_node_t* node, ast_node_t* child);
 
-ez_ast_t* ez_ast_append_child(ez_ast_t* parent, ez_ast_t* child);
+ast_node_t* ast_create(ast_type_t type);
 
-void ez_ast_free(ez_ast_t* node);
+ast_node_t* ast_append(ast_node_t* list, ast_node_t* next);
+
+ast_node_t* ast_child(ast_node_t* parent, ast_node_t* child);
+
+ast_node_t* ast_assignment(ast_node_t* ref, ast_node_t* expr);
+
+ast_node_t* ast_reference(char* id);
+
+ast_node_t* ast_literal(ast_type_t type, char* id);
+
+ast_node_t* ast_expr(ast_type_t type, ast_node_t* lhs, ast_node_t* rhs);
+
+void ast_free(ast_node_t* node);
 
 #endif

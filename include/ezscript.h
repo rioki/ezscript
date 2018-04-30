@@ -1,94 +1,115 @@
 /*
-    ezscript
-    Copyright (c) 2017 Sean Farrell <sean.farrell@rioki.org>
+ezscript 
+Copyright 2018 Sean Farrell <sean.farrell@rioki.org>
 
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of 
+this software and associated documentation files (the "Software"), to deal in 
+the Software without restriction, including without limitation the rights to 
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies 
+of the Software, and to permit persons to whom the Software is furnished to do 
+so, subject to the following conditions:
 
-    The above copyright notice and this permission notice shall be included in all
-    copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all 
+copies or substantial portions of the Software.
 
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+SOFTWARE.
 */
 
 #ifndef _EZSCRIPT_H_
 #define _EZSCRIPT_H_
 
-#include <stdlib.h>
-
-enum 
+enum _ez_result 
 {
-    EZ_OK               = 0,
-    EZ_NOT_IMPLEMENTED  = -1,
-    EZ_OUT_OF_MEMORY    = -2,
-    EZ_INVALID_ARGUMENT = -3,
-    EZ_PARSE_ERROR      = -4,
-    ES_UNDEFINED        = -5
+    EZ_SUCCESS          =  0,
+    EZ_INVALID_ARGUMENT = -1,
+    EZ_INVALID_TYPE     = -2,
+    EZ_OUT_OF_MEMORY    = -3,
+    EZ_OVERFLOW         = -4,
+    EZ_INVALID_OP       = -5,
+    EZ_RUNTIME_ERRPOR   = -6,
+    EZ_PARSE_ERROR      = -15
 };
+typedef enum _ez_result ez_result_t;
 
-struct ez_code_s 
+enum _ez_type 
 {
-    size_t         length;
-    unsigned char* code;
-};
-typedef struct ez_code_s ez_code_t;
-
-struct ez_context_s 
-{
-    char* error_string;
-};
-typedef struct ez_context_s ez_context_t;
-
-enum ez_value_type_e 
-{
-    EZ_TYPE_NULL,
+    EZ_TYPE_UNDEFINED,
+    EZ_TYPE_NULL,    
     EZ_TYPE_BOOLEAN,
     EZ_TYPE_INTEGER,
     EZ_TYPE_REAL,
-    EZ_TYPE_STRING,
-    EZ_TYPE_ARRAY,
-    EZ_TYPE_OBJECT
+    EZ_TYPE_OBJECT,
+    EZ_TYPE_FUNCTION
 };
-typedef enum ez_value_type_e ez_value_type_t;
+typedef enum _ez_type ez_type_t;
 
-struct ez_value_s {
-    ez_value_type_t type;
+struct _ez_object;
+typedef struct _ez_object ez_object_t;
+
+struct _ez_function;
+typedef struct _ez_function ez_function_t;
+
+struct _ez_value 
+{
+    ez_type_t type;
+
     union 
     {
-        int       boolean_value;
-        long long integer_value;
-        double    real_value;
-        char*     string_value;
-    };
+        long           long_value;
+        double         double_value;
+        ez_object_t*   object;
+        ez_function_t* function;
+    };    
 };
-typedef struct ez_value_s ez_value_t;
+typedef struct _ez_value ez_value_t;
 
-int ez_code_init(ez_code_t* code);
-int ez_code_clear(ez_code_t* code);
+typedef ez_result_t (*ez_function)(ez_value_t* this, ez_value_t* result, int argc, const ez_value_t* argv);
 
-int ez_value_init(ez_value_t* value);
-int ez_value_get(ez_context_t* context, const char* id, ez_value_t* value);
-int ez_value_set(ez_context_t* context, const char* id, ez_value_t* value);
-int ez_value_clear(ez_value_t* value);
+ez_result_t ez_create_null(ez_value_t* value);
 
-int ez_context_init(ez_context_t* context);
-int ez_context_clear(ez_context_t* context);
+ez_result_t ez_create_boolean(ez_value_t* value, int bvalue);
 
-int ez_compile(ez_code_t* code, const char* scode);
-int ez_execute(ez_context_t* context, ez_code_t* code);
+ez_result_t ez_create_integer(ez_value_t* value, long ivalue);
 
-int ez_evaluate(ez_context_t* context, const char* scode);
+ez_result_t ez_create_real(ez_value_t* value, double rvalue);
 
-const char* ez_error_string(int errorid);
+ez_result_t ez_create_object(ez_value_t* value);
+
+ez_result_t ez_create_function(ez_value_t* value, ez_function function);
+
+ez_result_t ez_get_type(const ez_value_t* value, ez_type_t* type);
+
+ez_result_t ez_get_boolean(const ez_value_t* value, int* bvalue);
+
+ez_result_t ez_get_integer(const ez_value_t* value, long* ivalue);
+
+ez_result_t ez_get_real(const ez_value_t* value, double* ivalue);
+
+ez_result_t ez_get_member(const ez_value_t* object, const char* id, ez_value_t* value);
+
+ez_result_t ez_set_member(ez_value_t* object, const char* id, const ez_value_t* value);
+
+ez_result_t ez_call_function(const ez_value_t* function, ez_value_t* this, ez_value_t* result, int argc, const ez_value_t* argv);
+
+ez_result_t ez_copy_value(ez_value_t* dest, const ez_value_t* source);
+
+ez_result_t ez_release_value(ez_value_t* value);
+
+ez_result_t ez_set_object_data(ez_value_t* object, void* data);
+
+ez_result_t ez_get_object_data(ez_value_t* object, void** data);
+
+ez_result_t ez_compile(ez_value_t* function, const char* code);
+
+ez_result_t ez_eval(ez_value_t* root, const char* code);
+
+const char* ez_result_to_string(ez_result_t r);
+const char* ez_type_to_string(ez_type_t t);
 
 #endif

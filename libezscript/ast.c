@@ -1,125 +1,154 @@
 /*
-    ezscript
-    Copyright (c) 2017 Sean Farrell <sean.farrell@rioki.org>
+ezscript 
+Copyright 2018 Sean Farrell <sean.farrell@rioki.org>
 
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of 
+this software and associated documentation files (the "Software"), to deal in 
+the Software without restriction, including without limitation the rights to 
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies 
+of the Software, and to permit persons to whom the Software is furnished to do 
+so, subject to the following conditions:
 
-    The above copyright notice and this permission notice shall be included in all
-    copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all 
+copies or substantial portions of the Software.
 
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+SOFTWARE.
 */
+
+
+#include <assert.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "ast.h"
 
-#include <assert.h>
-#include <memory.h>
-
-ez_ast_t* ez_ast_create(const char* file, int line, ez_ast_node_type_t type, const char* svalue)
+ast_node_t* ast_create(ast_type_t type)
 {
-    ez_ast_t* node = (ez_ast_t*)malloc(sizeof(ez_ast_t));
-    memset(node, 0, sizeof(ez_ast_t));
-
-    if (file != NULL)
-    {
-        node->file   = strdup(file);
+    ast_node_t* node = (ast_node_t*)malloc(sizeof(ast_node_t));
+    if (node == NULL) {
+        return NULL;
     }
-    
-    node->line   = line;
+
     node->type   = type;
-
-    if (svalue != NULL)
-    {
-        node->svalue   = strdup(svalue);
-    }
+    node->parent = NULL;
+    node->child  = NULL;
+    node->next   = NULL;
+    node->svalue = NULL;
 
     return node;
 }
 
-ez_ast_t* ez_ast_append_sibling(ez_ast_t* fist, ez_ast_t* next)
+ast_node_t* ast_append(ast_node_t* list, ast_node_t* next)
 {
-    if (fist != NULL)
-    {
-        return NULL;
-    }
+    assert(list != NULL);
+    assert(next != NULL);
 
-    if (next == NULL)
+    if (list->next == NULL) 
     {
-        return fist;
-    }
-
-    if (next->next == NULL)
-    {
-        fist->next = next;
+        list->next = next;
     }
     else
     {
-        ez_ast_t* last_sibling = fist->next;
-        while (last_sibling->next != NULL)
+        ast_node_t* n = list->next;
+        while (n->next != NULL) 
         {
-            last_sibling = last_sibling->next;
+            n = n->next;
         }
-        last_sibling->next = next;
+        n->next = next;
     }
-    
-    return next;
 
+    next->parent = list->parent;
+
+    return list;
 }
 
-ez_ast_t* ez_ast_append_child(ez_ast_t* parent, ez_ast_t* child)
+ast_node_t* ast_child(ast_node_t* parent, ast_node_t* child)
 {
-    if (parent != NULL)
-    {
-        return NULL;
-    }
-
-    if (child == NULL)
-    {
-        return parent;
-    }
+    assert(parent != NULL);
+    assert(child != NULL);
 
     if (parent->child == NULL)
     {
         parent->child = child;
+        child->parent = parent;
     }
     else
     {
-        ez_ast_t* last_child = parent->child;
-        while (last_child->next != NULL)
-        {
-            last_child = last_child->next;
-        }
-        last_child->next = child;
+        ast_append(parent->child, child);
     }
-    
+
     return parent;
 }
 
-void ez_ast_free(ez_ast_t* node)
+ast_node_t* ast_assignment(ast_node_t* ref, ast_node_t* expr)
+{
+    ast_node_t* node;
+
+    assert(ref != NULL);
+    assert(expr != NULL);
+
+    node = ast_create(AST_ASSIGNMENT);
+    
+    node->child = ref;
+    ref->parent = node;
+
+    ref->next = expr;
+    ref->parent = node;
+
+    return node;
+}
+
+ast_node_t* ast_reference(char* id)
+{
+    ast_node_t* node;
+
+    assert(id != NULL);
+
+    node = ast_create(AST_REFERENCE);
+    node->svalue = id;
+
+    return node;    
+}
+
+ast_node_t* ast_literal(ast_type_t type, char* value)
+{
+    ast_node_t* node;
+
+    assert(value != NULL);
+
+    node = ast_create(type);
+    node->svalue = value;
+
+    return node;
+}
+
+ast_node_t* ast_expr(ast_type_t type, ast_node_t* lhs, ast_node_t* rhs)
+{
+    ast_node_t* node;
+
+    assert(lhs != NULL);
+    assert(rhs != NULL);
+
+    node = ast_create(type);
+
+    ast_child(node, lhs);
+    ast_child(node, rhs);
+
+    return node;
+}
+
+void ast_free(ast_node_t* node)
 {
     if (node != NULL)
     {
-        if (node->child != NULL)
-        {
-            ez_ast_free(node->child);
-        }
-        if (node->next != NULL)
-        {
-            ez_ast_free(node->next);
-        }
-
-        free(node->file);
+        ast_free(node->next);
+        ast_free(node->child);
         free(node->svalue);
         free(node);
     }

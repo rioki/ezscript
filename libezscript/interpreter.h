@@ -1,111 +1,111 @@
 /*
-    ezscript
-    Copyright (c) 2017 Sean Farrell <sean.farrell@rioki.org>
+ezscript 
+Copyright 2018 Sean Farrell <sean.farrell@rioki.org>
 
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of 
+this software and associated documentation files (the "Software"), to deal in 
+the Software without restriction, including without limitation the rights to 
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies 
+of the Software, and to permit persons to whom the Software is furnished to do 
+so, subject to the following conditions:
 
-    The above copyright notice and this permission notice shall be included in all
-    copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all 
+copies or substantial portions of the Software.
 
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+SOFTWARE.
 */
 
-#ifndef _EZ_INTERPRETER_H_
-#define _EZ_INTERPRETER_H_
+#include <stdlib.h>
+#include <string.h>
 
-/**
- * The Operation Codes 
- **/
-enum ez_opcode_e
+#include "stdint.h"
+#include "ezscript.h"
+
+enum _ez_op 
 {
-    /**
-     * Null Operation
-     **/
-    EZ_NOP,
-    /**
-     * Define Variable
-     * 
-     * @arg id the variable's identifier as string
-     * 
-     * Created variable with id in the global or local variable store with the
-     * given id. 
-     **/
-    EZ_DEFVAR,
-    /**
-     * Load a Variable
-     * 
-     * @arg uchar the register to load the value to
-     * @arg hash the variables identifier as hashed int
-     * 
-     * Loads the given variable to the given register. 
-     **/
-    EZ_LDVAR,
-    /**
-     * Store a Variable
-     * 
-     * @arg uchar the register to store the value from
-     * @arg hash the variables identifier as hashed int
-     * 
-     * Stores the given variable value from the given register. 
-     **/
-    EZ_STOVAR,
-    /**
-     * Load a NULL Value
-     * 
-     * @arg uchar the register to load the value to
-     * 
-     * Sets a given register to NULL.
-     **/
-    EZ_LDNUL,
-    /**
-     * Load a Contant Boolean
-     * 
-     * @arg uchar the register to load the value to
-     * @arg uchar the value to load
-     * 
-     * Loads the given boolean into the given regier.
-     **/
-    EZ_LDBOL,
-    /**
-     * Load a Contant Integer
-     * 
-     * @arg uchar the register to load the value to
-     * @arg long long the value to load
-     * 
-     * Loads the given integer into the given regier.
-     **/
-    EZ_LDINT,
-    /**
-     * Load a Contant Real
-     * 
-     * @arg uchar the register to load the value to
-     * @arg double the value to load
-     * 
-     * Loads the given integer into the given regier.
-     **/
-    EZ_LDREL,
-    /**
-     * Load a Contant String
-     * 
-     * @arg uchar the register to load the value to
-     * @arg uint the string length
-     * @arg char* the string 
-     * 
-     * Loads the given integer into the given regier.
-     **/
-    EZ_LDSTR
+    /* NOP - No Operation 
+       Do nothing */
+    OP_NOP,
+    /* RET - RETURN
+       Finish execution. */
+    OP_RET,             
+    /* LTN - Literal NULL 
+       Creates a null value on the stack */
+    OP_LTN,
+    /* LTI <int32> - Literal Integer 
+       Creates an integer value on the stack */
+    OP_LTI,
+    /* LTR <double> - Literal Real 
+       Creates a real value on the stack */
+    OP_LTR,
+    /* LTS <string> - Literal String 
+       Creates a string value on the stack */   
+    OP_LTS,
+    /* STO <string> - Store a Value
+       Copies the value from the stack into the given variable. */
+    OP_STO,
+    /* LOD <string> - Load a Value
+       Copies the given variable to the stack. */
+    OP_LOD,
+    /* ADD - Addition
+       Adds the top and next value from the stack and write it back to top. */
+    OP_ADD,
+    /* SUB - Subtraction
+       Subtracts the top and next value from the stack and write it back to top. */
+    OP_SUB,
+    /* MUL - Multiplication
+       Multiplies the top and next value from the stack and write it back to top. */
+    OP_MUL,
+    /* DIV - Division
+       Divides the top and next value from the stack and write it back to top. */
+    OP_DIV,
+    /* MOD - Modulo
+       Modulos the top and next value from the stack and write it back to top. */
+    OP_MOD
 };
-typedef enum ez_opcode_e ez_opcode_t;
+typedef enum _ez_op ez_op_t;
 
-#endif
+struct _ez_code
+{
+    size_t   size;
+    uint8_t* code;
+};
+typedef struct _ez_code ez_code_t;
+
+struct _ez_stack
+{
+    size_t      size;
+    size_t      top;
+    ez_value_t* stack;
+};
+typedef struct _ez_stack ez_stack_t;
+
+ez_result_t ez_init_code(ez_code_t* code);
+
+ez_result_t ez_code_op_write(ez_code_t* code, size_t* ip, ez_op_t value);
+ez_result_t ez_code_int32_write(ez_code_t* code, size_t* ip, int32_t value);
+ez_result_t ez_code_uint32_write(ez_code_t* code, size_t* ip, uint32_t value);
+ez_result_t ez_code_double_write(ez_code_t* code, size_t* ip, double value);
+ez_result_t ez_code_string_write(ez_code_t* code, size_t* ip, const char* value);
+
+ez_result_t ez_code_op_read(ez_code_t* code, size_t* ip, ez_op_t* value);
+ez_result_t ez_code_int32_read(ez_code_t* code, size_t* ip, int32_t* value);
+ez_result_t ez_code_uint32_read(ez_code_t* code, size_t* ip, uint32_t* value);
+ez_result_t ez_code_double_read(ez_code_t* code, size_t* ip, double* value);
+ez_result_t ez_code_string_read(ez_code_t* code, size_t* ip, const char** value);
+
+ez_result_t ez_allocate_stack(ez_stack_t* stack, size_t size);
+ez_result_t ez_free_stack(ez_stack_t* stack);
+ez_result_t ez_push_stack(ez_stack_t* stack, ez_value_t* value);
+ez_result_t ez_pop_stack(ez_stack_t* stack, ez_value_t* value);
+
+ez_result_t ez_wrap_code(ez_value_t* value, ez_code_t* code);
+ez_result_t ez_exec_code(ez_value_t* this, ez_code_t* code);
+
+void ez_print_code(ez_code_t* code);

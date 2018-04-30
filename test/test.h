@@ -1,22 +1,47 @@
+/*
+ezscript 
+Copyright 2018 Sean Farrell <sean.farrell@rioki.org>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of 
+this software and associated documentation files (the "Software"), to deal in 
+the Software without restriction, including without limitation the rights to 
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies 
+of the Software, and to permit persons to whom the Software is furnished to do 
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all 
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+SOFTWARE.
+*/
+
+#ifndef _TEST_H_
+#define _TEST_H_
 
 #include <stdio.h>
 
-typedef int (*test_fun)();
-
-int tst_register(const char* name, test_fun fun);
-int tst_run();
-
-#define TST_REGISTER(NAME) \
-    int result ## NAME = tst_register(#NAME, NAME); \
-    if (result ## NAME < 0) \
-    { \
-        printf("Failed to register %s test.\n", #NAME); \
-        return result ## NAME; \
+#define TEST_ASSERT(COND)                                                      \
+    if (!(COND))                                                               \
+    {                                                                          \
+        printf("%s:%d: Assert '%s' failed.\n", __FILE__, __LINE__, #COND);     \
+        return -1;                                                             \
     }
 
-#define TST_ASSERT(COND) \
-    if (!(COND)) \
-    { \
-        printf("%s(%d): Assertion %s failed.\n", __FILE__, __LINE__, #COND); \
-        return 0; \
+#define TEST_RUN(FUNCTION)                                                     \
+    {                                                                          \
+        int r = FUNCTION();                                                    \
+        (*num_tests)++;                                                        \
+        if (r < 0)                                                             \
+        {                                                                      \
+            (*num_errors)++;                                                   \
+        }                                                                      \
     }
+
+
+#endif

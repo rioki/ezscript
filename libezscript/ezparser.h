@@ -40,17 +40,14 @@
 extern int ezdebug;
 #endif
 /* "%code requires" blocks.  */
-#line 8 "libezscript/ezparser.y" /* yacc.c:1909  */
+#line 31 "libezscript/ezparser.y" /* yacc.c:1909  */
 
 
-#include <assert.h>
+#include "ezscript.h"
 #include "ast.h"
 
-int ezlex();
-void ezerror(const char* file, ez_ast_t* ast_root, const char* msg) ;
 
-
-#line 54 "libezscript/ezparser.h" /* yacc.c:1909  */
+#line 51 "libezscript/ezparser.h" /* yacc.c:1909  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -59,12 +56,20 @@ void ezerror(const char* file, ez_ast_t* ast_root, const char* msg) ;
   {
     END = 0,
     ERROR = 258,
-    VAR = 259,
+    NILL = 259,
     EQUAL = 260,
-    SEMI = 261,
-    IDENTIFIER = 262,
-    NUMBER = 263,
-    STRING = 264
+    PLUS = 261,
+    MINUS = 262,
+    SEMI = 263,
+    STAR = 264,
+    SLASH = 265,
+    PERCENT = 266,
+    OPEN_PAREN = 267,
+    CLOSE_PAREN = 268,
+    IDENTIFIER = 269,
+    REAL = 270,
+    INTEGER = 271,
+    STRING = 272
   };
 #endif
 
@@ -73,12 +78,12 @@ void ezerror(const char* file, ez_ast_t* ast_root, const char* msg) ;
 
 union YYSTYPE
 {
-#line 22 "libezscript/ezparser.y" /* yacc.c:1909  */
-    
-    char*     string;
-    ez_ast_t* node;
+#line 49 "libezscript/ezparser.y" /* yacc.c:1909  */
 
-#line 82 "libezscript/ezparser.h" /* yacc.c:1909  */
+  char* string;
+  ast_node_t* node;  
+
+#line 87 "libezscript/ezparser.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -103,6 +108,6 @@ struct YYLTYPE
 
 extern YYSTYPE ezlval;
 extern YYLTYPE ezlloc;
-int ezparse (const char* file, ez_ast_t* ast_root);
+int ezparse (ast_node_t** root);
 
 #endif /* !YY_EZ_LIBEZSCRIPT_EZPARSER_H_INCLUDED  */
