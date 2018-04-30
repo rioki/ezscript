@@ -30,6 +30,7 @@ SOFTWARE.
 #include "ezparser.h"
 #include "interpreter.h"
 #include "dbg.h"
+#include "code.h"
 
 ez_result_t ez_generate_expression(ez_code_t* code, size_t *ip, ast_node_t* node);
 
