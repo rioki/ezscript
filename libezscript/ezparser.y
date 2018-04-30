@@ -105,7 +105,8 @@ mulexp                  : value                                 {$$ = $1;}
                         ;      
                         
 
-value                   : reference                             {$$ = $1;}
+value                   : "(" expression ")"                    {$$ = $2;}
+                        | reference                             {$$ = $1;}
                         | literal                               {$$ = $1;}
                         ;
 

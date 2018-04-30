@@ -430,16 +430,16 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  7
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   21
+#define YYLAST   25
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  18
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  11
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  22
+#define YYNRULES  23
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  31
+#define YYNSTATES  34
 
 /* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
    by yylex, with out-of-bounds checking.  */
@@ -488,8 +488,8 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint8 yyrline[] =
 {
        0,    80,    80,    81,    84,    85,    88,    91,    93,    96,
-      97,    98,   101,   102,   103,   104,   108,   109,   112,   114,
-     115,   116,   117
+      97,    98,   101,   102,   103,   104,   108,   109,   110,   113,
+     115,   116,   117,   118
 };
 #endif
 
@@ -517,10 +517,10 @@ static const yytype_uint16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF -20
+#define YYPACT_NINF -22
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-20)))
+  (!!((Yystate) == (-22)))
 
 #define YYTABLE_NINF -1
 
@@ -531,10 +531,10 @@ static const yytype_uint16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -5,   -20,     5,    -5,   -20,   -20,    14,   -20,   -20,    -4,
-     -20,   -20,   -20,   -20,    12,    11,    -3,   -20,   -20,   -20,
-     -20,    -4,    -4,    -4,    -4,    -4,    -3,    -3,   -20,   -20,
-     -20
+      -5,   -22,    19,    -5,   -22,   -22,    15,   -22,   -22,    -4,
+     -22,    -4,   -22,   -22,   -22,    13,    11,     5,   -22,   -22,
+     -22,     9,   -22,    -4,    -4,    -4,    -4,    -4,   -22,     5,
+       5,   -22,   -22,   -22
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -542,24 +542,24 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       3,    18,     0,     2,     5,     6,     0,     1,     4,     0,
-      22,    19,    20,    21,     0,     8,     9,    12,    16,    17,
-       7,     0,     0,     0,     0,     0,    10,    11,    13,    14,
-      15
+       3,    19,     0,     2,     5,     6,     0,     1,     4,     0,
+      23,     0,    20,    21,    22,     0,     8,     9,    12,    17,
+      18,     0,     7,     0,     0,     0,     0,     0,    16,    10,
+      11,    13,    14,    15
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -20,   -20,   -20,    18,   -20,   -20,   -20,   -19,    -9,     1,
-     -20
+     -22,   -22,   -22,    20,   -22,    14,   -22,   -21,   -20,     1,
+     -22
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     2,     3,     4,     5,    14,    15,    16,    17,    18,
-      19
+      -1,     2,     3,     4,     5,    15,    16,    17,    18,    19,
+      20
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -567,16 +567,16 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
-      10,     6,    26,    27,     6,     7,    23,    24,    25,     1,
-       1,    11,    12,    13,    28,    29,    30,    21,    22,     9,
-      20,     8
+      10,     6,    29,    30,     6,    31,    32,    33,    11,     1,
+       1,    12,    13,    14,    25,    26,    27,    23,    24,     7,
+       9,    22,    28,     8,     0,    21
 };
 
-static const yytype_uint8 yycheck[] =
+static const yytype_int8 yycheck[] =
 {
-       4,     0,    21,    22,     3,     0,     9,    10,    11,    14,
-      14,    15,    16,    17,    23,    24,    25,     6,     7,     5,
-       8,     3
+       4,     0,    23,    24,     3,    25,    26,    27,    12,    14,
+      14,    15,    16,    17,     9,    10,    11,     6,     7,     0,
+       5,     8,    13,     3,    -1,    11
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -584,25 +584,25 @@ static const yytype_uint8 yycheck[] =
 static const yytype_uint8 yystos[] =
 {
        0,    14,    19,    20,    21,    22,    27,     0,    21,     5,
-       4,    15,    16,    17,    23,    24,    25,    26,    27,    28,
-       8,     6,     7,     9,    10,    11,    25,    25,    26,    26,
-      26
+       4,    12,    15,    16,    17,    23,    24,    25,    26,    27,
+      28,    23,     8,     6,     7,     9,    10,    11,    13,    25,
+      25,    26,    26,    26
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
        0,    18,    19,    19,    20,    20,    21,    22,    23,    24,
-      24,    24,    25,    25,    25,    25,    26,    26,    27,    28,
-      28,    28,    28
+      24,    24,    25,    25,    25,    25,    26,    26,    26,    27,
+      28,    28,    28,    28
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
        0,     2,     1,     0,     2,     1,     1,     4,     1,     1,
-       3,     3,     1,     3,     3,     3,     1,     1,     1,     1,
-       1,     1,     1
+       3,     3,     1,     3,     3,     3,     3,     1,     1,     1,
+       1,     1,     1,     1
 };
 
 
@@ -1459,7 +1459,7 @@ yyreduce:
 
   case 16:
 #line 108 "libezscript/ezparser.y" /* yacc.c:1646  */
-    {(yyval.node) = (yyvsp[0].node);}
+    {(yyval.node) = (yyvsp[-1].node);}
 #line 1464 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
@@ -1470,37 +1470,43 @@ yyreduce:
     break;
 
   case 18:
-#line 112 "libezscript/ezparser.y" /* yacc.c:1646  */
-    {(yyval.node) = ast_reference((yyvsp[0].string));}
+#line 110 "libezscript/ezparser.y" /* yacc.c:1646  */
+    {(yyval.node) = (yyvsp[0].node);}
 #line 1476 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 114 "libezscript/ezparser.y" /* yacc.c:1646  */
-    {(yyval.node) = ast_literal(AST_LITERAL_REAL, (yyvsp[0].string));}
+#line 113 "libezscript/ezparser.y" /* yacc.c:1646  */
+    {(yyval.node) = ast_reference((yyvsp[0].string));}
 #line 1482 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 20:
 #line 115 "libezscript/ezparser.y" /* yacc.c:1646  */
-    {(yyval.node) = ast_literal(AST_LITERAL_INTEGER, (yyvsp[0].string));}
+    {(yyval.node) = ast_literal(AST_LITERAL_REAL, (yyvsp[0].string));}
 #line 1488 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 21:
 #line 116 "libezscript/ezparser.y" /* yacc.c:1646  */
-    {(yyval.node) = ast_literal(AST_LITERAL_STRING, (yyvsp[0].string));}
+    {(yyval.node) = ast_literal(AST_LITERAL_INTEGER, (yyvsp[0].string));}
 #line 1494 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 22:
 #line 117 "libezscript/ezparser.y" /* yacc.c:1646  */
-    {(yyval.node) = ast_literal(AST_LITERAL_NULL, "null");}
+    {(yyval.node) = ast_literal(AST_LITERAL_STRING, (yyvsp[0].string));}
 #line 1500 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
+  case 23:
+#line 118 "libezscript/ezparser.y" /* yacc.c:1646  */
+    {(yyval.node) = ast_literal(AST_LITERAL_NULL, "null");}
+#line 1506 "libezscript/ezparser.c" /* yacc.c:1646  */
+    break;
 
-#line 1504 "libezscript/ezparser.c" /* yacc.c:1646  */
+
+#line 1510 "libezscript/ezparser.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1735,6 +1741,6 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 120 "libezscript/ezparser.y" /* yacc.c:1906  */
+#line 121 "libezscript/ezparser.y" /* yacc.c:1906  */
 
 

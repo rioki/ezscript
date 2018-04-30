@@ -221,14 +221,14 @@ ez_result_t exec_binop(ez_op_t op, ez_stack_t* stack, ez_value_t* this)
     ez_value_t  lhs;
     ez_value_t  res;
 
-    r = ez_pop_stack(stack, &lhs);
+    r = ez_pop_stack(stack, &rhs);
     if (r < 0)
     {
         EZ_TRACEV("Failed to pop stack: %s", ez_result_to_string(r));
         return r;
     }
 
-    r = ez_pop_stack(stack, &rhs);
+    r = ez_pop_stack(stack, &lhs);
     if (r < 0)
     {
         EZ_TRACEV("Failed to pop stack: %s", ez_result_to_string(r));
