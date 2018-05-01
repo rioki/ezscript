@@ -48,12 +48,21 @@ enum _ez_op
     /* LTS <string> - Literal String 
        Creates a string value on the stack */   
     OP_LTS,
+    /* OBJ - Object
+       Creates an empty object on the stack. */
+    OP_OBJ,
     /* STO <string> - Store a Value
        Copies the value from the stack into the given variable. */
     OP_STO,
     /* LOD <string> - Load a Value
        Copies the given variable to the stack. */
     OP_LOD,
+    /* SMB <string> - Store Member
+       Copies the value on the stack to the object one below. */
+    OP_SMB,
+    /* LMB <string> - Load Member
+       Copies the member onto the stack of the object on the stack. */
+    OP_LMB,
     /* ADD - Addition
        Adds the top and next value from the stack and write it back to top. */
     OP_ADD,

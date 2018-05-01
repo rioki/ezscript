@@ -109,3 +109,22 @@ ez_result_t ez_pop_stack(ez_stack_t* stack, ez_value_t* value)
 
     return EZ_SUCCESS;
 }
+
+ez_result_t ez_stack_top(ez_stack_t* stack, ez_value_t* value)
+{
+    ez_result_t r;
+
+    EZ_CHECK_ARGUMENT(stack != NULL);
+    EZ_CHECK_ARGUMENT(value != NULL);
+
+    EZ_ASSERT(stack->top <= stack->size);
+
+    r = ez_copy_value(value, &stack->stack[stack->top - 1]);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to copy value to stack: %s", ez_result_to_string(r));
+        return r;
+    }
+
+    return EZ_SUCCESS;
+}

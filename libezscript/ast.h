@@ -34,6 +34,8 @@ enum ast_type
     AST_DIVISION,
     AST_MODULO,
     AST_REFERENCE,
+    AST_OBJECT,
+    AST_MEMBER,
     AST_LITERAL_REAL,
     AST_LITERAL_INTEGER,
     AST_LITERAL_STRING,
@@ -63,13 +65,13 @@ ast_node_t* ast_append(ast_node_t* list, ast_node_t* next);
 
 ast_node_t* ast_child(ast_node_t* parent, ast_node_t* child);
 
-ast_node_t* ast_assignment(ast_node_t* ref, ast_node_t* expr);
+ast_node_t* ast_single(ast_type_t type, ast_node_t* child);
 
-ast_node_t* ast_reference(char* id);
+ast_node_t* ast_named_single(ast_type_t type, char* id, ast_node_t* child);
 
-ast_node_t* ast_literal(ast_type_t type, char* id);
+ast_node_t* ast_join(ast_type_t type, ast_node_t* lhs, ast_node_t* rhs);
 
-ast_node_t* ast_expr(ast_type_t type, ast_node_t* lhs, ast_node_t* rhs);
+ast_node_t* ast_leaf(ast_type_t type, char* id);
 
 void ast_free(ast_node_t* node);
 

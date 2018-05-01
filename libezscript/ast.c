@@ -86,49 +86,35 @@ ast_node_t* ast_child(ast_node_t* parent, ast_node_t* child)
     return parent;
 }
 
-ast_node_t* ast_assignment(ast_node_t* ref, ast_node_t* expr)
+ast_node_t* ast_single(ast_type_t type, ast_node_t* child)
 {
     ast_node_t* node;
 
-    assert(ref != NULL);
-    assert(expr != NULL);
+    assert(child != NULL);
 
-    node = ast_create(AST_ASSIGNMENT);
-    
-    node->child = ref;
-    ref->parent = node;
+    node = ast_create(type);
 
-    ref->next = expr;
-    ref->parent = node;
+    ast_child(node, child);
 
     return node;
 }
 
-ast_node_t* ast_reference(char* id)
+ast_node_t* ast_named_single(ast_type_t type, char* id, ast_node_t* child)
 {
     ast_node_t* node;
 
     assert(id != NULL);
+    assert(child != NULL);
 
-    node = ast_create(AST_REFERENCE);
+    node = ast_single(type, child);
+    assert(node != NULL);
+
     node->svalue = id;
-
-    return node;    
-}
-
-ast_node_t* ast_literal(ast_type_t type, char* value)
-{
-    ast_node_t* node;
-
-    assert(value != NULL);
-
-    node = ast_create(type);
-    node->svalue = value;
 
     return node;
 }
 
-ast_node_t* ast_expr(ast_type_t type, ast_node_t* lhs, ast_node_t* rhs)
+ast_node_t* ast_join(ast_type_t type, ast_node_t* lhs, ast_node_t* rhs)
 {
     ast_node_t* node;
 
@@ -139,6 +125,18 @@ ast_node_t* ast_expr(ast_type_t type, ast_node_t* lhs, ast_node_t* rhs)
 
     ast_child(node, lhs);
     ast_child(node, rhs);
+
+    return node;
+}
+
+ast_node_t* ast_leaf(ast_type_t type, char* value)
+{
+    ast_node_t* node;
+
+    assert(value != NULL);
+
+    node = ast_create(type);
+    node->svalue = value;
 
     return node;
 }

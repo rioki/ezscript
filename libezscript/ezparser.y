@@ -47,8 +47,8 @@ void ezerror(ast_node_t** root, const char* msg);
 %}
 
 %union {
-  char* string;
-  ast_node_t* node;  
+    char* string;
+    ast_node_t* node;  
 }
 
 %token              END 0           "end of file"
@@ -60,6 +60,9 @@ void ezerror(ast_node_t** root, const char* msg);
 %token              PLUS            "+"
 %token              MINUS           "-"
 %token              SEMI            ";"
+%token              COLON           ":"
+%token              COMMA           ","
+%token              DOT             "."
 %token              STAR            "*"
 %token              SLASH           "/"
 %token              PERCENT         "%"
@@ -93,20 +96,20 @@ statements              : statements statement                  {$$ = ast_append
 statement               : assignment                            {$$ = $1;}
                         ;
 
-assignment              : reference "=" expression ";"          {$$ = ast_assignment($1, $3);}
+assignment              : reference "=" expression ";"          {$$ = ast_join(AST_ASSIGNMENT, $1, $3);}
 
 expression              : addexp                                {$$ = $1;}
                         ;
 
 addexp                  : mulexp                                {$$ = $1;}
-                        | addexp "+" mulexp                     {$$ = ast_expr(AST_ADDITION, $1, $3);}
-                        | addexp "-" mulexp                     {$$ = ast_expr(AST_SUBTRACTION, $1, $3);}
+                        | addexp "+" mulexp                     {$$ = ast_join(AST_ADDITION, $1, $3);}
+                        | addexp "-" mulexp                     {$$ = ast_join(AST_SUBTRACTION, $1, $3);}
                         ;
 
 mulexp                  : primexp                               {$$ = $1;}
-                        | mulexp "*" primexp                    {$$ = ast_expr(AST_MULTIPLICATION, $1, $3);}     
-                        | mulexp "/" primexp                    {$$ = ast_expr(AST_DIVISION, $1, $3);}     
-                        | mulexp "%" primexp                    {$$ = ast_expr(AST_MODULO, $1, $3);}
+                        | mulexp "*" primexp                    {$$ = ast_join(AST_MULTIPLICATION, $1, $3);}     
+                        | mulexp "/" primexp                    {$$ = ast_join(AST_DIVISION, $1, $3);}     
+                        | mulexp "%" primexp                    {$$ = ast_join(AST_MODULO, $1, $3);}
                         ;                       
 
 primexp                 : "(" expression ")"                    {$$ = $2;}
@@ -115,24 +118,24 @@ primexp                 : "(" expression ")"                    {$$ = $2;}
                         | literal                               {$$ = $1;}
                         ;
 
-object                  : "{" members "}"                       {$$ = NULL;}
-                        | "{" "}"                               {$$ = NULL;}
+object                  : "{" members "}"                       {$$ = ast_single(AST_OBJECT, $2);}
+                        | "{" "}"                               {$$ = ast_create(AST_OBJECT);}
                         ;
 
-members                 : members "," members                   {$$ = NULL;}
-                        | member                                {$$ = NULL;}
+members                 : members "," members                   {$$ = ast_append($1, $3);}
+                        | member                                {$$ = $1;}
                         ;
 
-member                  : IDENTIFIER ":" expression             {$$ = NULL;}
+member                  : IDENTIFIER ":" expression             {$$ = ast_named_single(AST_MEMBER, $1, $3);}
                         ;
 
-reference               : IDENTIFIER                            {$$ = ast_reference($1);}
+reference               : IDENTIFIER                            {$$ = ast_leaf(AST_REFERENCE, $1);}
                         ;
 
-literal                 : REAL                                  {$$ = ast_literal(AST_LITERAL_REAL, $1);}
-                        | INTEGER                               {$$ = ast_literal(AST_LITERAL_INTEGER, $1);}
-                        | STRING                                {$$ = ast_literal(AST_LITERAL_STRING, $1);}
-                        | "null"                                {$$ = ast_literal(AST_LITERAL_NULL, "null");}
+literal                 : REAL                                  {$$ = ast_leaf(AST_LITERAL_REAL, $1);}
+                        | INTEGER                               {$$ = ast_leaf(AST_LITERAL_INTEGER, $1);}
+                        | STRING                                {$$ = ast_leaf(AST_LITERAL_STRING, $1);}
+                        | "null"                                {$$ = ast_leaf(AST_LITERAL_NULL, "null");}
                         ;
 
 %%

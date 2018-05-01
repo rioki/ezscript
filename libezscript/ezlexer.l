@@ -53,6 +53,9 @@ SOFTWARE.
 "["                         return OPEN_SQUARE;
 "]"                         return CLOSE_SQUARE;
 ";"                         return SEMI;
+":"                         return COLON;
+","                         return COMMA;
+"."                         return DOT;
 
 [a-zA-Z_][a-zA-Z0-9_]*      {
                                 ezlval.string = strdup(yytext);

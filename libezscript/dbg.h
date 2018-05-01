@@ -29,12 +29,20 @@ SOFTWARE.
 #define EZ_TRACE(MSG) ez_trace(__FILE__, __LINE__, MSG)
 #define EZ_TRACEV(MSG, ...) ez_tracev(__FILE__, __LINE__, MSG, __VA_ARGS__)
 
+#define EZ_ASSERT(COND)                                                         \
+    if (!(COND))                                                                \
+    {                                                                           \
+        EZ_TRACEV("Assertion Failed: %s", #COND);                               \
+        return EZ_RUNTIME_ERRPOR;    	                                        \
+    }
+
 void ez_trace(const char* file, unsigned int line, const char* msg);
 void ez_tracev(const char* file, unsigned int line, const char* format, ...);
 
 #else
 #define TRACE(MSG)
 #define TRACEV(MSG, ...)
+#define EZ_ASSERT(COND)
 #endif
 
 #define EZ_CHECK_ARGUMENT(COND)                                                 \

@@ -305,7 +305,85 @@ int test_empty_object()
 
     r = ez_release_value(&root);
     TEST_ASSERT(r == EZ_SUCCESS);
+
+    return 0;
 }
+
+int test_object_from_code()
+{
+    ez_result_t r;
+    ez_value_t  root;
+    ez_value_t  obj;
+    ez_type_t   type;
+    const char code[] = "obj = {a: 1};\n";
+    
+    r = ez_create_object(&root);
+
+    r = ez_eval(&root, code);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_get_member(&root, "obj", &obj);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_get_type(&obj, &type);
+    TEST_ASSERT(r == EZ_SUCCESS);
+    TEST_ASSERT(type == EZ_TYPE_OBJECT);
+    
+    r = ez_release_value(&obj);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_release_value(&root);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    return 0;
+}
+
+int test_object_from_code2()
+{
+    ez_result_t r;
+    ez_value_t  root;
+    ez_value_t  obj;
+    ez_value_t  a, b;
+    long        av, bv;
+    const char code[] = "obj = {a: 1, b: 2 + 3};\n";
+    
+    r = ez_create_object(&root);
+
+    r = ez_eval(&root, code);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_get_member(&root, "obj", &obj);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_get_member(&obj, "a", &a);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_get_integer(&a, &av);
+    TEST_ASSERT(r == EZ_SUCCESS);    
+    TEST_ASSERT(av == 1);
+
+    r = ez_get_member(&obj, "b", &b);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_get_integer(&b, &bv);
+    TEST_ASSERT(r == EZ_SUCCESS);    
+    TEST_ASSERT(bv == 5);
+
+    r = ez_release_value(&a);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_release_value(&b);
+    TEST_ASSERT(r == EZ_SUCCESS);
+    
+    r = ez_release_value(&obj);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_release_value(&root);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    return 0;
+}
+
 
 void run_object_tests(int* num_tests, int* num_errors)
 {
@@ -319,4 +397,6 @@ void run_object_tests(int* num_tests, int* num_errors)
     TEST_RUN(test_override_values);
     TEST_RUN(test_object_data);
     TEST_RUN(test_empty_object);
+    TEST_RUN(test_object_from_code);
+    TEST_RUN(test_object_from_code2);
 }

@@ -113,7 +113,36 @@ ez_result_t exec_ltr(ez_code_t* code, ez_stack_t* stack, size_t* ip, ez_value_t*
     r = ez_create_real(&value, literal);
     if (r < 0)
     {
-        EZ_TRACEV("Failed to create integer real: %s", ez_result_to_string(r));
+        EZ_TRACEV("Failed to create real value: %s", ez_result_to_string(r));
+        return r;
+    }
+
+    r = ez_push_stack(stack, &value);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to push stack: %s", ez_result_to_string(r));
+        return r;
+    }
+
+    r = ez_release_value(&value);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to release value: %s", ez_result_to_string(r));
+        return r;
+    }
+
+    return EZ_SUCCESS;
+}
+
+ez_result_t exec_obj(ez_code_t* code, ez_stack_t* stack, size_t* ip, ez_value_t* this)
+{
+    ez_result_t r;
+    ez_value_t  value;
+
+    r = ez_create_object(&value);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to create object: %s", ez_result_to_string(r));
         return r;
     }
 
@@ -208,6 +237,110 @@ ez_result_t exec_lod(ez_code_t* code, ez_stack_t* stack, size_t* ip, ez_value_t*
     if (r < 0)
     {
         EZ_TRACEV("Failed to release value: %s", ez_result_to_string(r));
+        return r;
+    }
+
+    return EZ_SUCCESS;
+}
+
+ez_result_t exec_smb(ez_code_t* code, ez_stack_t* stack, size_t* ip)
+{
+    ez_result_t r;
+    const char* id;
+    ez_value_t  value;
+    ez_value_t  object;
+
+    r = ez_code_string_read(code, ip, &id);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to read string: %s", ez_result_to_string(r));
+        return r;
+    }
+
+    r = ez_pop_stack(stack, &value);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to pop stack: %s", ez_result_to_string(r));
+        return r;
+    }
+
+    r = ez_stack_top(stack, &object);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to read stack: %s", ez_result_to_string(r));
+        return r;
+    }
+
+    r = ez_set_member(&object, id, &value);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to set member: %s", ez_result_to_string(r));
+        return r;
+    }
+
+    r = ez_release_value(&value);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to release value: %s", ez_result_to_string(r));
+        return r;
+    }
+
+    r = ez_release_value(&object);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to release object: %s", ez_result_to_string(r));
+        return r;
+    }
+
+    return EZ_SUCCESS;
+}
+
+ez_result_t exec_lmb(ez_code_t* code, ez_stack_t* stack, size_t* ip)
+{
+    ez_result_t r;
+    const char* id;
+    ez_value_t  value;
+    ez_value_t  object;
+
+    r = ez_code_string_read(code, ip, &id);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to read string: %s", ez_result_to_string(r));
+        return r;
+    }
+
+    r = ez_stack_top(stack, &object);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to read stack: %s", ez_result_to_string(r));
+        return r;
+    }
+
+    r = ez_get_member(&object, id, &value);
+    if (r < 0)
+    {
+        EZ_TRACEV("Faild to read %s from root: %s", id, ez_result_to_string(r));
+        return r;
+    }
+
+    r = ez_push_stack(stack, &value);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to push stack: %s", ez_result_to_string(r));
+        return r;
+    }
+
+    r = ez_release_value(&value);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to release value: %s", ez_result_to_string(r));
+        return r;
+    }
+
+    r = ez_release_value(&object);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to release object: %s", ez_result_to_string(r));
         return r;
     }
 
@@ -493,11 +626,20 @@ ez_result_t ez_exec_code(ez_value_t* this, ez_code_t* code)
             case OP_LTS:
                 r = exec_lts(code, &stack, &ip, this);
                 break;
+            case OP_OBJ:
+                r = exec_obj(code, &stack, &ip, this);
+                break;
             case OP_STO:
                 r = exec_sto(code, &stack, &ip, this);
                 break;
             case OP_LOD:
                 r = exec_lod(code, &stack, &ip, this);
+                break;
+            case OP_SMB:
+                r = exec_smb(code, &stack, &ip);
+                break;
+            case OP_LMB:
+                r = exec_lmb(code, &stack, &ip);
                 break;
             case OP_ADD:
             case OP_SUB:
@@ -581,7 +723,6 @@ void ez_print_code(ez_code_t* code)
                 return;
                 break;
             case OP_LTN:
-                assert(r == EZ_SUCCESS);
                 printf("  LTN\n");
                 break;
             case OP_LTI:
@@ -599,6 +740,9 @@ void ez_print_code(ez_code_t* code)
                 assert(r == EZ_SUCCESS);
                 printf("  LTS %s\n", sval);
                 break;
+            case OP_OBJ:
+                printf("  OBJ\n", sval);
+                break;
             case OP_STO:
                 r = ez_code_string_read(code, &ip, &sval);
                 assert(r == EZ_SUCCESS);
@@ -608,6 +752,12 @@ void ez_print_code(ez_code_t* code)
                 r = ez_code_string_read(code, &ip, &sval);
                 assert(r == EZ_SUCCESS);
                 printf("  LOD %s\n", sval);
+                break;
+            case OP_SMB:
+                printf("  SMB\n", sval);
+                break;
+            case OP_LMB:
+                printf("  LMB\n", sval);
                 break;
             case OP_ADD:
                 printf("  ADD\n");

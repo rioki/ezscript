@@ -37,3 +37,4 @@ ez_result_t ez_allocate_stack(ez_stack_t* stack, size_t size);
 ez_result_t ez_free_stack(ez_stack_t* stack);
 ez_result_t ez_push_stack(ez_stack_t* stack, ez_value_t* value);
 ez_result_t ez_pop_stack(ez_stack_t* stack, ez_value_t* value);
+ez_result_t ez_stack_top(ez_stack_t* stack, ez_value_t* value);
