@@ -48,6 +48,10 @@ SOFTWARE.
 "%"                         return PERCENT;
 "("                         return OPEN_PAREN;
 ")"                         return CLOSE_PAREN;
+"{"                         return OPEN_CURLY;
+"}"                         return CLOSE_CURLY;
+"["                         return OPEN_SQUARE;
+"]"                         return CLOSE_SQUARE;
 ";"                         return SEMI;
 
 [a-zA-Z_][a-zA-Z0-9_]*      {

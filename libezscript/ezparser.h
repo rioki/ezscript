@@ -66,10 +66,14 @@ extern int ezdebug;
     PERCENT = 266,
     OPEN_PAREN = 267,
     CLOSE_PAREN = 268,
-    IDENTIFIER = 269,
-    REAL = 270,
-    INTEGER = 271,
-    STRING = 272
+    OPEN_CURLY = 269,
+    CLOSE_CURLY = 270,
+    OPEN_SQUARE = 271,
+    CLOSE_SQUARE = 272,
+    IDENTIFIER = 273,
+    REAL = 274,
+    INTEGER = 275,
+    STRING = 276
   };
 #endif
 
@@ -83,7 +87,7 @@ union YYSTYPE
   char* string;
   ast_node_t* node;  
 
-#line 87 "libezscript/ezparser.h" /* yacc.c:1909  */
+#line 91 "libezscript/ezparser.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

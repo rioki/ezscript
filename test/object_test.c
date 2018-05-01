@@ -255,7 +255,7 @@ int test_override_values()
     return 0;
 }
 
-int teat_object_data()
+int test_object_data()
 {
     ez_result_t r;
     ez_value_t  object;
@@ -280,6 +280,33 @@ int teat_object_data()
     return 0;
 }
 
+int test_empty_object()
+{
+    ez_result_t r;
+    ez_value_t  root;
+    ez_value_t  obj;
+    ez_type_t   type;
+    const char code[] = "obj = {};\n";
+    
+    r = ez_create_object(&root);
+
+    r = ez_eval(&root, code);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_get_member(&root, "obj", &obj);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_get_type(&obj, &type);
+    TEST_ASSERT(r == EZ_SUCCESS);
+    TEST_ASSERT(type == EZ_TYPE_OBJECT);
+    
+    r = ez_release_value(&obj);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_release_value(&root);
+    TEST_ASSERT(r == EZ_SUCCESS);
+}
+
 void run_object_tests(int* num_tests, int* num_errors)
 {
     TEST_RUN(test_create_object_null); 
@@ -290,5 +317,6 @@ void run_object_tests(int* num_tests, int* num_errors)
     TEST_RUN(test_set_member);
     TEST_RUN(test_multiple_values);
     TEST_RUN(test_override_values);
-    TEST_RUN(teat_object_data);
+    TEST_RUN(test_object_data);
+    TEST_RUN(test_empty_object);
 }

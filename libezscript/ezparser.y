@@ -65,6 +65,10 @@ void ezerror(ast_node_t** root, const char* msg);
 %token              PERCENT         "%"
 %token              OPEN_PAREN      "("
 %token              CLOSE_PAREN     ")"
+%token              OPEN_CURLY      "{"
+%token              CLOSE_CURLY     "}"
+%token              OPEN_SQUARE     "["
+%token              CLOSE_SQUARE    "]"
 
 %token <string>     IDENTIFIER      "identifier"
 %token <string>     REAL            "real"
@@ -72,8 +76,9 @@ void ezerror(ast_node_t** root, const char* msg);
 %token <string>     STRING          "string"
 
 %type <node>        statements statement 
-%type <node>        literal reference assignment value
+%type <node>        literal reference assignment primexp
 %type <node>        expression addexp mulexp
+%type <node>        object members member
 
 %%
 
@@ -98,19 +103,31 @@ addexp                  : mulexp                                {$$ = $1;}
                         | addexp "-" mulexp                     {$$ = ast_expr(AST_SUBTRACTION, $1, $3);}
                         ;
 
-mulexp                  : value                                 {$$ = $1;}
-                        | mulexp "*" value                      {$$ = ast_expr(AST_MULTIPLICATION, $1, $3);}     
-                        | mulexp "/" value                      {$$ = ast_expr(AST_DIVISION, $1, $3);}     
-                        | mulexp "%" value                      {$$ = ast_expr(AST_MODULO, $1, $3);}
-                        ;      
-                        
+mulexp                  : primexp                               {$$ = $1;}
+                        | mulexp "*" primexp                    {$$ = ast_expr(AST_MULTIPLICATION, $1, $3);}     
+                        | mulexp "/" primexp                    {$$ = ast_expr(AST_DIVISION, $1, $3);}     
+                        | mulexp "%" primexp                    {$$ = ast_expr(AST_MODULO, $1, $3);}
+                        ;                       
 
-value                   : "(" expression ")"                    {$$ = $2;}
+primexp                 : "(" expression ")"                    {$$ = $2;}
+                        | object                                {$$ = $1;}
                         | reference                             {$$ = $1;}
                         | literal                               {$$ = $1;}
                         ;
 
-reference               : IDENTIFIER                            {$$ = ast_reference($1);};
+object                  : "{" members "}"                       {$$ = NULL;}
+                        | "{" "}"                               {$$ = NULL;}
+                        ;
+
+members                 : members "," members                   {$$ = NULL;}
+                        | member                                {$$ = NULL;}
+                        ;
+
+member                  : IDENTIFIER ":" expression             {$$ = NULL;}
+                        ;
+
+reference               : IDENTIFIER                            {$$ = ast_reference($1);}
+                        ;
 
 literal                 : REAL                                  {$$ = ast_literal(AST_LITERAL_REAL, $1);}
                         | INTEGER                               {$$ = ast_literal(AST_LITERAL_INTEGER, $1);}
