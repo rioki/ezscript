@@ -24,6 +24,8 @@ SOFTWARE.
 #ifndef _EZSCRIPT_H_
 #define _EZSCRIPT_H_
 
+#include <stdio.h>
+
 enum _ez_result 
 {
     EZ_SUCCESS          =  0,
@@ -108,6 +110,8 @@ ez_result_t ez_get_object_data(ez_value_t* object, void** data);
 ez_result_t ez_compile(ez_value_t* function, const char* code);
 
 ez_result_t ez_eval(ez_value_t* root, const char* code);
+
+ez_result_t ez_print_function_code(FILE* fd, ez_value_t* function);
 
 const char* ez_result_to_string(ez_result_t r);
 const char* ez_type_to_string(ez_type_t t);

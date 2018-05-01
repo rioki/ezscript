@@ -289,6 +289,7 @@ int test_empty_object()
     const char code[] = "obj = {};\n";
     
     r = ez_create_object(&root);
+    TEST_ASSERT(r == EZ_SUCCESS);
 
     r = ez_eval(&root, code);
     TEST_ASSERT(r == EZ_SUCCESS);
@@ -318,6 +319,7 @@ int test_object_from_code()
     const char code[] = "obj = {a: 1};\n";
     
     r = ez_create_object(&root);
+    TEST_ASSERT(r == EZ_SUCCESS);
 
     r = ez_eval(&root, code);
     TEST_ASSERT(r == EZ_SUCCESS);
@@ -348,6 +350,7 @@ int test_object_from_code2()
     const char code[] = "obj = {a: 1, b: 2 + 3};\n";
     
     r = ez_create_object(&root);
+    TEST_ASSERT(r == EZ_SUCCESS);
 
     r = ez_eval(&root, code);
     TEST_ASSERT(r == EZ_SUCCESS);
@@ -384,6 +387,40 @@ int test_object_from_code2()
     return 0;
 }
 
+int test_read_member()
+{
+    ez_result_t r;
+    ez_value_t  root;
+    ez_value_t  yob;
+    long        yobv;
+    const char code[] = "dob = {\n"
+                        "  year: 1984,\n"
+                        "  month: 9,\n"
+                        "  day: 20\n"
+                        "};\n"
+                        "yob = dob.year;\n";
+    
+    r = ez_create_object(&root);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_eval(&root, code);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_get_member(&root, "yob", &yob);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_get_integer(&yob, &yobv);
+    TEST_ASSERT(r == EZ_SUCCESS);    
+    TEST_ASSERT(yobv == 1984);
+    
+    r = ez_release_value(&yob);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_release_value(&root);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    return 0;
+}
 
 void run_object_tests(int* num_tests, int* num_errors)
 {
@@ -399,4 +436,5 @@ void run_object_tests(int* num_tests, int* num_errors)
     TEST_RUN(test_empty_object);
     TEST_RUN(test_object_from_code);
     TEST_RUN(test_object_from_code2);
+    TEST_RUN(test_read_member);
 }

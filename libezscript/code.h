@@ -103,4 +103,6 @@ ez_result_t ez_code_uint32_read(ez_code_t* code, size_t* ip, uint32_t* value);
 ez_result_t ez_code_double_read(ez_code_t* code, size_t* ip, double* value);
 ez_result_t ez_code_string_read(ez_code_t* code, size_t* ip, const char** value);
 
+ez_result_t ez_print_code(FILE* fd, ez_code_t* code);
+
 #endif

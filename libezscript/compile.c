@@ -104,6 +104,26 @@ ez_result_t ez_generate_load_reference(ez_code_t* code, size_t *ip, ast_node_t* 
         return r;
     }
 
+    ast_node_t* member = node->child;
+    while (member != NULL)
+    {
+        r = ez_code_op_write(code, ip, OP_LMB);
+        if (r < 0)
+        {
+            EZ_TRACEV("Failed to write OP: %s", ez_result_to_string(r));
+            return r;
+        }
+
+        r = ez_code_string_write(code, ip, member->svalue);
+        if (r < 0)
+        {
+            EZ_TRACEV("Failed to write string: %s", ez_result_to_string(r));
+            return r;
+        }
+
+        member = member->child;
+    }
+
     return EZ_SUCCESS;
 }
 

@@ -309,13 +309,13 @@ ez_result_t exec_lmb(ez_code_t* code, ez_stack_t* stack, size_t* ip)
         return r;
     }
 
-    r = ez_stack_top(stack, &object);
+    r = ez_pop_stack(stack, &object);
     if (r < 0)
     {
         EZ_TRACEV("Failed to read stack: %s", ez_result_to_string(r));
         return r;
     }
-
+    
     r = ez_get_member(&object, id, &value);
     if (r < 0)
     {
@@ -685,98 +685,4 @@ ez_result_t ez_eval(ez_value_t* root, const char* code)
         
     ez_release_value(&function);
     return r;
-}
-
-
-void ez_print_code(ez_code_t* code)
-{
-    size_t      ip   = 0;
-    ez_op_t     op   = OP_NOP;
-    ez_result_t r    = EZ_SUCCESS;
-    const char* sval = NULL;
-    int32_t     ival = 0;
-    double      rval = 0;
-
-    assert(code != NULL);
-
-    printf("Code Listing:\n");
-
-    while (r == EZ_SUCCESS)
-    {
-        r = ez_code_op_read(code, &ip, &op);
-        if (r < 0)
-        {
-            if (r != EZ_OVERFLOW)
-            {
-                EZ_TRACEV("Failed to read opcode: %s", ez_result_to_string(r));
-            }
-            return;
-        }
-
-        switch (op)
-        {
-            case OP_NOP:
-                printf("  NOP\n");
-                break;
-            case OP_RET:
-                printf("  RET\n");
-                return;
-                break;
-            case OP_LTN:
-                printf("  LTN\n");
-                break;
-            case OP_LTI:
-                r = ez_code_int32_read(code, &ip, &ival);
-                assert(r == EZ_SUCCESS);
-                printf("  LTI %d\n", ival);
-                break;
-            case OP_LTR:
-                r = ez_code_double_read(code, &ip, &rval);
-                assert(r == EZ_SUCCESS);
-                printf("  LTR %f\n", rval);
-                break;
-            case OP_LTS:
-                r = ez_code_string_read(code, &ip, &sval);
-                assert(r == EZ_SUCCESS);
-                printf("  LTS %s\n", sval);
-                break;
-            case OP_OBJ:
-                printf("  OBJ\n", sval);
-                break;
-            case OP_STO:
-                r = ez_code_string_read(code, &ip, &sval);
-                assert(r == EZ_SUCCESS);
-                printf("  STO %s\n", sval);
-                break;
-            case OP_LOD:
-                r = ez_code_string_read(code, &ip, &sval);
-                assert(r == EZ_SUCCESS);
-                printf("  LOD %s\n", sval);
-                break;
-            case OP_SMB:
-                printf("  SMB\n", sval);
-                break;
-            case OP_LMB:
-                printf("  LMB\n", sval);
-                break;
-            case OP_ADD:
-                printf("  ADD\n");
-                break;
-            case OP_SUB:
-                printf("  SUB\n");
-                break;
-            case OP_MUL:
-                printf("  MUL\n");
-                break;
-            case OP_DIV:
-                printf("  DIV\n");
-                break;
-            case OP_MOD:
-                printf("  MOD\n");
-                break;
-            default:
-                assert(0);
-                return;
-        }
-    }
 }

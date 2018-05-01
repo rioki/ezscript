@@ -133,3 +133,27 @@ ez_result_t ez_call_function(const ez_value_t* function, ez_value_t* this, ez_va
     }
 }
 
+ez_result_t ez_print_function_code(FILE* fd, ez_value_t* function)
+{
+    ez_result_t r;
+
+    EZ_CHECK_ARGUMENT(function != NULL);
+    EZ_CHECK_ARGUMENT(fd);
+    EZ_CHECK_TYPE(function, EZ_TYPE_FUNCTION);
+    
+    if (function->function->code == NULL)
+    {
+        EZ_TRACE("Not a scripted function.");
+        return EZ_INVALID_TYPE;
+    }
+
+    r = ez_print_code(fd, function->function->code);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to print code: %s", ez_result_to_string(r));
+        return r;
+    }
+
+    return EZ_SUCCESS;
+}
+

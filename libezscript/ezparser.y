@@ -129,7 +129,8 @@ members                 : members "," members                   {$$ = ast_append
 member                  : IDENTIFIER ":" expression             {$$ = ast_named_single(AST_MEMBER, $1, $3);}
                         ;
 
-reference               : IDENTIFIER                            {$$ = ast_leaf(AST_REFERENCE, $1);}
+reference               : reference "." IDENTIFIER              {$$ = ast_child($1, ast_leaf(AST_REFERENCE, $3));}
+                        | IDENTIFIER                            {$$ = ast_leaf(AST_REFERENCE, $1);}
                         ;
 
 literal                 : REAL                                  {$$ = ast_leaf(AST_LITERAL_REAL, $1);}

@@ -30,5 +30,3 @@ SOFTWARE.
 
 ez_result_t ez_wrap_code(ez_value_t* value, ez_code_t* code);
 ez_result_t ez_exec_code(ez_value_t* this, ez_code_t* code);
-
-void ez_print_code(ez_code_t* code);

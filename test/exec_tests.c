@@ -297,7 +297,7 @@ int test_exec_mixed()
                         "b = 3;\n"
                         "c = 3;\n"
                         "d = (a - b) / 3;\n";
-    
+
     r = ez_create_object(&root);
 
     r = ez_eval(&root, code);

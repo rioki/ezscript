@@ -306,3 +306,100 @@ ez_result_t ez_code_string_read(ez_code_t* code, size_t* ip, const char** value)
 
     return EZ_SUCCESS;
 }
+
+ez_result_t ez_print_code(FILE* fd, ez_code_t* code)
+{
+    size_t      ip   = 0;
+    ez_op_t     op   = OP_NOP;
+    ez_result_t r    = EZ_SUCCESS;
+    const char* sval = NULL;
+    int32_t     ival = 0;
+    double      rval = 0;
+
+    EZ_CHECK_ARGUMENT(code != NULL);
+
+    while (r == EZ_SUCCESS)
+    {
+        r = ez_code_op_read(code, &ip, &op);
+        if (r < 0)
+        {
+            if (r != EZ_OVERFLOW)
+            {
+                EZ_TRACEV("Failed to read opcode: %s", ez_result_to_string(r));
+                return r;
+            }
+            return EZ_SUCCESS;
+        }
+
+        switch (op)
+        {
+            case OP_NOP:
+                fprintf(fd, "  NOP\n");
+                break;
+            case OP_RET:
+                fprintf(fd, "  RET\n");
+                break;
+            case OP_LTN:
+                fprintf(fd, "  LTN\n");
+                break;
+            case OP_LTI:
+                r = ez_code_int32_read(code, &ip, &ival);
+                EZ_ASSERT(r == EZ_SUCCESS);
+                fprintf(fd, "  LTI %d\n", ival);
+                break;
+            case OP_LTR:
+                r = ez_code_double_read(code, &ip, &rval);
+                EZ_ASSERT(r == EZ_SUCCESS);
+                fprintf(fd, "  LTR %f\n", rval);
+                break;
+            case OP_LTS:
+                r = ez_code_string_read(code, &ip, &sval);
+                EZ_ASSERT(r == EZ_SUCCESS);
+                fprintf(fd, "  LTS %s\n", sval);
+                break;
+            case OP_OBJ:
+                fprintf(fd, "  OBJ\n");
+                break;
+            case OP_STO:
+                r = ez_code_string_read(code, &ip, &sval);
+                EZ_ASSERT(r == EZ_SUCCESS);
+                fprintf(fd, "  STO %s\n", sval);
+                break;
+            case OP_LOD:
+                r = ez_code_string_read(code, &ip, &sval);
+                EZ_ASSERT(r == EZ_SUCCESS);
+                fprintf(fd, "  LOD %s\n", sval);
+                break;
+            case OP_SMB:
+                r = ez_code_string_read(code, &ip, &sval);
+                EZ_ASSERT(r == EZ_SUCCESS);
+                fprintf(fd, "  SMB %s\n", sval);
+                break;
+            case OP_LMB:
+                r = ez_code_string_read(code, &ip, &sval);
+                EZ_ASSERT(r == EZ_SUCCESS); 
+                fprintf(fd, "  LMB %s\n", sval);
+                break;
+            case OP_ADD:
+                fprintf(fd, "  ADD\n");
+                break;
+            case OP_SUB:
+                fprintf(fd, "  SUB\n");
+                break;
+            case OP_MUL:
+                fprintf(fd, "  MUL\n");
+                break;
+            case OP_DIV:
+                fprintf(fd, "  DIV\n");
+                break;
+            case OP_MOD:
+                fprintf(fd, "  MOD\n");
+                break;
+            default:
+                EZ_ASSERT(0);
+                return;
+        }
+    }
+
+    return EZ_SUCCESS;
+}
