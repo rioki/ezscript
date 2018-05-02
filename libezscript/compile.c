@@ -127,6 +127,79 @@ ez_result_t ez_generate_load_reference(ez_code_t* code, size_t *ip, ast_node_t* 
     return EZ_SUCCESS;
 }
 
+ez_result_t ez_generate_store_reference(ez_code_t* code, size_t *ip, ast_node_t* node)
+{
+    ez_result_t r;
+    ast_node_t* member;
+
+    member = node->child;
+    if (member != NULL)
+    {
+        r = ez_code_op_write(code, ip, OP_LOD);
+        if (r < 0)
+        {
+            EZ_TRACEV("Failed to write OP: %s", ez_result_to_string(r));
+            return r;
+        }
+
+        r = ez_code_string_write(code, ip, node->svalue);
+        if (r < 0)
+        {
+            EZ_TRACEV("Failed to write string: %s", ez_result_to_string(r));
+            return r;
+        }
+
+        while (member != NULL)
+        {
+            if (member->child == NULL) /* last member */
+            {
+                r = ez_code_op_write(code, ip, OP_SMB);
+                if (r < 0)
+                {
+                    EZ_TRACEV("Failed to write OP: %s", ez_result_to_string(r));
+                    return r;
+                }
+            }
+            else
+            {
+                r = ez_code_op_write(code, ip, OP_LMB);
+                if (r < 0)
+                {
+                    EZ_TRACEV("Failed to write OP: %s", ez_result_to_string(r));
+                    return r;
+                }
+            }
+
+            r = ez_code_string_write(code, ip, member->svalue);
+            if (r < 0)
+            {
+                EZ_TRACEV("Failed to write string: %s", ez_result_to_string(r));
+                return r;
+            }
+
+            member = member->child;
+        }
+    }
+    else
+    {
+        r = ez_code_op_write(code, ip, OP_STO);
+        if (r < 0)
+        {
+            EZ_TRACEV("Failed to write OP: %s", ez_result_to_string(r));
+            return r;
+        }
+
+        r = ez_code_string_write(code, ip, node->svalue);
+        if (r < 0)
+        {
+            EZ_TRACEV("Failed to write string: %s", ez_result_to_string(r));
+            return r;
+        }
+    }
+
+    return EZ_SUCCESS;
+}
+
 ez_result_t ez_generate_operation(ez_code_t* code, size_t *ip, ast_node_t* node)
 {
     ez_result_t r = EZ_SUCCESS;
@@ -232,7 +305,7 @@ ez_result_t ez_generate_object(ez_code_t* code, size_t *ip, ast_node_t* node)
             return r;
         }
 
-        r = ez_code_op_write(code, ip, OP_SMB);
+        r = ez_code_op_write(code, ip, OP_DMB);
         if (r < 0)
         {
             EZ_TRACEV("Failed to write OP: %s", ez_result_to_string(r));
@@ -329,22 +402,18 @@ ez_result_t ez_generate_assignment(ez_code_t* code, size_t *ip, ast_node_t* node
     r = ez_generate_expression(code, ip, expression);
     if (r < 0)
     {
+        EZ_TRACEV("Failed to generate expression: %s", ez_result_to_string(r));
         return r;
     }
     
-    r = ez_code_op_write(code, ip, OP_STO);
+    r = ez_generate_store_reference(code, ip, reference);
     if (r < 0)
     {
+        EZ_TRACEV("Failed to generate store reference: %s", ez_result_to_string(r));
         return r;
     }
 
-    r = ez_code_string_write(code, ip, reference->svalue);
-    if (r < 0)
-    {
-        return r;
-    }
-
-    return r;
+    return EZ_SUCCESS;
 }
 
 ez_result_t ez_generate_node(ez_code_t* code, size_t *ip, ast_node_t* node)

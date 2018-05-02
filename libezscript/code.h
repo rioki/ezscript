@@ -57,8 +57,11 @@ enum _ez_op
     /* LOD <string> - Load a Value
        Copies the given variable to the stack. */
     OP_LOD,
-    /* SMB <string> - Store Member
+    /* DMB <string> - Define Member
        Copies the value on the stack to the object one below. */
+    OP_DMB,
+    /* SMB <string> - Store Member
+       Copies the value on the stack to the object one below and replaces it */
     OP_SMB,
     /* LMB <string> - Load Member
        Copies the member onto the stack of the object on the stack. */

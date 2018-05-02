@@ -243,7 +243,7 @@ ez_result_t exec_lod(ez_code_t* code, ez_stack_t* stack, size_t* ip, ez_value_t*
     return EZ_SUCCESS;
 }
 
-ez_result_t exec_smb(ez_code_t* code, ez_stack_t* stack, size_t* ip)
+ez_result_t exec_dmb(ez_code_t* code, ez_stack_t* stack, size_t* ip)
 {
     ez_result_t r;
     const char* id;
@@ -268,6 +268,59 @@ ez_result_t exec_smb(ez_code_t* code, ez_stack_t* stack, size_t* ip)
     if (r < 0)
     {
         EZ_TRACEV("Failed to read stack: %s", ez_result_to_string(r));
+        return r;
+    }
+
+    r = ez_set_member(&object, id, &value);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to set member: %s", ez_result_to_string(r));
+        return r;
+    }
+
+    r = ez_release_value(&value);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to release value: %s", ez_result_to_string(r));
+        return r;
+    }
+
+    r = ez_release_value(&object);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to release object: %s", ez_result_to_string(r));
+        return r;
+    }
+
+    return EZ_SUCCESS;
+}
+
+
+ez_result_t exec_smb(ez_code_t* code, ez_stack_t* stack, size_t* ip)
+{
+    ez_result_t r;
+    const char* id;
+    ez_value_t  value;
+    ez_value_t  object;
+
+    r = ez_code_string_read(code, ip, &id);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to read string: %s", ez_result_to_string(r));
+        return r;
+    }
+
+    r = ez_pop_stack(stack, &object);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to read stack: %s", ez_result_to_string(r));
+        return r;
+    }
+
+    r = ez_pop_stack(stack, &value);
+    if (r < 0)
+    {
+        EZ_TRACEV("Failed to pop stack: %s", ez_result_to_string(r));
         return r;
     }
 
@@ -634,6 +687,9 @@ ez_result_t ez_exec_code(ez_value_t* this, ez_code_t* code)
                 break;
             case OP_LOD:
                 r = exec_lod(code, &stack, &ip, this);
+                break;
+            case OP_DMB:
+                r = exec_dmb(code, &stack, &ip);
                 break;
             case OP_SMB:
                 r = exec_smb(code, &stack, &ip);

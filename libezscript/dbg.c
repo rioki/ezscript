@@ -27,18 +27,18 @@ SOFTWARE.
 
 #include "ezscript.h"
 
-void ez_trace(const char* file, unsigned int line, const char* msg)
+void ez_trace(const char* file, unsigned int line, const char* func, const char* msg)
 {
-    printf("%s(%d): %s\n", file, line, msg);
+    printf("%s(%d): %s: %s\n", file, line, func, msg);
 }
 
-void ez_tracev(const char* file, unsigned int line, const char* format, ...)
+void ez_tracev(const char* file, unsigned int line, const char* func, const char* format, ...)
 {
     char buffer[256];
     va_list args;
     va_start(args, format);
     vsnprintf(buffer, 256, format, args);
-    ez_trace(file, line, buffer);
+    ez_trace(file, line, func, buffer);
     va_end(args);
 }
 

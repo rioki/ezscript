@@ -139,17 +139,12 @@ ez_result_t ez_get_member(const ez_value_t* object, const char* id, ez_value_t* 
 
 ez_result_t ez_set_member(ez_value_t* object, const char* id, const ez_value_t* value)
 {
-    ez_result_t r = EZ_SUCCESS;
+    ez_result_t r;
 
-    if (object == NULL || id == NULL || value == NULL)
-    {
-        return EZ_INVALID_ARGUMENT;
-    }
-
-    if (object->type != EZ_TYPE_OBJECT) 
-    {
-        return EZ_INVALID_TYPE;
-    }
+    EZ_CHECK_ARGUMENT(object != NULL);
+    EZ_CHECK_ARGUMENT(id != NULL);
+    EZ_CHECK_ARGUMENT(value != NULL);
+    EZ_CHECK_TYPE(object, EZ_TYPE_OBJECT);
 
     ez_member_t* member = object->object->members;
     while (member != NULL)

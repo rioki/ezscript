@@ -422,6 +422,59 @@ int test_read_member()
     return 0;
 }
 
+void print_listing(const char* code)
+{
+    ez_value_t function;
+
+    ez_compile(&function, code);
+
+    ez_print_function_code(stdout, &function);
+}
+
+int test_write_member()
+{
+    ez_result_t r;
+    ez_value_t  root;
+    ez_value_t  dob;
+    ez_value_t  dob_year;
+    long        yobv;
+    const char code[] = "dob = {\n"
+                        "  year: 1984,\n"
+                        "  month: 9,\n"
+                        "  day: 20\n"
+                        "};\n"
+                        "dob.year = 1980;\n";
+    
+    print_listing(code);
+
+    r = ez_create_object(&root);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_eval(&root, code);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_get_member(&root, "dob", &dob);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_get_member(&dob, "year", &dob_year);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_get_integer(&dob_year, &yobv);
+    TEST_ASSERT(r == EZ_SUCCESS);    
+    TEST_ASSERT(yobv == 1980);
+    
+    r = ez_release_value(&dob);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_release_value(&dob_year);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_release_value(&root);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    return 0;
+}
+
 void run_object_tests(int* num_tests, int* num_errors)
 {
     TEST_RUN(test_create_object_null); 
@@ -437,4 +490,5 @@ void run_object_tests(int* num_tests, int* num_errors)
     TEST_RUN(test_object_from_code);
     TEST_RUN(test_object_from_code2);
     TEST_RUN(test_read_member);
+    TEST_RUN(test_write_member);
 }

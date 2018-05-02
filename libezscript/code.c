@@ -370,6 +370,11 @@ ez_result_t ez_print_code(FILE* fd, ez_code_t* code)
                 EZ_ASSERT(r == EZ_SUCCESS);
                 fprintf(fd, "  LOD %s\n", sval);
                 break;
+            case OP_DMB:
+                r = ez_code_string_read(code, &ip, &sval);
+                EZ_ASSERT(r == EZ_SUCCESS);
+                fprintf(fd, "  DMB %s\n", sval);
+                break;
             case OP_SMB:
                 r = ez_code_string_read(code, &ip, &sval);
                 EZ_ASSERT(r == EZ_SUCCESS);

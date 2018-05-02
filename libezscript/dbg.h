@@ -26,8 +26,8 @@ SOFTWARE.
 
 #ifndef NDEBUG
 
-#define EZ_TRACE(MSG) ez_trace(__FILE__, __LINE__, MSG)
-#define EZ_TRACEV(MSG, ...) ez_tracev(__FILE__, __LINE__, MSG, __VA_ARGS__)
+#define EZ_TRACE(MSG) ez_trace(__FILE__, __LINE__, __func__, MSG)
+#define EZ_TRACEV(MSG, ...) ez_tracev(__FILE__, __LINE__, __func__, MSG, __VA_ARGS__)
 
 #define EZ_ASSERT(COND)                                                         \
     if (!(COND))                                                                \
@@ -36,8 +36,8 @@ SOFTWARE.
         return EZ_RUNTIME_ERRPOR;    	                                        \
     }
 
-void ez_trace(const char* file, unsigned int line, const char* msg);
-void ez_tracev(const char* file, unsigned int line, const char* format, ...);
+void ez_trace(const char* file, unsigned int line, const char* func, const char* msg);
+void ez_tracev(const char* file, unsigned int line, const char* func, const char* format, ...);
 
 #else
 #define TRACE(MSG)
