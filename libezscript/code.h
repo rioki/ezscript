@@ -41,6 +41,9 @@ enum _ez_op
     OP_LTN,
     /* LTI <int32> - Literal Integer 
        Creates an integer value on the stack */
+    OP_LTB,
+    /* LTR <uint8> - Literal boolean
+       Creates a boolean value on the stack */
     OP_LTI,
     /* LTR <double> - Literal Real 
        Creates a real value on the stack */
@@ -96,12 +99,14 @@ ez_result_t ez_free_code(ez_code_t* code);
 
 ez_result_t ez_code_op_write(ez_code_t* code, size_t* ip, ez_op_t value);
 ez_result_t ez_code_int32_write(ez_code_t* code, size_t* ip, int32_t value);
+ez_result_t ez_code_uint8_write(ez_code_t* code, size_t* ip, uint8_t value);
 ez_result_t ez_code_uint32_write(ez_code_t* code, size_t* ip, uint32_t value);
 ez_result_t ez_code_double_write(ez_code_t* code, size_t* ip, double value);
 ez_result_t ez_code_string_write(ez_code_t* code, size_t* ip, const char* value);
 
 ez_result_t ez_code_op_read(ez_code_t* code, size_t* ip, ez_op_t* value);
 ez_result_t ez_code_int32_read(ez_code_t* code, size_t* ip, int32_t* value);
+ez_result_t ez_code_uint8_read(ez_code_t* code, size_t* ip, uint8_t* value);
 ez_result_t ez_code_uint32_read(ez_code_t* code, size_t* ip, uint32_t* value);
 ez_result_t ez_code_double_read(ez_code_t* code, size_t* ip, double* value);
 ez_result_t ez_code_string_read(ez_code_t* code, size_t* ip, const char** value);

@@ -116,6 +116,29 @@ ez_result_t ez_code_int32_write(ez_code_t* code, size_t* ip, int32_t value)
     return r;
 }
 
+ez_result_t ez_code_uint8_write(ez_code_t* code, size_t* ip, uint8_t value)
+{
+    ez_result_t r = EZ_SUCCESS;
+
+    if (code == NULL || ip == NULL)
+    {
+        return EZ_INVALID_ARGUMENT;
+    }
+
+    if ((*ip + sizeof(uint8_t)) > code->size)
+    {
+        r = ez_grow_code(code);
+        if (r < 0)
+        {
+            return r;
+        }
+    }
+
+    memcpy(code->code + (*ip), &value, sizeof(uint8_t));
+    *ip += sizeof(uint8_t);
+
+    return r;
+}
 
 ez_result_t ez_code_uint32_write(ez_code_t* code, size_t* ip, uint32_t value)
 {
@@ -218,6 +241,26 @@ ez_result_t ez_code_op_read(ez_code_t* code, size_t* ip, ez_op_t* value)
     return r;
 }
 
+ez_result_t ez_code_uint8_read(ez_code_t* code, size_t* ip, uint8_t* value)
+{
+    ez_result_t r = EZ_SUCCESS;
+
+    if (code == NULL || ip == NULL)
+    {
+        return EZ_INVALID_ARGUMENT;
+    }
+
+    if ((*ip + sizeof(int8_t)) > code->size)
+    {
+        return EZ_OVERFLOW;
+    }
+
+    memcpy(value, code->code + (*ip), sizeof(int8_t));
+    *ip += sizeof(int8_t);
+
+    return r;
+}
+
 ez_result_t ez_code_int32_read(ez_code_t* code, size_t* ip, int32_t* value)
 {
     ez_result_t r = EZ_SUCCESS;
@@ -314,6 +357,7 @@ ez_result_t ez_print_code(FILE* fd, ez_code_t* code)
     ez_result_t r    = EZ_SUCCESS;
     const char* sval = NULL;
     int32_t     ival = 0;
+    uint8_t     ui8val = 0;
     double      rval = 0;
 
     EZ_CHECK_ARGUMENT(code != NULL);
@@ -341,6 +385,11 @@ ez_result_t ez_print_code(FILE* fd, ez_code_t* code)
                 break;
             case OP_LTN:
                 fprintf(fd, "  LTN\n");
+                break;
+            case OP_LTB:
+                r = ez_code_uint8_read(code, &ip, &ui8val);
+                EZ_ASSERT(r == EZ_SUCCESS);
+                fprintf(fd, "  LTB %d\n", ui8val);
                 break;
             case OP_LTI:
                 r = ez_code_int32_read(code, &ip, &ival);

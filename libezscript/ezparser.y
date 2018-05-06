@@ -54,7 +54,9 @@ void ezerror(ast_node_t** root, const char* msg);
 %token              END 0           "end of file"
 %token              ERROR           "lexing error"
 
-%token              NILL            "null"
+%token              KW_NULL         "null"
+%token              KW_TRUE         "true"
+%token              KW_FALSE        "false"
 
 %token              EQUAL           "="
 %token              PLUS            "+"
@@ -136,7 +138,9 @@ reference               : reference "." IDENTIFIER              {$$ = ast_child(
 literal                 : REAL                                  {$$ = ast_leaf(AST_LITERAL_REAL, $1);}
                         | INTEGER                               {$$ = ast_leaf(AST_LITERAL_INTEGER, $1);}
                         | STRING                                {$$ = ast_leaf(AST_LITERAL_STRING, $1);}
-                        | "null"                                {$$ = ast_leaf(AST_LITERAL_NULL, "null");}
+                        | "true"                                {$$ = ast_cleaf(AST_LITERAL_BOOLEAN, "true");}
+                        | "false"                               {$$ = ast_cleaf(AST_LITERAL_BOOLEAN, "false");}
+                        | "null"                                {$$ = ast_cleaf(AST_LITERAL_NULL, "null");}
                         ;
 
 %%

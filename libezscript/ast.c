@@ -159,6 +159,11 @@ ast_node_t* ast_leaf(ast_type_t type, char* value)
     return node;
 }
 
+ast_node_t* ast_cleaf(ast_type_t type, const char* id)
+{
+    return ast_leaf(type, strdup(id));
+}
+
 void ast_free(ast_node_t* node)
 {
     if (node != NULL)

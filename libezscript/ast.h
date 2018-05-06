@@ -36,6 +36,7 @@ enum ast_type
     AST_REFERENCE,
     AST_OBJECT,
     AST_MEMBER,
+    AST_LITERAL_BOOLEAN,
     AST_LITERAL_REAL,
     AST_LITERAL_INTEGER,
     AST_LITERAL_STRING,
@@ -72,6 +73,8 @@ ast_node_t* ast_named_single(ast_type_t type, char* id, ast_node_t* child);
 ast_node_t* ast_join(ast_type_t type, ast_node_t* lhs, ast_node_t* rhs);
 
 ast_node_t* ast_leaf(ast_type_t type, char* id);
+
+ast_node_t* ast_cleaf(ast_type_t type, const char* id);
 
 void ast_free(ast_node_t* node);
 

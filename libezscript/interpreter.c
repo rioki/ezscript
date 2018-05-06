@@ -60,6 +60,27 @@ ez_result_t exec_ltn(ez_code_t* code, ez_stack_t* stack, size_t* ip, ez_value_t*
     return EZ_SUCCESS;
 }
 
+ez_result_t exec_ltb(ez_code_t* code, ez_stack_t* stack, size_t* ip)
+{
+    ez_result_t r;
+    uint8_t     literal;
+    ez_value_t  value;
+
+    r = ez_code_uint8_read(code, ip, &literal);
+    EZ_CHECK_RESULT("ez_code_uint8_read", r);
+
+    r = ez_create_boolean(&value, literal);
+    EZ_CHECK_RESULT("ez_create_boolean", r);
+
+    r = ez_push_stack(stack, &value);
+    EZ_CHECK_RESULT("ez_push_stack", r);
+
+    r = ez_release_value(&value);
+    EZ_CHECK_RESULT("ez_release_value", r);
+
+    return EZ_SUCCESS;
+}
+
 ez_result_t exec_lti(ez_code_t* code, ez_stack_t* stack, size_t* ip, ez_value_t* this)
 {
     ez_result_t r;
@@ -684,6 +705,9 @@ ez_result_t ez_exec_code(ez_value_t* this, ez_code_t* code)
                 break;
             case OP_LTN:
                 r = exec_ltn(code, &stack, &ip, this);
+                break;
+            case OP_LTB:
+                r = exec_ltb(code, &stack, &ip);
                 break;
             case OP_LTI:
                 r = exec_lti(code, &stack, &ip, this);

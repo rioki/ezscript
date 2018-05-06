@@ -319,6 +319,44 @@ int test_exec_mixed()
     return 0;
 }
 
+int test_boolean_values()
+{
+    ez_result_t r;
+    ez_value_t  root;
+    ez_value_t  a, b;
+    int         value;
+    const char code[] = "a = true;\n"
+                        "b = false;\n";
+
+    r = ez_create_object(&root);
+
+    r = ez_eval(&root, code);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_get_member(&root, "a", &a);
+    TEST_ASSERT(r == EZ_SUCCESS);
+    r = ez_get_member(&root, "b", &b);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_get_boolean(&a, &value);
+    TEST_ASSERT(r == EZ_SUCCESS);
+    TEST_ASSERT(1 == value);
+
+    r = ez_get_boolean(&b, &value);
+    TEST_ASSERT(r == EZ_SUCCESS);
+    TEST_ASSERT(0 == value);
+
+    r = ez_release_value(&a);
+    TEST_ASSERT(r == EZ_SUCCESS);
+    r = ez_release_value(&b);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_release_value(&root);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    return 0;
+}
+
 void run_exec_tests(int* num_tests, int* num_errors)
 {
     TEST_RUN(test_exec_empty);
@@ -331,4 +369,5 @@ void run_exec_tests(int* num_tests, int* num_errors)
     TEST_RUN(test_exec_division);
     TEST_RUN(test_exec_subraction);
     TEST_RUN(test_exec_mixed);
+    TEST_RUN(test_boolean_values);
 }

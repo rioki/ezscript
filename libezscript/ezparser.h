@@ -56,27 +56,29 @@ extern int ezdebug;
   {
     END = 0,
     ERROR = 258,
-    NILL = 259,
-    EQUAL = 260,
-    PLUS = 261,
-    MINUS = 262,
-    SEMI = 263,
-    COLON = 264,
-    COMMA = 265,
-    DOT = 266,
-    STAR = 267,
-    SLASH = 268,
-    PERCENT = 269,
-    OPEN_PAREN = 270,
-    CLOSE_PAREN = 271,
-    OPEN_CURLY = 272,
-    CLOSE_CURLY = 273,
-    OPEN_SQUARE = 274,
-    CLOSE_SQUARE = 275,
-    IDENTIFIER = 276,
-    REAL = 277,
-    INTEGER = 278,
-    STRING = 279
+    KW_NULL = 259,
+    KW_TRUE = 260,
+    KW_FALSE = 261,
+    EQUAL = 262,
+    PLUS = 263,
+    MINUS = 264,
+    SEMI = 265,
+    COLON = 266,
+    COMMA = 267,
+    DOT = 268,
+    STAR = 269,
+    SLASH = 270,
+    PERCENT = 271,
+    OPEN_PAREN = 272,
+    CLOSE_PAREN = 273,
+    OPEN_CURLY = 274,
+    CLOSE_CURLY = 275,
+    OPEN_SQUARE = 276,
+    CLOSE_SQUARE = 277,
+    IDENTIFIER = 278,
+    REAL = 279,
+    INTEGER = 280,
+    STRING = 281
   };
 #endif
 
@@ -90,7 +92,7 @@ union YYSTYPE
     char* string;
     ast_node_t* node;  
 
-#line 94 "libezscript/ezparser.h" /* yacc.c:1909  */
+#line 96 "libezscript/ezparser.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

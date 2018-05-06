@@ -30,14 +30,14 @@ SOFTWARE.
 #define TEST_ASSERT(COND)                                                      \
     if (!(COND))                                                               \
     {                                                                          \
-        printf("%s:%d: Assert '%s' failed.\n", __FILE__, __LINE__, #COND);     \
+        printf("%s:%d: %s: Assert '%s' failed.\n", __FILE__, __LINE__, __func__, #COND);     \
         return -1;                                                             \
     }
 
 #define TEST_STRING(EXP, IS)                                                    \
     if (strcmp(EXP, IS) != 0)                                                   \
     {                                                                           \
-        printf("%s:%d: Expectged '%s' but got '%s'.\n", __FILE__, __LINE__, EXP, IS); \
+        printf("%s:%d: %s: Expectged '%s' but got '%s'.\n", __FILE__, __LINE__, __func__, EXP, IS); \
         return -1;                                                              \
     }
 
@@ -50,6 +50,5 @@ SOFTWARE.
             (*num_errors)++;                                                   \
         }                                                                      \
     }
-
 
 #endif

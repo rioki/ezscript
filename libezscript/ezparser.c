@@ -128,27 +128,29 @@ extern int ezdebug;
   {
     END = 0,
     ERROR = 258,
-    NILL = 259,
-    EQUAL = 260,
-    PLUS = 261,
-    MINUS = 262,
-    SEMI = 263,
-    COLON = 264,
-    COMMA = 265,
-    DOT = 266,
-    STAR = 267,
-    SLASH = 268,
-    PERCENT = 269,
-    OPEN_PAREN = 270,
-    CLOSE_PAREN = 271,
-    OPEN_CURLY = 272,
-    CLOSE_CURLY = 273,
-    OPEN_SQUARE = 274,
-    CLOSE_SQUARE = 275,
-    IDENTIFIER = 276,
-    REAL = 277,
-    INTEGER = 278,
-    STRING = 279
+    KW_NULL = 259,
+    KW_TRUE = 260,
+    KW_FALSE = 261,
+    EQUAL = 262,
+    PLUS = 263,
+    MINUS = 264,
+    SEMI = 265,
+    COLON = 266,
+    COMMA = 267,
+    DOT = 268,
+    STAR = 269,
+    SLASH = 270,
+    PERCENT = 271,
+    OPEN_PAREN = 272,
+    CLOSE_PAREN = 273,
+    OPEN_CURLY = 274,
+    CLOSE_CURLY = 275,
+    OPEN_SQUARE = 276,
+    CLOSE_SQUARE = 277,
+    IDENTIFIER = 278,
+    REAL = 279,
+    INTEGER = 280,
+    STRING = 281
   };
 #endif
 
@@ -162,7 +164,7 @@ union YYSTYPE
     char* string;
     ast_node_t* node;  
 
-#line 166 "libezscript/ezparser.c" /* yacc.c:355  */
+#line 168 "libezscript/ezparser.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -193,7 +195,7 @@ int ezparse (ast_node_t** root);
 
 /* Copy the second part of user declarations.  */
 
-#line 197 "libezscript/ezparser.c" /* yacc.c:358  */
+#line 199 "libezscript/ezparser.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -437,21 +439,21 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  7
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   38
+#define YYLAST   40
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  25
+#define YYNTOKENS  27
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  14
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  30
+#define YYNRULES  32
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  47
+#define YYNSTATES  49
 
 /* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
    by yylex, with out-of-bounds checking.  */
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   279
+#define YYMAXUTOK   281
 
 #define YYTRANSLATE(YYX)                                                \
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
@@ -487,17 +489,18 @@ static const yytype_uint8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-      15,    16,    17,    18,    19,    20,    21,    22,    23,    24
+      15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
+      25,    26
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    88,    88,    89,    92,    93,    96,    99,   101,   104,
-     105,   106,   109,   110,   111,   112,   115,   116,   117,   118,
-     121,   122,   125,   126,   129,   132,   133,   136,   137,   138,
-     139
+       0,    90,    90,    91,    94,    95,    98,   101,   103,   106,
+     107,   108,   111,   112,   113,   114,   117,   118,   119,   120,
+     123,   124,   127,   128,   131,   134,   135,   138,   139,   140,
+     141,   142,   143
 };
 #endif
 
@@ -507,12 +510,12 @@ static const yytype_uint8 yyrline[] =
 static const char *const yytname[] =
 {
   "\"end of file\"", "error", "$undefined", "\"lexing error\"",
-  "\"null\"", "\"=\"", "\"+\"", "\"-\"", "\";\"", "\":\"", "\",\"",
-  "\".\"", "\"*\"", "\"/\"", "\"%\"", "\"(\"", "\")\"", "\"{\"", "\"}\"",
-  "\"[\"", "\"]\"", "\"identifier\"", "\"real\"", "\"integer\"",
-  "\"string\"", "$accept", "ezscript", "statements", "statement",
-  "assignment", "expression", "addexp", "mulexp", "primexp", "object",
-  "members", "member", "reference", "literal", YY_NULLPTR
+  "\"null\"", "\"true\"", "\"false\"", "\"=\"", "\"+\"", "\"-\"", "\";\"",
+  "\":\"", "\",\"", "\".\"", "\"*\"", "\"/\"", "\"%\"", "\"(\"", "\")\"",
+  "\"{\"", "\"}\"", "\"[\"", "\"]\"", "\"identifier\"", "\"real\"",
+  "\"integer\"", "\"string\"", "$accept", "ezscript", "statements",
+  "statement", "assignment", "expression", "addexp", "mulexp", "primexp",
+  "object", "members", "member", "reference", "literal", YY_NULLPTR
 };
 #endif
 
@@ -523,7 +526,7 @@ static const yytype_uint16 yytoknum[] =
 {
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
-     275,   276,   277,   278,   279
+     275,   276,   277,   278,   279,   280,   281
 };
 # endif
 
@@ -541,11 +544,11 @@ static const yytype_uint16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-     -15,   -16,    11,   -15,   -16,   -16,    -2,   -16,   -16,    -3,
-       7,   -16,    -3,   -14,   -16,   -16,   -16,    21,    20,     3,
-     -16,   -16,     2,   -16,   -16,    16,   -16,    24,    -8,   -16,
-     -16,    -3,    -3,    -3,    -3,    -3,   -16,    -3,    13,   -16,
-       3,     3,   -16,   -16,   -16,   -16,    25
+     -15,   -16,    13,   -15,   -16,   -16,    -2,   -16,   -16,    -3,
+       1,   -16,   -16,   -16,    -3,   -13,   -16,   -16,   -16,     5,
+      21,     3,   -16,   -16,    18,   -16,   -16,    16,   -16,    24,
+      -8,   -16,   -16,    -3,    -3,    -3,    -3,    -3,   -16,    -3,
+      14,   -16,     3,     3,   -16,   -16,   -16,   -16,    26
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -554,24 +557,24 @@ static const yytype_int8 yypact[] =
 static const yytype_uint8 yydefact[] =
 {
        3,    26,     0,     2,     5,     6,     0,     1,     4,     0,
-       0,    30,     0,     0,    27,    28,    29,     0,     8,     9,
-      12,    17,    18,    19,    25,     0,    21,     0,     0,    23,
-       7,     0,     0,     0,     0,     0,    16,     0,     0,    20,
-      10,    11,    13,    14,    15,    24,    22
+       0,    32,    30,    31,     0,     0,    27,    28,    29,     0,
+       8,     9,    12,    17,    18,    19,    25,     0,    21,     0,
+       0,    23,     7,     0,     0,     0,     0,     0,    16,     0,
+       0,    20,    10,    11,    13,    14,    15,    24,    22
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -16,   -16,   -16,    33,   -16,   -12,   -16,    -1,   -11,   -16,
-       0,   -16,     5,   -16
+     -16,   -16,   -16,    33,   -16,   -14,   -16,    -1,    -9,   -16,
+       0,   -16,     6,   -16
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     2,     3,     4,     5,    17,    18,    19,    20,    21,
-      28,    29,    22,    23
+      -1,     2,     3,     4,     5,    19,    20,    21,    22,    23,
+      30,    31,    24,    25
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -579,38 +582,40 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
-      25,    11,    38,     9,    26,     6,     1,    27,     6,    10,
-      39,     7,    12,    10,    13,    33,    34,    35,     1,    14,
-      15,    16,    42,    43,    44,    45,    31,    32,    24,    30,
-      40,    41,    36,    37,    27,    38,     8,     0,    46
+      27,    11,    12,    13,    40,     9,     6,    28,     1,     6,
+      29,    10,    41,     7,    14,    32,    15,    35,    36,    37,
+       1,    16,    17,    18,    26,    47,    44,    45,    46,    33,
+      34,    10,    42,    43,    38,    39,     8,    29,    40,     0,
+      48
 };
 
 static const yytype_int8 yycheck[] =
 {
-      12,     4,    10,     5,    18,     0,    21,    21,     3,    11,
-      18,     0,    15,    11,    17,    12,    13,    14,    21,    22,
-      23,    24,    33,    34,    35,    37,     6,     7,    21,     8,
-      31,    32,    16,     9,    21,    10,     3,    -1,    38
+      14,     4,     5,     6,    12,     7,     0,    20,    23,     3,
+      23,    13,    20,     0,    17,    10,    19,    14,    15,    16,
+      23,    24,    25,    26,    23,    39,    35,    36,    37,     8,
+       9,    13,    33,    34,    18,    11,     3,    23,    12,    -1,
+      40
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,    21,    26,    27,    28,    29,    37,     0,    28,     5,
-      11,     4,    15,    17,    22,    23,    24,    30,    31,    32,
-      33,    34,    37,    38,    21,    30,    18,    21,    35,    36,
-       8,     6,     7,    12,    13,    14,    16,     9,    10,    18,
-      32,    32,    33,    33,    33,    30,    35
+       0,    23,    28,    29,    30,    31,    39,     0,    30,     7,
+      13,     4,     5,     6,    17,    19,    24,    25,    26,    32,
+      33,    34,    35,    36,    39,    40,    23,    32,    20,    23,
+      37,    38,    10,     8,     9,    14,    15,    16,    18,    11,
+      12,    20,    34,    34,    35,    35,    35,    32,    37
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,    25,    26,    26,    27,    27,    28,    29,    30,    31,
-      31,    31,    32,    32,    32,    32,    33,    33,    33,    33,
-      34,    34,    35,    35,    36,    37,    37,    38,    38,    38,
-      38
+       0,    27,    28,    28,    29,    29,    30,    31,    32,    33,
+      33,    33,    34,    34,    34,    34,    35,    35,    35,    35,
+      36,    36,    37,    37,    38,    39,    39,    40,    40,    40,
+      40,    40,    40
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
@@ -619,7 +624,7 @@ static const yytype_uint8 yyr2[] =
        0,     2,     1,     0,     2,     1,     1,     4,     1,     1,
        3,     3,     1,     3,     3,     3,     3,     1,     1,     1,
        3,     2,     3,     1,     3,     3,     1,     1,     1,     1,
-       1
+       1,     1,     1
 };
 
 
@@ -1391,181 +1396,193 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 88 "libezscript/ezparser.y" /* yacc.c:1646  */
+#line 90 "libezscript/ezparser.y" /* yacc.c:1646  */
     {(*root) = (yyvsp[0].node);}
-#line 1397 "libezscript/ezparser.c" /* yacc.c:1646  */
+#line 1402 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 3:
-#line 89 "libezscript/ezparser.y" /* yacc.c:1646  */
+#line 91 "libezscript/ezparser.y" /* yacc.c:1646  */
     {(*root) = NULL;}
-#line 1403 "libezscript/ezparser.c" /* yacc.c:1646  */
+#line 1408 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 4:
-#line 92 "libezscript/ezparser.y" /* yacc.c:1646  */
+#line 94 "libezscript/ezparser.y" /* yacc.c:1646  */
     {(yyval.node) = ast_append((yyvsp[-1].node), (yyvsp[0].node));}
-#line 1409 "libezscript/ezparser.c" /* yacc.c:1646  */
+#line 1414 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 93 "libezscript/ezparser.y" /* yacc.c:1646  */
+#line 95 "libezscript/ezparser.y" /* yacc.c:1646  */
     {(yyval.node) = (yyvsp[0].node);}
-#line 1415 "libezscript/ezparser.c" /* yacc.c:1646  */
+#line 1420 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 96 "libezscript/ezparser.y" /* yacc.c:1646  */
+#line 98 "libezscript/ezparser.y" /* yacc.c:1646  */
     {(yyval.node) = (yyvsp[0].node);}
-#line 1421 "libezscript/ezparser.c" /* yacc.c:1646  */
+#line 1426 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 99 "libezscript/ezparser.y" /* yacc.c:1646  */
+#line 101 "libezscript/ezparser.y" /* yacc.c:1646  */
     {(yyval.node) = ast_join(AST_ASSIGNMENT, (yyvsp[-3].node), (yyvsp[-1].node));}
-#line 1427 "libezscript/ezparser.c" /* yacc.c:1646  */
+#line 1432 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 101 "libezscript/ezparser.y" /* yacc.c:1646  */
+#line 103 "libezscript/ezparser.y" /* yacc.c:1646  */
     {(yyval.node) = (yyvsp[0].node);}
-#line 1433 "libezscript/ezparser.c" /* yacc.c:1646  */
+#line 1438 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 104 "libezscript/ezparser.y" /* yacc.c:1646  */
+#line 106 "libezscript/ezparser.y" /* yacc.c:1646  */
     {(yyval.node) = (yyvsp[0].node);}
-#line 1439 "libezscript/ezparser.c" /* yacc.c:1646  */
+#line 1444 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 105 "libezscript/ezparser.y" /* yacc.c:1646  */
+#line 107 "libezscript/ezparser.y" /* yacc.c:1646  */
     {(yyval.node) = ast_join(AST_ADDITION, (yyvsp[-2].node), (yyvsp[0].node));}
-#line 1445 "libezscript/ezparser.c" /* yacc.c:1646  */
+#line 1450 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 106 "libezscript/ezparser.y" /* yacc.c:1646  */
+#line 108 "libezscript/ezparser.y" /* yacc.c:1646  */
     {(yyval.node) = ast_join(AST_SUBTRACTION, (yyvsp[-2].node), (yyvsp[0].node));}
-#line 1451 "libezscript/ezparser.c" /* yacc.c:1646  */
+#line 1456 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 109 "libezscript/ezparser.y" /* yacc.c:1646  */
+#line 111 "libezscript/ezparser.y" /* yacc.c:1646  */
     {(yyval.node) = (yyvsp[0].node);}
-#line 1457 "libezscript/ezparser.c" /* yacc.c:1646  */
+#line 1462 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 110 "libezscript/ezparser.y" /* yacc.c:1646  */
+#line 112 "libezscript/ezparser.y" /* yacc.c:1646  */
     {(yyval.node) = ast_join(AST_MULTIPLICATION, (yyvsp[-2].node), (yyvsp[0].node));}
-#line 1463 "libezscript/ezparser.c" /* yacc.c:1646  */
+#line 1468 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 111 "libezscript/ezparser.y" /* yacc.c:1646  */
+#line 113 "libezscript/ezparser.y" /* yacc.c:1646  */
     {(yyval.node) = ast_join(AST_DIVISION, (yyvsp[-2].node), (yyvsp[0].node));}
-#line 1469 "libezscript/ezparser.c" /* yacc.c:1646  */
+#line 1474 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 112 "libezscript/ezparser.y" /* yacc.c:1646  */
+#line 114 "libezscript/ezparser.y" /* yacc.c:1646  */
     {(yyval.node) = ast_join(AST_MODULO, (yyvsp[-2].node), (yyvsp[0].node));}
-#line 1475 "libezscript/ezparser.c" /* yacc.c:1646  */
+#line 1480 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 115 "libezscript/ezparser.y" /* yacc.c:1646  */
+#line 117 "libezscript/ezparser.y" /* yacc.c:1646  */
     {(yyval.node) = (yyvsp[-1].node);}
-#line 1481 "libezscript/ezparser.c" /* yacc.c:1646  */
+#line 1486 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 116 "libezscript/ezparser.y" /* yacc.c:1646  */
+#line 118 "libezscript/ezparser.y" /* yacc.c:1646  */
     {(yyval.node) = (yyvsp[0].node);}
-#line 1487 "libezscript/ezparser.c" /* yacc.c:1646  */
+#line 1492 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 117 "libezscript/ezparser.y" /* yacc.c:1646  */
+#line 119 "libezscript/ezparser.y" /* yacc.c:1646  */
     {(yyval.node) = (yyvsp[0].node);}
-#line 1493 "libezscript/ezparser.c" /* yacc.c:1646  */
+#line 1498 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 118 "libezscript/ezparser.y" /* yacc.c:1646  */
+#line 120 "libezscript/ezparser.y" /* yacc.c:1646  */
     {(yyval.node) = (yyvsp[0].node);}
-#line 1499 "libezscript/ezparser.c" /* yacc.c:1646  */
+#line 1504 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 121 "libezscript/ezparser.y" /* yacc.c:1646  */
+#line 123 "libezscript/ezparser.y" /* yacc.c:1646  */
     {(yyval.node) = ast_single(AST_OBJECT, (yyvsp[-1].node));}
-#line 1505 "libezscript/ezparser.c" /* yacc.c:1646  */
+#line 1510 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 122 "libezscript/ezparser.y" /* yacc.c:1646  */
+#line 124 "libezscript/ezparser.y" /* yacc.c:1646  */
     {(yyval.node) = ast_create(AST_OBJECT);}
-#line 1511 "libezscript/ezparser.c" /* yacc.c:1646  */
+#line 1516 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 125 "libezscript/ezparser.y" /* yacc.c:1646  */
+#line 127 "libezscript/ezparser.y" /* yacc.c:1646  */
     {(yyval.node) = ast_append((yyvsp[-2].node), (yyvsp[0].node));}
-#line 1517 "libezscript/ezparser.c" /* yacc.c:1646  */
+#line 1522 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 126 "libezscript/ezparser.y" /* yacc.c:1646  */
+#line 128 "libezscript/ezparser.y" /* yacc.c:1646  */
     {(yyval.node) = (yyvsp[0].node);}
-#line 1523 "libezscript/ezparser.c" /* yacc.c:1646  */
+#line 1528 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 129 "libezscript/ezparser.y" /* yacc.c:1646  */
+#line 131 "libezscript/ezparser.y" /* yacc.c:1646  */
     {(yyval.node) = ast_named_single(AST_MEMBER, (yyvsp[-2].string), (yyvsp[0].node));}
-#line 1529 "libezscript/ezparser.c" /* yacc.c:1646  */
+#line 1534 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 132 "libezscript/ezparser.y" /* yacc.c:1646  */
+#line 134 "libezscript/ezparser.y" /* yacc.c:1646  */
     {(yyval.node) = ast_child((yyvsp[-2].node), ast_leaf(AST_REFERENCE, (yyvsp[0].string)));}
-#line 1535 "libezscript/ezparser.c" /* yacc.c:1646  */
+#line 1540 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 133 "libezscript/ezparser.y" /* yacc.c:1646  */
+#line 135 "libezscript/ezparser.y" /* yacc.c:1646  */
     {(yyval.node) = ast_leaf(AST_REFERENCE, (yyvsp[0].string));}
-#line 1541 "libezscript/ezparser.c" /* yacc.c:1646  */
+#line 1546 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 136 "libezscript/ezparser.y" /* yacc.c:1646  */
+#line 138 "libezscript/ezparser.y" /* yacc.c:1646  */
     {(yyval.node) = ast_leaf(AST_LITERAL_REAL, (yyvsp[0].string));}
-#line 1547 "libezscript/ezparser.c" /* yacc.c:1646  */
+#line 1552 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 137 "libezscript/ezparser.y" /* yacc.c:1646  */
+#line 139 "libezscript/ezparser.y" /* yacc.c:1646  */
     {(yyval.node) = ast_leaf(AST_LITERAL_INTEGER, (yyvsp[0].string));}
-#line 1553 "libezscript/ezparser.c" /* yacc.c:1646  */
+#line 1558 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 138 "libezscript/ezparser.y" /* yacc.c:1646  */
+#line 140 "libezscript/ezparser.y" /* yacc.c:1646  */
     {(yyval.node) = ast_leaf(AST_LITERAL_STRING, (yyvsp[0].string));}
-#line 1559 "libezscript/ezparser.c" /* yacc.c:1646  */
+#line 1564 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 139 "libezscript/ezparser.y" /* yacc.c:1646  */
-    {(yyval.node) = ast_leaf(AST_LITERAL_NULL, "null");}
-#line 1565 "libezscript/ezparser.c" /* yacc.c:1646  */
+#line 141 "libezscript/ezparser.y" /* yacc.c:1646  */
+    {(yyval.node) = ast_cleaf(AST_LITERAL_BOOLEAN, "true");}
+#line 1570 "libezscript/ezparser.c" /* yacc.c:1646  */
+    break;
+
+  case 31:
+#line 142 "libezscript/ezparser.y" /* yacc.c:1646  */
+    {(yyval.node) = ast_cleaf(AST_LITERAL_BOOLEAN, "false");}
+#line 1576 "libezscript/ezparser.c" /* yacc.c:1646  */
+    break;
+
+  case 32:
+#line 143 "libezscript/ezparser.y" /* yacc.c:1646  */
+    {(yyval.node) = ast_cleaf(AST_LITERAL_NULL, "null");}
+#line 1582 "libezscript/ezparser.c" /* yacc.c:1646  */
     break;
 
 
-#line 1569 "libezscript/ezparser.c" /* yacc.c:1646  */
+#line 1586 "libezscript/ezparser.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1800,6 +1817,6 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 142 "libezscript/ezparser.y" /* yacc.c:1906  */
+#line 146 "libezscript/ezparser.y" /* yacc.c:1906  */
 
 

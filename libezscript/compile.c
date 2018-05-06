@@ -73,6 +73,12 @@ ez_result_t ez_generate_literal(ez_code_t* code, size_t *ip, ast_node_t* node)
                 return r;
             }
             return ez_code_string_write(code, ip, node->svalue);
+        case AST_LITERAL_BOOLEAN:
+            r = ez_code_op_write(code, ip, OP_LTB);
+            EZ_CHECK_RESULT("ez_code_op_write", r);
+            r = ez_code_uint8_write(code, ip, strcmp(node->svalue, "true") == 0);
+            EZ_CHECK_RESULT("ez_code_uint8_write", r);
+            break;
         default:
             EZ_TRACEV("Unknown AST node: %d", node->type);
             return EZ_INVALID_TYPE;
@@ -336,6 +342,7 @@ ez_result_t ez_generate_expression(ez_code_t* code, size_t *ip, ast_node_t* node
     switch (node->type)
     {
         case AST_LITERAL_NULL:
+        case AST_LITERAL_BOOLEAN:
         case AST_LITERAL_INTEGER:
         case AST_LITERAL_REAL:
         case AST_LITERAL_STRING:

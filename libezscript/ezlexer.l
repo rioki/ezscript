@@ -40,7 +40,9 @@ char* unescape(const char* source);
 [ \t\v]                     /* skip */
 (\n|\r|(\r\n))              /* tbd lines */
       
-"null"                      return NILL;         
+"null"                      return KW_NULL;
+"true"                      return KW_TRUE;  
+"false"                     return KW_FALSE;       
 
 "="                         return EQUAL;
 "+"                         return PLUS;
