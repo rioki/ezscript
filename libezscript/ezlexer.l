@@ -31,6 +31,8 @@ SOFTWARE.
 
 #include "ezparser.h"
 #include "ast.h"
+
+char* unescape(const char* source);
 %}            
 
 %%
@@ -73,7 +75,7 @@ SOFTWARE.
                             }
 
 \"([^\"\n\r]+|\\\")*\"      {
-                                ezlval.string = strdup(yytext);
+                                ezlval.string = unescape(yytext);
                                 return STRING;
                             }
 
@@ -82,6 +84,70 @@ SOFTWARE.
 %%
 
 #include <stdio.h>
+
+char* unescape(const char* source)
+{
+    size_t i, j;
+    size_t len = strlen(source);
+    char* result = (char*)malloc(len - 1);
+    memset(result, 0, len - 1);
+
+    /* we know that the string begins with " and ends with " */
+    j = 0;
+    for (i = 1; i < len - 1; i++)
+    {
+        if (source[i] == '\\')
+        {
+            i++;
+            switch (source[i])
+            {
+                case 'a':
+                    result[j] = '\a';
+                    break;
+                case 'b':
+                    result[j] = '\b';
+                    break;
+                case 'f':
+                    result[j] = '\f';
+                    break;
+                case 'n':
+                    result[j] = '\n';
+                    break;
+                case 'r':
+                    result[j] = '\r';
+                    break;
+                case 't':
+                    result[j] = '\t';
+                    break;
+                case 'v':
+                    result[j] = '\v';
+                    break;
+                case '\\':
+                    result[j] = '\\';
+                    break;
+                case '\'':
+                    result[j] = '\'';
+                    break;
+                case '\"':
+                    result[j] = '\"';
+                    break;
+                case '?':
+                    result[j] = '\?';
+                    break;
+                default:
+                    result[j] = ' ';
+                    break;
+            }
+        }
+        else
+        {
+            result[j] = source[i];
+        }
+        j++;
+    }
+    
+    return result;
+}
 
 int yywrap()
 {

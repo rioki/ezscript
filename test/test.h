@@ -25,12 +25,20 @@ SOFTWARE.
 #define _TEST_H_
 
 #include <stdio.h>
+#include <string.h>
 
 #define TEST_ASSERT(COND)                                                      \
     if (!(COND))                                                               \
     {                                                                          \
         printf("%s:%d: Assert '%s' failed.\n", __FILE__, __LINE__, #COND);     \
         return -1;                                                             \
+    }
+
+#define TEST_STRING(EXP, IS)                                                    \
+    if (strcmp(EXP, IS) != 0)                                                   \
+    {                                                                           \
+        printf("%s:%d: Expectged '%s' but got '%s'.\n", __FILE__, __LINE__, EXP, IS); \
+        return -1;                                                              \
     }
 
 #define TEST_RUN(FUNCTION)                                                     \

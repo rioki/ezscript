@@ -402,7 +402,7 @@ ez_result_t ez_print_code(FILE* fd, ez_code_t* code)
                 break;
             default:
                 EZ_ASSERT(0);
-                return;
+                return EZ_INVALID_OP;
         }
     }
 

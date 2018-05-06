@@ -151,7 +151,7 @@ ez_result_t ez_generate_store_reference(ez_code_t* code, size_t *ip, ast_node_t*
 
         while (member != NULL)
         {
-            if (member->child == NULL) /* last member */
+            if (member->next == NULL) /* last member */
             {
                 r = ez_code_op_write(code, ip, OP_SMB);
                 if (r < 0)
@@ -177,7 +177,7 @@ ez_result_t ez_generate_store_reference(ez_code_t* code, size_t *ip, ast_node_t*
                 return r;
             }
 
-            member = member->child;
+            member = member->next;
         }
     }
     else

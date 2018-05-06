@@ -165,8 +165,23 @@ ez_result_t exec_obj(ez_code_t* code, ez_stack_t* stack, size_t* ip, ez_value_t*
 
 ez_result_t exec_lts(ez_code_t* code, ez_stack_t* stack, size_t* ip, ez_value_t* this)
 {
-    /* TODO implement string class */
-    return EZ_INVALID_OP;
+    ez_result_t r;
+    const char* literal;
+    ez_value_t  value;
+
+    r = ez_code_string_read(code, ip, &literal);
+    EZ_CHECK_RESULT("ez_code_string_read", r);
+
+    r = ez_create_string(&value, literal);
+    EZ_CHECK_RESULT("ez_create_string", r);
+
+    r = ez_push_stack(stack, &value);
+    EZ_CHECK_RESULT("ez_push_stack", r);
+
+    r = ez_release_value(&value);
+    EZ_CHECK_RESULT("ez_release_value", r);
+
+    return EZ_SUCCESS;
 }
 
 ez_result_t exec_sto(ez_code_t* code, ez_stack_t* stack, size_t* ip, ez_value_t* this)

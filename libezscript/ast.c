@@ -86,6 +86,24 @@ ast_node_t* ast_child(ast_node_t* parent, ast_node_t* child)
     return parent;
 }
 
+ast_node_t* ast_rchild(ast_node_t* parent, ast_node_t* child)
+{
+    assert(parent != NULL);
+    assert(child != NULL);
+
+    if (parent->child == NULL)
+    {
+        parent->child = child;
+        child->parent = parent;
+    }
+    else
+    {
+        ast_rchild(parent->child, child);
+    }
+
+    return parent;
+}
+
 ast_node_t* ast_single(ast_type_t type, ast_node_t* child)
 {
     ast_node_t* node;

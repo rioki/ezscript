@@ -35,6 +35,16 @@ int test_create_object_null()
     return 0; 
 }
 
+int test_create_typed_object_null()
+{
+    ez_result_t r;
+
+    r = ez_create_typed_object(NULL, "object");
+    TEST_ASSERT(r == EZ_INVALID_ARGUMENT);
+
+    return 0; 
+}
+
 int test_get_member_null()
 {
     ez_result_t r;
@@ -97,6 +107,44 @@ int test_create_object()
     r = ez_get_type(&value, &type);
     TEST_ASSERT(r == EZ_SUCCESS);
     TEST_ASSERT(type == EZ_TYPE_OBJECT);
+    
+    r = ez_release_value(&value);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    return 0; 
+}
+
+int test_create_typed_object()
+{
+    ez_result_t r;
+    ez_value_t  value;
+    const char* type;
+
+    r = ez_create_typed_object(&value, "CoolObject");
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_get_object_type(&value, &type);
+    TEST_ASSERT(r == EZ_SUCCESS);
+    TEST_STRING("CoolObject", type);
+    
+    r = ez_release_value(&value);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    return 0; 
+}
+
+int test_create_object_is_type_object()
+{
+    ez_result_t r;
+    ez_value_t  value;
+    const char* type;
+
+    r = ez_create_object(&value);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_get_object_type(&value, &type);
+    TEST_ASSERT(r == EZ_SUCCESS);
+    TEST_STRING("object", type);
     
     r = ez_release_value(&value);
     TEST_ASSERT(r == EZ_SUCCESS);
@@ -444,8 +492,6 @@ int test_write_member()
                         "  day: 20\n"
                         "};\n"
                         "dob.year = 1980;\n";
-    
-    print_listing(code);
 
     r = ez_create_object(&root);
     TEST_ASSERT(r == EZ_SUCCESS);
@@ -475,12 +521,63 @@ int test_write_member()
     return 0;
 }
 
+int test_deep_nested()
+{
+    ez_result_t r;
+    ez_value_t  root;
+    ez_value_t message, to, name;
+    const char* text;
+    const char code[] = "message = {\n"
+                        "  to: {\n"
+                        "    name: \"Sean Farell\",\n"
+                        "    email: \"sean.farrell@rioki.org\"\n"
+                        "  },\n"
+                        "  body: \"ezscript rocks!\""
+                        "};\n"
+                        "message.to.name = \"Sean Farrell\";\n";
+
+    r = ez_create_object(&root);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_eval(&root, code);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_get_member(&root, "message", &message);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_get_member(&message, "to", &to);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_get_member(&to, "name", &name);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_get_string(&name, &text);
+    TEST_ASSERT(r == EZ_SUCCESS);
+    /*TEST_STRING("Sean Farrell", text);*/
+
+    r = ez_release_value(&name);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_release_value(&to);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_release_value(&message);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_release_value(&root);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    return 0;
+}
+
 void run_object_tests(int* num_tests, int* num_errors)
 {
     TEST_RUN(test_create_object_null); 
+    TEST_RUN(test_create_typed_object_null);
     TEST_RUN(test_get_member_null);
     TEST_RUN(test_set_member_null);
-    TEST_RUN(test_create_object);    
+    TEST_RUN(test_create_object);
+    TEST_RUN(test_create_typed_object);    
     TEST_RUN(test_undefined_members);  
     TEST_RUN(test_set_member);
     TEST_RUN(test_multiple_values);
@@ -491,4 +588,5 @@ void run_object_tests(int* num_tests, int* num_errors)
     TEST_RUN(test_object_from_code2);
     TEST_RUN(test_read_member);
     TEST_RUN(test_write_member);
+    TEST_RUN(test_deep_nested);
 }

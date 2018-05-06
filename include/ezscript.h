@@ -83,15 +83,23 @@ ez_result_t ez_create_real(ez_value_t* value, double rvalue);
 
 ez_result_t ez_create_object(ez_value_t* value);
 
+ez_result_t ez_create_typed_object(ez_value_t* value, const char* type);
+
+ez_result_t ez_create_string(ez_value_t* value, const char* string);
+
 ez_result_t ez_create_function(ez_value_t* value, ez_function function);
 
 ez_result_t ez_get_type(const ez_value_t* value, ez_type_t* type);
+
+ez_result_t ez_get_object_type(const ez_value_t* value, const char** type);
 
 ez_result_t ez_get_boolean(const ez_value_t* value, int* bvalue);
 
 ez_result_t ez_get_integer(const ez_value_t* value, long* ivalue);
 
 ez_result_t ez_get_real(const ez_value_t* value, double* ivalue);
+
+ez_result_t ez_get_string(const ez_value_t* value, const char** string);
 
 ez_result_t ez_get_member(const ez_value_t* object, const char* id, ez_value_t* value);
 

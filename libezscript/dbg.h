@@ -59,4 +59,11 @@ void ez_tracev(const char* file, unsigned int line, const char* func, const char
         return EZ_INVALID_TYPE;                                                 \
     }
 
+#define EZ_CHECK_RESULT(OPERATION, RESULT)                                      \
+    if (RESULT < 0)                                                             \
+    {                                                                           \
+        EZ_TRACEV("Failes to execute %s: %s", OPERATION, ez_result_to_string(r));\
+        return r;                                                               \
+    }
+
 #endif

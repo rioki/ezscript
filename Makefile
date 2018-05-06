@@ -2,7 +2,7 @@
 PACKAGE = ezscript
 VERSION = 0.0.0
 
-CFLAGS   += -Iinclude -I.tmp/libezscript -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$(PACKAGE)\" -Wpedantic -Wall
+CFLAGS   += -g -Iinclude -I.tmp/libezscript -DVERSION=\"$(VERSION)\" -DPACKAGE=\"$(PACKAGE)\" -Wpedantic -Wall
 LDFLAGS  += 
 FLEX     ?= flex
 BISON    ?= bison

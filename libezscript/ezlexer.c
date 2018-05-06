@@ -778,8 +778,10 @@ SOFTWARE.
 
 #include "ezparser.h"
 #include "ast.h"
-#line 781 "libezscript/ezlexer.c"
-#line 782 "libezscript/ezlexer.c"
+
+char* unescape(const char* source);
+#line 783 "libezscript/ezlexer.c"
+#line 784 "libezscript/ezlexer.c"
 
 #define INITIAL 0
 
@@ -996,10 +998,10 @@ YY_DECL
 		}
 
 	{
-#line 36 "libezscript/ezlexer.l"
+#line 38 "libezscript/ezlexer.l"
 
 
-#line 1002 "libezscript/ezlexer.c"
+#line 1004 "libezscript/ezlexer.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1068,103 +1070,103 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 38 "libezscript/ezlexer.l"
+#line 40 "libezscript/ezlexer.l"
 /* skip */
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 39 "libezscript/ezlexer.l"
+#line 41 "libezscript/ezlexer.l"
 /* tbd lines */
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 41 "libezscript/ezlexer.l"
+#line 43 "libezscript/ezlexer.l"
 return NILL;         
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 43 "libezscript/ezlexer.l"
+#line 45 "libezscript/ezlexer.l"
 return EQUAL;
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 44 "libezscript/ezlexer.l"
+#line 46 "libezscript/ezlexer.l"
 return PLUS;
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 45 "libezscript/ezlexer.l"
+#line 47 "libezscript/ezlexer.l"
 return MINUS;
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 46 "libezscript/ezlexer.l"
+#line 48 "libezscript/ezlexer.l"
 return STAR;
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 47 "libezscript/ezlexer.l"
+#line 49 "libezscript/ezlexer.l"
 return SLASH;
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 48 "libezscript/ezlexer.l"
+#line 50 "libezscript/ezlexer.l"
 return PERCENT;
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 49 "libezscript/ezlexer.l"
+#line 51 "libezscript/ezlexer.l"
 return OPEN_PAREN;
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 50 "libezscript/ezlexer.l"
+#line 52 "libezscript/ezlexer.l"
 return CLOSE_PAREN;
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 51 "libezscript/ezlexer.l"
+#line 53 "libezscript/ezlexer.l"
 return OPEN_CURLY;
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 52 "libezscript/ezlexer.l"
+#line 54 "libezscript/ezlexer.l"
 return CLOSE_CURLY;
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 53 "libezscript/ezlexer.l"
+#line 55 "libezscript/ezlexer.l"
 return OPEN_SQUARE;
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 54 "libezscript/ezlexer.l"
+#line 56 "libezscript/ezlexer.l"
 return CLOSE_SQUARE;
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 55 "libezscript/ezlexer.l"
+#line 57 "libezscript/ezlexer.l"
 return SEMI;
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 56 "libezscript/ezlexer.l"
+#line 58 "libezscript/ezlexer.l"
 return COLON;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 57 "libezscript/ezlexer.l"
+#line 59 "libezscript/ezlexer.l"
 return COMMA;
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 58 "libezscript/ezlexer.l"
+#line 60 "libezscript/ezlexer.l"
 return DOT;
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 60 "libezscript/ezlexer.l"
+#line 62 "libezscript/ezlexer.l"
 {
                                 ezlval.string = strdup(yytext);
                                 return IDENTIFIER;
@@ -1172,7 +1174,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 65 "libezscript/ezlexer.l"
+#line 67 "libezscript/ezlexer.l"
 {
                                 ezlval.string = strdup(yytext);
                                 return INTEGER;
@@ -1180,7 +1182,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 70 "libezscript/ezlexer.l"
+#line 72 "libezscript/ezlexer.l"
 {
                                 ezlval.string = strdup(yytext);
                                 return REAL;
@@ -1188,23 +1190,23 @@ YY_RULE_SETUP
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 75 "libezscript/ezlexer.l"
+#line 77 "libezscript/ezlexer.l"
 {
-                                ezlval.string = strdup(yytext);
+                                ezlval.string = unescape(yytext);
                                 return STRING;
                             }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 80 "libezscript/ezlexer.l"
+#line 82 "libezscript/ezlexer.l"
 return ERROR;
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 82 "libezscript/ezlexer.l"
+#line 84 "libezscript/ezlexer.l"
 ECHO;
 	YY_BREAK
-#line 1207 "libezscript/ezlexer.c"
+#line 1209 "libezscript/ezlexer.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2221,10 +2223,74 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 82 "libezscript/ezlexer.l"
+#line 84 "libezscript/ezlexer.l"
 
 
 #include <stdio.h>
+
+char* unescape(const char* source)
+{
+    size_t i, j;
+    size_t len = strlen(source);
+    char* result = (char*)malloc(len - 1);
+    memset(result, 0, len - 1);
+
+    /* we know that the string begins with " and ends with " */
+    j = 0;
+    for (i = 1; i < len - 1; i++)
+    {
+        if (source[i] == '\\')
+        {
+            i++;
+            switch (source[i])
+            {
+                case 'a':
+                    result[j] = '\a';
+                    break;
+                case 'b':
+                    result[j] = '\b';
+                    break;
+                case 'f':
+                    result[j] = '\f';
+                    break;
+                case 'n':
+                    result[j] = '\n';
+                    break;
+                case 'r':
+                    result[j] = '\r';
+                    break;
+                case 't':
+                    result[j] = '\t';
+                    break;
+                case 'v':
+                    result[j] = '\v';
+                    break;
+                case '\\':
+                    result[j] = '\\';
+                    break;
+                case '\'':
+                    result[j] = '\'';
+                    break;
+                case '\"':
+                    result[j] = '\"';
+                    break;
+                case '?':
+                    result[j] = '\?';
+                    break;
+                default:
+                    result[j] = ' ';
+                    break;
+            }
+        }
+        else
+        {
+            result[j] = source[i];
+        }
+        j++;
+    }
+    
+    return result;
+}
 
 int yywrap()
 {

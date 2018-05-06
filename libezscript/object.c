@@ -38,18 +38,18 @@ typedef struct _ez_member ez_member_t;
 struct _ez_object 
 {
     int          count;
+    char*        type;
     ez_member_t* members;
     void*        data;
 };
 
-ez_result_t _ez_init_object(ez_object_t* object)
+ez_result_t _ez_init_object(ez_object_t* object, const char* type)
 {
-    if (object == NULL)
-    {
-        return EZ_INVALID_ARGUMENT;
-    }
+    EZ_CHECK_ARGUMENT(object != NULL);
+    EZ_CHECK_ARGUMENT(type != NULL);
 
     object->count   = 1;
+    object->type    = strdup(type);
     object->members = NULL;
     object->data    = NULL;
 
@@ -58,10 +58,7 @@ ez_result_t _ez_init_object(ez_object_t* object)
 
 ez_result_t _ez_reference_object(ez_object_t* object)
 {
-    if (object == NULL)
-    {
-        return EZ_INVALID_ARGUMENT;
-    }
+    EZ_CHECK_ARGUMENT(object != NULL);
 
     object->count++;
 
@@ -72,15 +69,14 @@ ez_result_t _ez_release_object(ez_object_t* object)
 {
     ez_result_t r;
 
-    if (object == NULL)
-    {
-        return EZ_INVALID_ARGUMENT;
-    }
+    EZ_CHECK_ARGUMENT(object != NULL);
 
     object->count--;
  
     if (object->count == 0) 
     {
+        free(object->type);
+
         ez_member_t* member = object->members;
         while (member != NULL)
         {
@@ -101,20 +97,40 @@ ez_result_t _ez_release_object(ez_object_t* object)
 
 ez_result_t ez_create_object(ez_value_t* value)
 {
-    if (value == NULL)
-    {
-        return EZ_INVALID_ARGUMENT;
-    }
+    ez_result_t r;
+
+    r = ez_create_typed_object(value, "object");
+    EZ_CHECK_RESULT("ez_create_typed_object", r);
+
+    return EZ_SUCCESS;
+}
+
+ez_result_t ez_create_typed_object(ez_value_t* value, const char* type)
+{
+    EZ_CHECK_ARGUMENT(value != NULL);
+    EZ_CHECK_ARGUMENT(type != NULL);
 
     value->type   = EZ_TYPE_OBJECT;
     value->object = (ez_object_t*)malloc(sizeof(ez_object_t));
 
     if (value->object == NULL)
     {
+        EZ_TRACE("Failed to allocate object.");
         return EZ_OUT_OF_MEMORY;
     }
 
-    return _ez_init_object(value->object);
+    return _ez_init_object(value->object, type);
+}
+
+ez_result_t ez_get_object_type(const ez_value_t* value, const char** type)
+{
+    EZ_CHECK_ARGUMENT(value);
+    EZ_CHECK_ARGUMENT(type);
+    EZ_CHECK_TYPE(value, EZ_TYPE_OBJECT);
+
+    *type = value->object->type;
+
+    return EZ_SUCCESS;
 }
 
 ez_result_t ez_get_member(const ez_value_t* object, const char* id, ez_value_t* value)
@@ -212,15 +228,8 @@ ez_result_t ez_set_object_data(ez_value_t* object, void* data)
 
 ez_result_t ez_get_object_data(ez_value_t* object, void** data)
 {
-    if (object == NULL)
-    {
-        return EZ_INVALID_ARGUMENT;
-    }
-
-    if (object->type != EZ_TYPE_OBJECT) 
-    {
-        return EZ_INVALID_TYPE;
-    }
+    EZ_CHECK_ARGUMENT(object != NULL);
+    EZ_CHECK_TYPE(object, EZ_TYPE_OBJECT);
 
     (*data) = object->object->data;
 
