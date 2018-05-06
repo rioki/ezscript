@@ -33,7 +33,7 @@ SOFTWARE.
     if (!(COND))                                                                \
     {                                                                           \
         EZ_TRACEV("Assertion Failed: %s", #COND);                               \
-        return EZ_RUNTIME_ERRPOR;    	                                        \
+        return EZ_RUNTIME_ERROR;    	                                        \
     }
 
 void ez_trace(const char* file, unsigned int line, const char* func, const char* msg);
@@ -59,10 +59,10 @@ void ez_tracev(const char* file, unsigned int line, const char* func, const char
         return EZ_INVALID_TYPE;                                                 \
     }
 
-#define EZ_CHECK_RESULT(OPERATION, RESULT)                                      \
+#define EZ_CHECK_RESULT(RESULT)                                                 \
     if (RESULT < 0)                                                             \
     {                                                                           \
-        EZ_TRACEV("Failes to execute %s: %s", OPERATION, ez_result_to_string(r));\
+        EZ_TRACE(ez_result_to_string(r));                                       \
         return r;                                                               \
     }
 

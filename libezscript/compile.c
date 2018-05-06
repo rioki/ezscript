@@ -75,9 +75,9 @@ ez_result_t ez_generate_literal(ez_code_t* code, size_t *ip, ast_node_t* node)
             return ez_code_string_write(code, ip, node->svalue);
         case AST_LITERAL_BOOLEAN:
             r = ez_code_op_write(code, ip, OP_LTB);
-            EZ_CHECK_RESULT("ez_code_op_write", r);
+            EZ_CHECK_RESULT(r);
             r = ez_code_uint8_write(code, ip, strcmp(node->svalue, "true") == 0);
-            EZ_CHECK_RESULT("ez_code_uint8_write", r);
+            EZ_CHECK_RESULT(r);
             break;
         default:
             EZ_TRACEV("Unknown AST node: %d", node->type);
@@ -218,61 +218,41 @@ ez_result_t ez_generate_operation(ez_code_t* code, size_t *ip, ast_node_t* node)
 
     lhs = node->child;
     r = ez_generate_expression(code, ip, lhs);
-    if (r < 0)
-    {
-        EZ_TRACEV("Failed to generate lhs: %s", ez_result_to_string(r));
-        return r;
-    }
+    EZ_CHECK_RESULT(r);
 
     rhs = lhs->next;
     r = ez_generate_expression(code, ip, rhs);
-    if (r < 0)
-    {
-        EZ_TRACEV("Failed to generate rhs: %s", ez_result_to_string(r));
-        return r;
-    }
+    EZ_CHECK_RESULT(r);
 
     switch (node->type)
     {
+        case AST_EQUALS:
+            r = ez_code_op_write(code, ip, OP_EQU);
+            EZ_CHECK_RESULT(r);
+            break;
+        case AST_NOT_EQUALS:
+            r = ez_code_op_write(code, ip, OP_NEQ);
+            EZ_CHECK_RESULT(r);
+            break;
         case AST_ADDITION:
             r = ez_code_op_write(code, ip, OP_ADD);
-            if (r < 0)
-            {
-                EZ_TRACEV("Failed to write OP: %s", ez_result_to_string(r));
-                return r;
-            }
+            EZ_CHECK_RESULT(r);
             break;
         case AST_SUBTRACTION:
             r = ez_code_op_write(code, ip, OP_SUB);
-            if (r < 0)
-            {
-                EZ_TRACEV("Failed to write OP: %s", ez_result_to_string(r));
-                return r;
-            }
+            EZ_CHECK_RESULT(r);
             break;
         case AST_MULTIPLICATION:
             r = ez_code_op_write(code, ip, OP_MUL);
-            if (r < 0)
-            {
-                EZ_TRACEV("Failed to write OP: %s", ez_result_to_string(r));
-                return r;
-            }
+            EZ_CHECK_RESULT(r);
             break;
         case AST_DIVISION:
             r = ez_code_op_write(code, ip, OP_DIV);
-            if (r < 0)
-            {
-                EZ_TRACEV("Failed to write OP: %s", ez_result_to_string(r));
-                return r;
-            }
+            EZ_CHECK_RESULT(r);
             break;
         case AST_MODULO:
             r = ez_code_op_write(code, ip, OP_MOD);
-            if (r < 0)
-            {
-                EZ_TRACEV("Failed to write OP: %s", ez_result_to_string(r));
-                return r;
-            }
+            EZ_CHECK_RESULT(r);
             break;
         default:
             EZ_TRACEV("Unknown AST node: %d", node->type);
@@ -347,39 +327,29 @@ ez_result_t ez_generate_expression(ez_code_t* code, size_t *ip, ast_node_t* node
         case AST_LITERAL_REAL:
         case AST_LITERAL_STRING:
             r = ez_generate_literal(code, ip, node);
-            if (r < 0)
-            {
-                EZ_TRACEV("Fail to generate literal: %s", ez_result_to_string(r)); 
-                return r;
-            }
+            EZ_CHECK_RESULT(r);
             break;
+        case AST_EQUALS:
+        case AST_NOT_EQUALS:
+        case AST_LESS:
+        case AST_LESS_EQUAL:
+        case AST_GRATER:
+        case AST_GRATER_EQUAL:
         case AST_ADDITION:
         case AST_SUBTRACTION:
         case AST_MULTIPLICATION:
         case AST_DIVISION:
         case AST_MODULO:
             r = ez_generate_operation(code, ip, node);
-            if (r < 0)
-            {
-                EZ_TRACEV("Fail to generate operation: %s", ez_result_to_string(r)); 
-                return r;
-            }
+            EZ_CHECK_RESULT(r);
             break;
         case AST_REFERENCE:
             r = ez_generate_load_reference(code, ip, node);
-            if (r < 0)
-            {
-                EZ_TRACEV("Fail to generate load reference: %s", ez_result_to_string(r)); 
-                return r;
-            }
+            EZ_CHECK_RESULT(r);
             break;
         case AST_OBJECT:
             r = ez_generate_object(code, ip, node);
-            if (r < 0)
-            {
-                EZ_TRACEV("Fail to generate object: %s", ez_result_to_string(r)); 
-                return r;
-            }
+            EZ_CHECK_RESULT(r);
             break;
         default:
             EZ_TRACEV("Unknown AST node: %d", node->type);
@@ -407,18 +377,10 @@ ez_result_t ez_generate_assignment(ez_code_t* code, size_t *ip, ast_node_t* node
     assert(expression != NULL);
 
     r = ez_generate_expression(code, ip, expression);
-    if (r < 0)
-    {
-        EZ_TRACEV("Failed to generate expression: %s", ez_result_to_string(r));
-        return r;
-    }
+    EZ_CHECK_RESULT(r);
     
     r = ez_generate_store_reference(code, ip, reference);
-    if (r < 0)
-    {
-        EZ_TRACEV("Failed to generate store reference: %s", ez_result_to_string(r));
-        return r;
-    }
+    EZ_CHECK_RESULT(r);
 
     return EZ_SUCCESS;
 }

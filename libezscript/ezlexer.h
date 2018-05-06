@@ -700,7 +700,7 @@ extern int yylex (void);
 #undef yyTABLES_NAME
 #endif
 
-#line 86 "libezscript/ezlexer.l"
+#line 92 "libezscript/ezlexer.l"
 
 
 #line 706 "libezscript/ezlexer.h"

@@ -45,6 +45,12 @@ char* unescape(const char* source);
 "false"                     return KW_FALSE;       
 
 "="                         return EQUAL;
+"=="                        return EQUALS;
+"!="                        return NOT_EQUALS;
+"<"                         return LESS;
+">"                         return GRATER;
+"<="                        return LESS_EQUAL;
+">="                        return GRATER_EQUAL;
 "+"                         return PLUS;
 "-"                         return MINUS;
 "*"                         return STAR;

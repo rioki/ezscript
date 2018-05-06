@@ -100,7 +100,7 @@ ez_result_t ez_create_object(ez_value_t* value)
     ez_result_t r;
 
     r = ez_create_typed_object(value, "object");
-    EZ_CHECK_RESULT("ez_create_typed_object", r);
+    EZ_CHECK_RESULT(r);
 
     return EZ_SUCCESS;
 }

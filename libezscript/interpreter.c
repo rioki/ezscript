@@ -67,16 +67,16 @@ ez_result_t exec_ltb(ez_code_t* code, ez_stack_t* stack, size_t* ip)
     ez_value_t  value;
 
     r = ez_code_uint8_read(code, ip, &literal);
-    EZ_CHECK_RESULT("ez_code_uint8_read", r);
+    EZ_CHECK_RESULT(r);
 
     r = ez_create_boolean(&value, literal);
-    EZ_CHECK_RESULT("ez_create_boolean", r);
+    EZ_CHECK_RESULT(r);
 
     r = ez_push_stack(stack, &value);
-    EZ_CHECK_RESULT("ez_push_stack", r);
+    EZ_CHECK_RESULT(r);
 
     r = ez_release_value(&value);
-    EZ_CHECK_RESULT("ez_release_value", r);
+    EZ_CHECK_RESULT(r);
 
     return EZ_SUCCESS;
 }
@@ -191,16 +191,16 @@ ez_result_t exec_lts(ez_code_t* code, ez_stack_t* stack, size_t* ip, ez_value_t*
     ez_value_t  value;
 
     r = ez_code_string_read(code, ip, &literal);
-    EZ_CHECK_RESULT("ez_code_string_read", r);
+    EZ_CHECK_RESULT(r);
 
     r = ez_create_string(&value, literal);
-    EZ_CHECK_RESULT("ez_create_string", r);
+    EZ_CHECK_RESULT(r);
 
     r = ez_push_stack(stack, &value);
-    EZ_CHECK_RESULT("ez_push_stack", r);
+    EZ_CHECK_RESULT(r);
 
     r = ez_release_value(&value);
-    EZ_CHECK_RESULT("ez_release_value", r);
+    EZ_CHECK_RESULT(r);
 
     return EZ_SUCCESS;
 }
@@ -436,7 +436,80 @@ ez_result_t exec_lmb(ez_code_t* code, ez_stack_t* stack, size_t* ip)
     return EZ_SUCCESS;
 }
 
-ez_result_t exec_binop(ez_op_t op, ez_stack_t* stack, ez_value_t* this)
+ez_result_t exec_equ(ez_op_t op, ez_stack_t* stack)
+{
+    ez_result_t r;
+    ez_value_t  rhs;
+    ez_value_t  lhs;
+    ez_value_t  res;
+
+    r = ez_pop_stack(stack, &rhs);
+    EZ_CHECK_RESULT(r);
+
+    r = ez_pop_stack(stack, &lhs);
+    EZ_CHECK_RESULT(r);
+
+    if (lhs.type == EZ_TYPE_OBJECT)
+    {
+        ez_value_t  fun;
+        const char* name;
+        switch (op)
+        {
+            case OP_EQU:
+            case OP_NEQ:
+                name = "equals";
+                break;
+            default:
+                EZ_TRACE("This can not happen.");
+                return EZ_INVALID_OP;
+        }
+
+        r = ez_get_member(&lhs, name, &fun);
+        if (r < 0)
+        {
+            EZ_TRACEV("Failed to read member %s: %s", name, ez_result_to_string(r));
+            return r;
+        }
+
+        if (fun.type != EZ_TYPE_FUNCTION)
+        {
+            EZ_TRACEV("%s is not a function.", name);
+            return EZ_RUNTIME_ERROR;
+        }
+
+        r = ez_call_function(&fun, &lhs, &res, 1, &rhs);
+        if (r < 0)
+        {
+            EZ_TRACEV("Call to %s failed: %s", name, ez_result_to_string(r));
+            return r;
+        }
+
+        if (op == OP_NEQ) 
+        {
+            EZ_ASSERT(res.type == EZ_TYPE_BOOLEAN);
+            res.long_value = !res.long_value;
+        }
+    }
+    else
+    {
+        return EZ_NOT_IMPLEMENTED;
+    }
+
+    r = ez_push_stack(stack, &res);
+    EZ_CHECK_RESULT(r);
+
+    r = ez_release_value(&lhs);
+    EZ_CHECK_RESULT(r);
+    r = ez_release_value(&rhs);
+    EZ_CHECK_RESULT(r);
+    r = ez_release_value(&res);
+    EZ_CHECK_RESULT(r);
+
+
+    return EZ_SUCCESS;
+}
+
+ez_result_t exec_binop(ez_op_t op, ez_stack_t* stack)
 {
     ez_result_t r;
     ez_value_t  rhs;
@@ -483,7 +556,7 @@ ez_result_t exec_binop(ez_op_t op, ez_stack_t* stack, ez_value_t* this)
                 return EZ_INVALID_OP;
         }
 
-        r = ez_get_member(&rhs, name, &fun);
+        r = ez_get_member(&lhs, name, &fun);
         if (r < 0)
         {
             EZ_TRACEV("Failed to read member %s: %s", name, ez_result_to_string(r));
@@ -493,10 +566,10 @@ ez_result_t exec_binop(ez_op_t op, ez_stack_t* stack, ez_value_t* this)
         if (fun.type != EZ_TYPE_FUNCTION)
         {
             EZ_TRACEV("%s is not a function.", name);
-            return EZ_RUNTIME_ERRPOR;
+            return EZ_RUNTIME_ERROR;
         }
 
-        r = ez_call_function(&fun, this, &res, 1, &lhs);
+        r = ez_call_function(&fun, &lhs, &res, 1, &rhs);
         if (r < 0)
         {
             EZ_TRACEV("Call to %s failed: %s", name, ez_result_to_string(r));
@@ -553,7 +626,7 @@ ez_result_t exec_binop(ez_op_t op, ez_stack_t* stack, ez_value_t* this)
         else
         {
             EZ_TRACE("rhs is not integer or real.");
-            return EZ_RUNTIME_ERRPOR;
+            return EZ_RUNTIME_ERROR;
         }
 
         if (lhs.type == EZ_TYPE_INTEGER && rhs.type == EZ_TYPE_INTEGER)
@@ -617,7 +690,7 @@ ez_result_t exec_binop(ez_op_t op, ez_stack_t* stack, ez_value_t* this)
                     break;
                 case OP_MOD:
                     EZ_TRACE("Modulo not defined for real.");
-                    return EZ_RUNTIME_ERRPOR;
+                    return EZ_RUNTIME_ERROR;
                 default:
                     EZ_TRACE("This can not happen.");
                     return EZ_INVALID_OP;
@@ -634,7 +707,7 @@ ez_result_t exec_binop(ez_op_t op, ez_stack_t* stack, ez_value_t* this)
     else
     {
         EZ_TRACE("lhs is not integer, real or object.");
-        return EZ_RUNTIME_ERRPOR;
+        return EZ_RUNTIME_ERROR;
     }
     
     r = ez_push_stack(stack, &res);
@@ -736,12 +809,16 @@ ez_result_t ez_exec_code(ez_value_t* this, ez_code_t* code)
             case OP_LMB:
                 r = exec_lmb(code, &stack, &ip);
                 break;
+            case OP_EQU:
+            case OP_NEQ:
+                r = exec_equ(op, &stack);
+                break;
             case OP_ADD:
             case OP_SUB:
             case OP_MUL:
             case OP_DIV:
             case OP_MOD:
-                r = exec_binop(op, &stack, this);
+                r = exec_binop(op, &stack);
                 break;   
             default:
                 EZ_TRACEV("Unknown opcode: %d", op);

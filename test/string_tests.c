@@ -135,7 +135,56 @@ int test_string_from_code()
     return 0;
 }
 
+int test_string_equals()
+{
+    ez_result_t r;
+    ez_value_t  root;
+    ez_value_t  x, y, z;
+    int         value;
+    const char code[] = "a = \"One\";\n"
+                        "b = \"One\";\n"
+                        "c = \"Two\";\n"
+                        "x = a == b;\n"
+                        "y = a == c;\n"
+                        "z = a != b;\n";
 
+    print_listing(code);
+
+    r = ez_create_object(&root);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_eval(&root, code);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_get_member(&root, "x", &x);
+    TEST_ASSERT(r == EZ_SUCCESS);
+    r = ez_get_member(&root, "y", &y);
+    TEST_ASSERT(r == EZ_SUCCESS);
+    r = ez_get_member(&root, "z", &z);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_get_boolean(&x, &value);
+    TEST_ASSERT(r == EZ_SUCCESS);
+    TEST_ASSERT(1 == value);
+
+    r = ez_get_boolean(&y, &value);
+    TEST_ASSERT(r == EZ_SUCCESS);
+    TEST_ASSERT(0 == value);
+
+    r = ez_get_boolean(&z, &value);
+    TEST_ASSERT(r == EZ_SUCCESS);
+    TEST_ASSERT(0 == value);
+
+    r = ez_release_value(&x);
+    TEST_ASSERT(r == EZ_SUCCESS);
+    r = ez_release_value(&y);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_release_value(&root);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    return 0;
+}
 
 void run_string_tests(int* num_tests, int* num_errors)
 {
@@ -145,4 +194,5 @@ void run_string_tests(int* num_tests, int* num_errors)
     TEST_RUN(test_get_string_with_object);
     TEST_RUN(test_get_string_with_object_with_data);
     TEST_RUN(test_string_from_code);
+    TEST_RUN(test_string_equals);
 }

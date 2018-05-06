@@ -58,10 +58,12 @@ const char* ez_result_to_string(ez_result_t r)
             return "EZ_OVERFLOW";
         case EZ_INVALID_OP:
             return "EZ_INVALID_OP";
-        case EZ_RUNTIME_ERRPOR:
-            return "EZ_RUNTIME_ERRPOR";
+        case EZ_RUNTIME_ERROR:
+            return "EZ_RUNTIME_ERROR";
         case EZ_PARSE_ERROR:
             return "EZ_PARSE_ERROR";
+        case EZ_NOT_IMPLEMENTED:
+            return "EZ_NOT_IMPLEMENTED";
         default:
             assert(0);
             return "UNKNOWN";

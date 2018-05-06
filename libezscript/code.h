@@ -69,6 +69,14 @@ enum _ez_op
     /* LMB <string> - Load Member
        Copies the member onto the stack of the object on the stack. */
     OP_LMB,
+    /* EQU - Equals
+       Takes the two top values from the stack and compares them and wirites the
+       result back to the stack.*/
+    OP_EQU,
+    /* NEQ - Not Equals
+       Takes the two top values from the stack and compares them and wirites the
+       result back to the stack.*/
+    OP_NEQ,
     /* ADD - Addition
        Adds the top and next value from the stack and write it back to top. */
     OP_ADD,

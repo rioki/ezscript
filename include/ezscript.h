@@ -34,8 +34,9 @@ enum _ez_result
     EZ_OUT_OF_MEMORY    = -3,
     EZ_OVERFLOW         = -4,
     EZ_INVALID_OP       = -5,
-    EZ_RUNTIME_ERRPOR   = -6,
-    EZ_PARSE_ERROR      = -15
+    EZ_RUNTIME_ERROR    = -6,
+    EZ_PARSE_ERROR      = -15,
+    EZ_NOT_IMPLEMENTED  = -666
 };
 typedef enum _ez_result ez_result_t;
 
@@ -86,6 +87,8 @@ ez_result_t ez_create_object(ez_value_t* value);
 ez_result_t ez_create_typed_object(ez_value_t* value, const char* type);
 
 ez_result_t ez_create_string(ez_value_t* value, const char* string);
+
+ez_result_t ez_wrap_string(ez_value_t* value, char* string);
 
 ez_result_t ez_create_function(ez_value_t* value, ez_function function);
 

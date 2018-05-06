@@ -59,6 +59,12 @@ void ezerror(ast_node_t** root, const char* msg);
 %token              KW_FALSE        "false"
 
 %token              EQUAL           "="
+%token              EQUALS          "=="
+%token              NOT_EQUALS      "!="
+%token              LESS            "<"
+%token              GRATER          ">"
+%token              LESS_EQUAL      "<="  
+%token              GRATER_EQUAL    ">="
 %token              PLUS            "+"
 %token              MINUS           "-"
 %token              SEMI            ";"
@@ -82,7 +88,7 @@ void ezerror(ast_node_t** root, const char* msg);
 
 %type <node>        statements statement 
 %type <node>        literal reference assignment primexp
-%type <node>        expression addexp mulexp
+%type <node>        expression addexp mulexp equexp cmpexp
 %type <node>        object members member
 
 %%
@@ -100,8 +106,20 @@ statement               : assignment                            {$$ = $1;}
 
 assignment              : reference "=" expression ";"          {$$ = ast_join(AST_ASSIGNMENT, $1, $3);}
 
-expression              : addexp                                {$$ = $1;}
+expression              : equexp                                {$$ = $1;}
                         ;
+
+equexp                  : cmpexp                                {$$ = $1;}
+                        | equexp "==" cmpexp                    {$$ = ast_join(AST_EQUALS, $1, $3);}
+                        | equexp "!=" cmpexp                    {$$ = ast_join(AST_NOT_EQUALS, $1, $3);}
+                        ;
+
+cmpexp                  : addexp                                {$$ = $1;}
+                        | cmpexp "<" addexp                     {$$ = ast_join(AST_LESS, $1, $3);}
+                        | cmpexp "<=" addexp                    {$$ = ast_join(AST_LESS_EQUAL, $1, $3);}
+                        | cmpexp ">" addexp                     {$$ = ast_join(AST_GRATER, $1, $3);}
+                        | cmpexp ">=" addexp                    {$$ = ast_join(AST_GRATER_EQUAL, $1, $3);}
+
 
 addexp                  : mulexp                                {$$ = $1;}
                         | addexp "+" mulexp                     {$$ = ast_join(AST_ADDITION, $1, $3);}
