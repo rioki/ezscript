@@ -553,7 +553,7 @@ int test_deep_nested()
 
     r = ez_get_string(&name, &text);
     TEST_ASSERT(r == EZ_SUCCESS);
-    /*TEST_STRING("Sean Farrell", text);*/
+    TEST_STRING("Sean Farrell", text);
 
     r = ez_release_value(&name);
     TEST_ASSERT(r == EZ_SUCCESS);
