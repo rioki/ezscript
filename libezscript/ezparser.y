@@ -54,6 +54,7 @@ void ezerror(ast_node_t** root, const char* msg);
 %token              END 0           "end of file"
 %token              ERROR           "lexing error"
 
+%token              KW_VAR          "var"
 %token              KW_NULL         "null"
 %token              KW_TRUE         "true"
 %token              KW_FALSE        "false"
@@ -89,7 +90,7 @@ void ezerror(ast_node_t** root, const char* msg);
 %type <node>        statements statement 
 %type <node>        literal reference assignment primexp
 %type <node>        expression addexp mulexp equexp cmpexp
-%type <node>        object members member
+%type <node>        object members member vardecl
 
 %%
 
@@ -102,7 +103,10 @@ statements              : statements statement                  {$$ = ast_append
                         ;
 
 statement               : assignment                            {$$ = $1;}
+                        | vardecl                               {$$ = $1;}
                         ;
+
+vardecl                 : "var" reference "=" expression ";"    {$$ = ast_join(AST_VARDECL, $2, $4);}
 
 assignment              : reference "=" expression ";"          {$$ = ast_join(AST_ASSIGNMENT, $1, $3);}
 

@@ -40,6 +40,7 @@ char* unescape(const char* source);
 [ \t\v]                     /* skip */
 (\n|\r|(\r\n))              /* tbd lines */
       
+"var"                       return KW_VAR;
 "null"                      return KW_NULL;
 "true"                      return KW_TRUE;  
 "false"                     return KW_FALSE;       

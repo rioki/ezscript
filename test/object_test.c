@@ -441,12 +441,12 @@ int test_read_member()
     ez_value_t  root;
     ez_value_t  yob;
     long        yobv;
-    const char code[] = "dob = {\n"
+    const char code[] = "var dob = {\n"
                         "  year: 1984,\n"
                         "  month: 9,\n"
                         "  day: 20\n"
                         "};\n"
-                        "yob = dob.year;\n";
+                        "var yob = dob.year;\n";
     
     r = ez_create_object(&root);
     TEST_ASSERT(r == EZ_SUCCESS);

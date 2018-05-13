@@ -56,35 +56,36 @@ extern int ezdebug;
   {
     END = 0,
     ERROR = 258,
-    KW_NULL = 259,
-    KW_TRUE = 260,
-    KW_FALSE = 261,
-    EQUAL = 262,
-    EQUALS = 263,
-    NOT_EQUALS = 264,
-    LESS = 265,
-    GRATER = 266,
-    LESS_EQUAL = 267,
-    GRATER_EQUAL = 268,
-    PLUS = 269,
-    MINUS = 270,
-    SEMI = 271,
-    COLON = 272,
-    COMMA = 273,
-    DOT = 274,
-    STAR = 275,
-    SLASH = 276,
-    PERCENT = 277,
-    OPEN_PAREN = 278,
-    CLOSE_PAREN = 279,
-    OPEN_CURLY = 280,
-    CLOSE_CURLY = 281,
-    OPEN_SQUARE = 282,
-    CLOSE_SQUARE = 283,
-    IDENTIFIER = 284,
-    REAL = 285,
-    INTEGER = 286,
-    STRING = 287
+    KW_VAR = 259,
+    KW_NULL = 260,
+    KW_TRUE = 261,
+    KW_FALSE = 262,
+    EQUAL = 263,
+    EQUALS = 264,
+    NOT_EQUALS = 265,
+    LESS = 266,
+    GRATER = 267,
+    LESS_EQUAL = 268,
+    GRATER_EQUAL = 269,
+    PLUS = 270,
+    MINUS = 271,
+    SEMI = 272,
+    COLON = 273,
+    COMMA = 274,
+    DOT = 275,
+    STAR = 276,
+    SLASH = 277,
+    PERCENT = 278,
+    OPEN_PAREN = 279,
+    CLOSE_PAREN = 280,
+    OPEN_CURLY = 281,
+    CLOSE_CURLY = 282,
+    OPEN_SQUARE = 283,
+    CLOSE_SQUARE = 284,
+    IDENTIFIER = 285,
+    REAL = 286,
+    INTEGER = 287,
+    STRING = 288
   };
 #endif
 
@@ -98,7 +99,7 @@ union YYSTYPE
     char* string;
     ast_node_t* node;  
 
-#line 102 "libezscript/ezparser.h" /* yacc.c:1909  */
+#line 103 "libezscript/ezparser.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

@@ -148,7 +148,7 @@ int test_string_equals()
                         "y = a == c;\n"
                         "z = a != b;\n";
 
-    print_listing(code);
+    /*print_listing(code);*/
 
     r = ez_create_object(&root);
     TEST_ASSERT(r == EZ_SUCCESS);

@@ -395,6 +395,7 @@ ez_result_t ez_generate_node(ez_code_t* code, size_t *ip, ast_node_t* node)
         case AST_NULL:
             return EZ_SUCCESS;
         case AST_ASSIGNMENT:
+        case AST_VARDECL:
             return ez_generate_assignment(code, ip, node);
         default:
             assert(0);

@@ -28,6 +28,7 @@ enum ast_type
 {
     AST_NULL,
     AST_ASSIGNMENT,
+    AST_VARDECL,
     AST_EQUALS,
     AST_NOT_EQUALS,
     AST_LESS,

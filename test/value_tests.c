@@ -357,6 +357,33 @@ int test_copy_null_poitners()
     return 0;
 }
 
+int test_var_keyword() 
+{
+    ez_result_t r;
+    ez_value_t  root;
+    ez_value_t  v;
+    ez_type_t   v_type;
+    const char code[] = "var v = null;\n";
+    
+    r = ez_create_object(&root);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_eval(&root, code);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_get_member(&root, "v", &v);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    r = ez_get_type(&v, &v_type);
+    TEST_ASSERT(r == EZ_SUCCESS);
+    TEST_ASSERT(v_type == EZ_TYPE_NULL);
+
+    r = ez_release_value(&root);
+    TEST_ASSERT(r == EZ_SUCCESS);
+
+    return 0;
+}
+
 void run_value_tests(int* num_tests, int* num_errors)
 {
     TEST_RUN(test_null_value);        
@@ -376,5 +403,6 @@ void run_value_tests(int* num_tests, int* num_errors)
     TEST_RUN(test_copy_real);
     TEST_RUN(test_get_type_null);
     TEST_RUN(test_release_value_null);
-    TEST_RUN(test_copy_null_poitners);    
+    TEST_RUN(test_copy_null_poitners); 
+    TEST_RUN(test_var_keyword);
 }
