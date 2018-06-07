@@ -155,6 +155,23 @@ ez_result_t exec_ltr(ez_code_t* code, ez_stack_t* stack, size_t* ip, ez_value_t*
     return EZ_SUCCESS;
 }
 
+ez_result_t exec_arr(ez_code_t* code, ez_stack_t* stack, size_t* ip, ez_value_t* this)
+{
+    ez_result_t r;
+    ez_value_t  value;
+
+    r = ez_create_object(&value);
+    EZ_CHECK_RESULT(r);
+
+    r = ez_push_stack(stack, &value);
+    EZ_CHECK_RESULT(r);
+
+    r = ez_release_value(&value);
+    EZ_CHECK_RESULT(r);
+
+    return EZ_SUCCESS;
+}
+
 ez_result_t exec_obj(ez_code_t* code, ez_stack_t* stack, size_t* ip, ez_value_t* this)
 {
     ez_result_t r;
@@ -793,6 +810,9 @@ ez_result_t ez_exec_code(ez_value_t* this, ez_code_t* code)
                 break;
             case OP_OBJ:
                 r = exec_obj(code, &stack, &ip, this);
+                break;
+            case OP_ARR:
+                r = exec_arr(code, &stack, &ip, this);
                 break;
             case OP_STO:
                 r = exec_sto(code, &stack, &ip, this);

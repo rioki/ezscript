@@ -91,6 +91,7 @@ void ezerror(ast_node_t** root, const char* msg);
 %type <node>        literal reference assignment primexp
 %type <node>        expression addexp mulexp equexp cmpexp
 %type <node>        object members member vardecl
+%type <node>        array elements element
 
 %%
 
@@ -137,9 +138,21 @@ mulexp                  : primexp                               {$$ = $1;}
                         ;                       
 
 primexp                 : "(" expression ")"                    {$$ = $2;}
+                        | array                                 {$$ = $1;}
                         | object                                {$$ = $1;}
                         | reference                             {$$ = $1;}
                         | literal                               {$$ = $1;}
+                        ;
+
+array                   : "[" elements "]"                      {$$ = ast_single(AST_ARRAY, $2);}
+                        | "[" "]"                               {$$ = ast_create(AST_ARRAY);}
+                        ; 
+
+elements                : elements "," element                  {$$ = ast_append($1, $3);}
+                        | element                               {$$ = $1;}
+                        ;
+
+element                 : expression                            {$$ = $1;}
                         ;
 
 object                  : "{" members "}"                       {$$ = ast_single(AST_OBJECT, $2);}

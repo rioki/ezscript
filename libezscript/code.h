@@ -54,6 +54,9 @@ enum _ez_op
     /* OBJ - Object
        Creates an empty object on the stack. */
     OP_OBJ,
+    /* ARR - Create Array
+       Create an object of type array.*/
+    OP_ARR,
     /* STO <string> - Store a Value
        Copies the value from the stack into the given variable. */
     OP_STO,

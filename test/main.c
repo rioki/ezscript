@@ -29,6 +29,7 @@ void run_object_tests(int* num_tests, int* num_errors);
 void run_function_tests(int* num_tests, int* num_errors);
 void run_exec_tests(int* num_tests, int* num_errors);
 void run_string_tests(int* num_tests, int* num_errors);
+void run_array_tests(int* num_tests, int* num_errors);
 
 int main(int argc, char* argv[]) 
 {
@@ -40,6 +41,7 @@ int main(int argc, char* argv[])
     run_function_tests(&num_tests, &num_errors);
     run_exec_tests(&num_tests, &num_errors);
     run_string_tests(&num_tests, &num_errors);
+    run_array_tests(&num_tests, &num_errors);
 
     printf("Ran %d tests, %d failures.\n", num_tests, num_errors);
 

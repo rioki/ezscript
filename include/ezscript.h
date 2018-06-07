@@ -90,6 +90,8 @@ ez_result_t ez_create_string(ez_value_t* value, const char* string);
 
 ez_result_t ez_wrap_string(ez_value_t* value, char* string);
 
+ez_result_t ez_create_array(ez_value_t* value);
+
 ez_result_t ez_create_function(ez_value_t* value, ez_function function);
 
 ez_result_t ez_get_type(const ez_value_t* value, ez_type_t* type);
@@ -107,6 +109,10 @@ ez_result_t ez_get_string(const ez_value_t* value, const char** string);
 ez_result_t ez_get_member(const ez_value_t* object, const char* id, ez_value_t* value);
 
 ez_result_t ez_set_member(ez_value_t* object, const char* id, const ez_value_t* value);
+
+ez_result_t ez_get_element(const ez_value_t* object, size_t num, ez_value_t* value);
+
+ez_result_t ez_set_element(const ez_value_t* object, size_t num, ez_value_t* value);
 
 ez_result_t ez_call_function(const ez_value_t* function, ez_value_t* this, ez_value_t* result, int argc, const ez_value_t* argv);
 

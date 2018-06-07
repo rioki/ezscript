@@ -262,6 +262,20 @@ ez_result_t ez_generate_operation(ez_code_t* code, size_t *ip, ast_node_t* node)
     return EZ_SUCCESS;
 }
 
+ez_result_t ez_generate_array(ez_code_t* code, size_t *ip, ast_node_t* node)
+{
+    ez_result_t r;
+    
+    EZ_CHECK_ARGUMENT(code != NULL);
+    EZ_CHECK_ARGUMENT(ip != NULL);
+    EZ_CHECK_ARGUMENT(node != NULL);
+
+    r = ez_code_op_write(code, ip, OP_ARR);
+    EZ_CHECK_RESULT(r);
+
+    return EZ_SUCCESS;
+}
+
 ez_result_t ez_generate_object(ez_code_t* code, size_t *ip, ast_node_t* node)
 {
     ez_result_t r;
@@ -345,6 +359,10 @@ ez_result_t ez_generate_expression(ez_code_t* code, size_t *ip, ast_node_t* node
             break;
         case AST_REFERENCE:
             r = ez_generate_load_reference(code, ip, node);
+            EZ_CHECK_RESULT(r);
+            break;
+        case AST_ARRAY:
+            r = ez_generate_array(code, ip, node);
             EZ_CHECK_RESULT(r);
             break;
         case AST_OBJECT:
