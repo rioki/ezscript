@@ -1,28 +1,33 @@
-/*
-ezscript 
-Copyright 2018 Sean Farrell <sean.farrell@rioki.org>
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of 
-this software and associated documentation files (the "Software"), to deal in 
-the Software without restriction, including without limitation the rights to 
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies 
-of the Software, and to permit persons to whom the Software is furnished to do 
-so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all 
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
-SOFTWARE.
-*/
+//
+// ezscript
+//
+// Copyright 2018-2021 Sean Farrell <sean.farrell@rioki.org>
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
 
 #ifndef _EZSCRIPT_H_
 #define _EZSCRIPT_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <stdio.h>
 
@@ -72,7 +77,7 @@ struct _ez_value
 };
 typedef struct _ez_value ez_value_t;
 
-typedef ez_result_t (*ez_function)(ez_value_t* this, ez_value_t* result, int argc, const ez_value_t* argv);
+typedef ez_result_t (*ez_function)(ez_value_t* that, ez_value_t* result, int argc, const ez_value_t* argv);
 
 ez_result_t ez_create_null(ez_value_t* value);
 
@@ -114,7 +119,7 @@ ez_result_t ez_get_element(const ez_value_t* object, size_t num, ez_value_t* val
 
 ez_result_t ez_set_element(const ez_value_t* object, size_t num, ez_value_t* value);
 
-ez_result_t ez_call_function(const ez_value_t* function, ez_value_t* this, ez_value_t* result, int argc, const ez_value_t* argv);
+ez_result_t ez_call_function(const ez_value_t* function, ez_value_t* that, ez_value_t* result, int argc, const ez_value_t* argv);
 
 ez_result_t ez_copy_value(ez_value_t* dest, const ez_value_t* source);
 
@@ -132,5 +137,9 @@ ez_result_t ez_print_function_code(FILE* fd, ez_value_t* function);
 
 const char* ez_result_to_string(ez_result_t r);
 const char* ez_type_to_string(ez_type_t t);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -2,9 +2,9 @@
 #define ezHEADER_H 1
 #define ezIN_HEADER 1
 
-#line 5 "libezscript/ezlexer.h"
+#line 5 "ezlexer.h"
 
-#line 7 "libezscript/ezlexer.h"
+#line 7 "ezlexer.h"
 
 #define  YY_INT_ALIGNED short int
 
@@ -450,14 +450,6 @@ extern char *yytext;
 
 #endif
 
-#ifndef YY_NO_UNISTD_H
-/* Special case for "unistd.h", since it is non-ANSI. We include it way
- * down here because we want the user's section 1 to have been scanned first.
- * The user has a chance to override it with an option.
- */
-#include <unistd.h>
-#endif
-
 #ifndef YY_EXTRA_TYPE
 #define YY_EXTRA_TYPE void *
 #endif
@@ -700,9 +692,9 @@ extern int yylex (void);
 #undef yyTABLES_NAME
 #endif
 
-#line 93 "libezscript/ezlexer.l"
+#line 96 "ezlexer.l"
 
 
-#line 706 "libezscript/ezlexer.h"
+#line 706 "ezlexer.h"
 #undef ezIN_HEADER
 #endif /* ezHEADER_H */
