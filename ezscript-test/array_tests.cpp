@@ -31,18 +31,18 @@ TEST(C_API, empty_array_definition)
     ez_result_t r;
     ez_value_t  root;
     const char code[] = "var a = [];\n";
-    
+
     r = ez_create_object(&root);
     ASSERT_TRUE(r == EZ_SUCCESS);
 
     r = ez_eval(&root, code);
-    ASSERT_TRUE(r == EZ_SUCCESS);    
+    ASSERT_TRUE(r == EZ_SUCCESS);
 
     r = ez_release_value(&root);
     ASSERT_TRUE(r == EZ_SUCCESS);
 }
 
-TEST(C_API, test_define_array)
+/*TEST(C_API, test_define_array)
 {
     ez_result_t r;
     ez_value_t  root;
@@ -50,7 +50,7 @@ TEST(C_API, test_define_array)
     long        va0, va1, va2;
 
     const char code[] = "var a = [1, 2, 3];\n";
-    
+
     r = ez_create_object(&root);
     ASSERT_TRUE(r == EZ_SUCCESS);
 
@@ -87,3 +87,4 @@ TEST(C_API, test_define_array)
     r = ez_release_value(&root);
     ASSERT_TRUE(r == EZ_SUCCESS);
 }
+*/
