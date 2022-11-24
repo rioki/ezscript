@@ -102,7 +102,7 @@ ez_result_t ez_create_string(ez_value_t* value, const char* string)
     EZ_CHECK_ARGUMENT(value != NULL);
     EZ_CHECK_ARGUMENT(string != NULL);
 
-    copy = strdup(string);
+    copy = _strdup(string);
 
     r = ez_wrap_string(value, copy);
     EZ_CHECK_RESULT(r);

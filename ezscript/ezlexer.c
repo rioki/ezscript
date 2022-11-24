@@ -1,6 +1,6 @@
-#line 1 "libezscript/ezlexer.c"
+#line 1 "ezlexer.c"
 
-#line 3 "libezscript/ezlexer.c"
+#line 3 "ezlexer.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -763,38 +763,39 @@ int yy_flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 "libezscript/ezlexer.l"
+#line 1 "ezlexer.l"
 /*
-ezscript 
-Copyright 2018 Sean Farrell <sean.farrell@rioki.org>
+    ezscript 
+    Copyright 2018 Sean Farrell <sean.farrell@rioki.org>
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of 
-this software and associated documentation files (the "Software"), to deal in 
-the Software without restriction, including without limitation the rights to 
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies 
-of the Software, and to permit persons to whom the Software is furnished to do 
-so, subject to the following conditions:
+    Permission is hereby granted, free of charge, to any person obtaining a copy of 
+    this software and associated documentation files (the "Software"), to deal in 
+    the Software without restriction, including without limitation the rights to 
+    use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies 
+    of the Software, and to permit persons to whom the Software is furnished to do 
+    so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all 
-copies or substantial portions of the Software.
+    The above copyright notice and this permission notice shall be included in all 
+    copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
-SOFTWARE.
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+    SOFTWARE.
 */
-#line 30 "libezscript/ezlexer.l"
+#define YY_NO_UNISTD_H 1
+#line 33 "ezlexer.l"
 #include <string.h>
 
 #include "ezparser.h"
 #include "ast.h"
 
 char* unescape(const char* source);
-#line 796 "libezscript/ezlexer.c"
-#line 797 "libezscript/ezlexer.c"
+#line 797 "ezlexer.c"
+#line 798 "ezlexer.c"
 
 #define INITIAL 0
 
@@ -899,33 +900,17 @@ static int input ( void );
  */
 #ifndef YY_INPUT
 #define YY_INPUT(buf,result,max_size) \
-	if ( YY_CURRENT_BUFFER_LVALUE->yy_is_interactive ) \
+	errno=0; \
+	while ( (result = (int) read( _fileno(yyin), buf, (yy_size_t) max_size )) < 0 ) \
+	{ \
+		if( errno != EINTR) \
 		{ \
-		int c = '*'; \
-		int n; \
-		for ( n = 0; n < max_size && \
-			     (c = getc( yyin )) != EOF && c != '\n'; ++n ) \
-			buf[n] = (char) c; \
-		if ( c == '\n' ) \
-			buf[n++] = (char) c; \
-		if ( c == EOF && ferror( yyin ) ) \
 			YY_FATAL_ERROR( "input in flex scanner failed" ); \
-		result = n; \
+			break; \
 		} \
-	else \
-		{ \
 		errno=0; \
-		while ( (result = (int) fread(buf, 1, (yy_size_t) max_size, yyin)) == 0 && ferror(yyin)) \
-			{ \
-			if( errno != EINTR) \
-				{ \
-				YY_FATAL_ERROR( "input in flex scanner failed" ); \
-				break; \
-				} \
-			errno=0; \
-			clearerr(yyin); \
-			} \
-		}\
+		clearerr(yyin); \
+	}\
 \
 
 #endif
@@ -1011,10 +996,10 @@ YY_DECL
 		}
 
 	{
-#line 38 "libezscript/ezlexer.l"
+#line 41 "ezlexer.l"
 
 
-#line 1017 "libezscript/ezlexer.c"
+#line 1002 "ezlexer.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1083,172 +1068,172 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 40 "libezscript/ezlexer.l"
+#line 43 "ezlexer.l"
 /* skip */
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 41 "libezscript/ezlexer.l"
+#line 44 "ezlexer.l"
 /* tbd lines */
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 43 "libezscript/ezlexer.l"
+#line 46 "ezlexer.l"
 return KW_VAR;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 44 "libezscript/ezlexer.l"
+#line 47 "ezlexer.l"
 return KW_NULL;
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 45 "libezscript/ezlexer.l"
+#line 48 "ezlexer.l"
 return KW_TRUE;  
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 46 "libezscript/ezlexer.l"
+#line 49 "ezlexer.l"
 return KW_FALSE;       
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 48 "libezscript/ezlexer.l"
+#line 51 "ezlexer.l"
 return EQUAL;
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 49 "libezscript/ezlexer.l"
+#line 52 "ezlexer.l"
 return EQUALS;
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 50 "libezscript/ezlexer.l"
+#line 53 "ezlexer.l"
 return NOT_EQUALS;
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 51 "libezscript/ezlexer.l"
+#line 54 "ezlexer.l"
 return LESS;
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 52 "libezscript/ezlexer.l"
+#line 55 "ezlexer.l"
 return GRATER;
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 53 "libezscript/ezlexer.l"
+#line 56 "ezlexer.l"
 return LESS_EQUAL;
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 54 "libezscript/ezlexer.l"
+#line 57 "ezlexer.l"
 return GRATER_EQUAL;
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 55 "libezscript/ezlexer.l"
+#line 58 "ezlexer.l"
 return PLUS;
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 56 "libezscript/ezlexer.l"
+#line 59 "ezlexer.l"
 return MINUS;
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 57 "libezscript/ezlexer.l"
+#line 60 "ezlexer.l"
 return STAR;
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 58 "libezscript/ezlexer.l"
+#line 61 "ezlexer.l"
 return SLASH;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 59 "libezscript/ezlexer.l"
+#line 62 "ezlexer.l"
 return PERCENT;
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 60 "libezscript/ezlexer.l"
+#line 63 "ezlexer.l"
 return OPEN_PAREN;
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 61 "libezscript/ezlexer.l"
+#line 64 "ezlexer.l"
 return CLOSE_PAREN;
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 62 "libezscript/ezlexer.l"
+#line 65 "ezlexer.l"
 return OPEN_CURLY;
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 63 "libezscript/ezlexer.l"
+#line 66 "ezlexer.l"
 return CLOSE_CURLY;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 64 "libezscript/ezlexer.l"
+#line 67 "ezlexer.l"
 return OPEN_SQUARE;
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 65 "libezscript/ezlexer.l"
+#line 68 "ezlexer.l"
 return CLOSE_SQUARE;
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 66 "libezscript/ezlexer.l"
+#line 69 "ezlexer.l"
 return SEMI;
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 67 "libezscript/ezlexer.l"
+#line 70 "ezlexer.l"
 return COLON;
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 68 "libezscript/ezlexer.l"
+#line 71 "ezlexer.l"
 return COMMA;
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 69 "libezscript/ezlexer.l"
+#line 72 "ezlexer.l"
 return DOT;
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 71 "libezscript/ezlexer.l"
+#line 74 "ezlexer.l"
 {
-                                ezlval.string = strdup(yytext);
+                                ezlval.string = _strdup(yytext);
                                 return IDENTIFIER;
                             }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 76 "libezscript/ezlexer.l"
+#line 79 "ezlexer.l"
 {
-                                ezlval.string = strdup(yytext);
+                                ezlval.string = _strdup(yytext);
                                 return INTEGER;
                             }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 81 "libezscript/ezlexer.l"
+#line 84 "ezlexer.l"
 {
-                                ezlval.string = strdup(yytext);
+                                ezlval.string = _strdup(yytext);
                                 return REAL;
                             }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 86 "libezscript/ezlexer.l"
+#line 89 "ezlexer.l"
 {
                                 ezlval.string = unescape(yytext);
                                 return STRING;
@@ -1256,15 +1241,15 @@ YY_RULE_SETUP
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 91 "libezscript/ezlexer.l"
+#line 94 "ezlexer.l"
 return ERROR;
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 93 "libezscript/ezlexer.l"
+#line 96 "ezlexer.l"
 ECHO;
 	YY_BREAK
-#line 1267 "libezscript/ezlexer.c"
+#line 1252 "ezlexer.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1855,7 +1840,7 @@ static void yy_load_buffer_state  (void)
         b->yy_bs_column = 0;
     }
 
-        b->yy_is_interactive = file ? (isatty( fileno(file) ) > 0) : 0;
+        b->yy_is_interactive = file ? (isatty( _fileno(file) ) > 0) : 0;
     
 	errno = oerrno;
 }
@@ -2281,7 +2266,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 93 "libezscript/ezlexer.l"
+#line 96 "ezlexer.l"
 
 
 #include <stdio.h>

@@ -3,3 +3,12 @@
 lib
 bin
 .vscode
+
+# VS Compiler Output
+x86
+x64
+
+# VS Cache Files
+.vs
+*.user
+/vcpkg_installed

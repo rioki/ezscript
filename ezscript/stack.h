@@ -21,37 +21,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#include <stdlib.h>
+
 #include "ezscript.h"
-#include "dbg.h"
 
-unsigned int array_magic = 0x4005FB18;
-
-struct _ez_element
+struct _ez_stack
 {
-    ez_value_t value;
-    struct _ez_element* next;
+    size_t      size;
+    size_t      top;
+    ez_value_t* stack;
 };
-typedef struct _ez_element ez_element_t;
+typedef struct _ez_stack ez_stack_t;
 
-struct _ez_array
-{
-    unsigned int magic;
-    ez_element_t* elements;
-};
-typedef struct _ez_array ez_array_t;
-
-ez_result_t ez_create_array(ez_value_t* value)
-{
-
-}
-
-ez_result_t ez_get_element(const ez_value_t* object, size_t num, ez_value_t* value)
-{
-    
-}
-
-ez_result_t ez_set_element(const ez_value_t* object, size_t num, ez_value_t* value)
-{
-    
-}
-
+ez_result_t ez_allocate_stack(ez_stack_t* stack, size_t size);
+ez_result_t ez_free_stack(ez_stack_t* stack);
+ez_result_t ez_push_stack(ez_stack_t* stack, ez_value_t* value);
+ez_result_t ez_pop_stack(ez_stack_t* stack, ez_value_t* value);
+ez_result_t ez_stack_top(ez_stack_t* stack, ez_value_t* value);

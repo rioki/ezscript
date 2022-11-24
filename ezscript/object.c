@@ -49,7 +49,7 @@ ez_result_t _ez_init_object(ez_object_t* object, const char* type)
     EZ_CHECK_ARGUMENT(type != NULL);
 
     object->count   = 1;
-    object->type    = strdup(type);
+    object->type    = _strdup(type);
     object->members = NULL;
     object->data    = NULL;
 
@@ -177,7 +177,7 @@ ez_result_t ez_set_member(ez_value_t* object, const char* id, const ez_value_t* 
         return EZ_OUT_OF_MEMORY;
     }
 
-    member->id = strdup(id);
+    member->id = _strdup(id);
     if (member->id == NULL)
     {
         free(member);
