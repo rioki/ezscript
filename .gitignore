@@ -11,3 +11,4 @@ x64
 # VS Cache Files
 .vs
 *.user
+/vcpkg_installed
